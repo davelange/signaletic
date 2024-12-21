@@ -3,10 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:admin": "cd apps/admin && npm run dev",
+    "db:generate": "npx drizzle-kit generate --dialect=postgresql --schema=apps/db/src/schema.ts --out=apps/db/drizzle",
+    "db:migrate": "tsx apps/db/src/migrate.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "workspaces": [
+    "apps/admin",
+    "apps/db"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.2"
+  },
+  "dependencies": {}
 }
