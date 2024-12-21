@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1734736629231,
-      "tag": "0000_minor_killer_shrike",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1734736764829,
-      "tag": "0001_confused_pretty_boy",
+      "when": 1734808375079,
+      "tag": "0000_large_firestar",
       "breakpoints": true
     }
   ]

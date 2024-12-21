@@ -1,5 +1,5 @@
 {
-  "id": "97b6fb1d-f0d3-44a7-8cf3-b62a952fb78d",
+  "id": "7c4e1a1c-8608-4423-bd53-d8ea1e29de1a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -30,13 +30,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
-        },
-        "scenes": {
-          "name": "scenes",
-          "type": "integer[]",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'"
         }
       },
       "indexes": {},
@@ -87,12 +80,26 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "projects_slug_unique": {
+          "name": "projects_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -118,6 +125,12 @@
             "cycle": false
           }
         },
+        "displayId": {
+          "name": "displayId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "scheduleEventId": {
           "name": "scheduleEventId",
           "type": "integer",
@@ -139,6 +152,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "scenes_displayId_displays_id_fk": {
+          "name": "scenes_displayId_displays_id_fk",
+          "tableFrom": "scenes",
+          "tableTo": "displays",
+          "columnsFrom": [
+            "displayId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "scenes_scheduleEventId_scheduleEvents_id_fk": {
           "name": "scenes_scheduleEventId_scheduleEvents_id_fk",
           "tableFrom": "scenes",

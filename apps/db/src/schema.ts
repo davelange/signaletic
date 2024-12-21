@@ -1,8 +1,10 @@
+import { sql, SQL } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 
 export const project = pg.pgTable("projects", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
   name: pg.varchar(),
+  slug: pg.varchar().unique(),
 });
 
 export const schedule = pg.pgTable("schedules", {
