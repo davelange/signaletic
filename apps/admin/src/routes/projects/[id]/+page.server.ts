@@ -1,10 +1,36 @@
-import { deleteProjectBySlug, getProjectBySlug } from '$db/lib';
-import { redirect } from '@sveltejs/kit';
+import {
+	createScheduleEvent,
+	deleteProjectBySlug,
+	deleteScheduledEvent,
+	editScheduleEvent,
+	getProjectBySlug
+} from '$db/lib';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import type { InferInsertModel } from 'drizzle-orm';
+import type { scheduleEvent } from '$db/src/schema';
 
 export const load: PageServerLoad = async ({ params }) => {
-	return getProjectBySlug(params.id);
+	const project = await getProjectBySlug(params.id);
+
+	if (!project) {
+		error(404, 'Project not found');
+	}
+
+	return {
+		...project
+	};
 };
+
+function getFormValues<T>(formData: FormData) {
+	const values: Record<string, string> = {};
+
+	for (const [key, value] of formData.entries()) {
+		values[key] = value as string;
+	}
+
+	return values as T;
+}
 
 export const actions: Actions = {
 	deleteProject: async ({ request }) => {
@@ -16,5 +42,54 @@ export const actions: Actions = {
 
 			return redirect(303, '/');
 		}
+	},
+
+	addEvent: async ({ request }) => {
+		const formData = await request.formData();
+		const data = getFormValues<InferInsertModel<typeof scheduleEvent>>(formData);
+
+		const event = await createScheduleEvent({
+			description: data.description,
+			projectId: data.projectId,
+			startsAt: new Date(Number(data.startsAt))
+		});
+
+		if (event) {
+			return { success: true };
+		}
+
+		return fail(400, { error: 'Failed to create event' });
+	},
+
+	deleteEvent: async ({ request }) => {
+		const formData = await request.formData();
+		const { id } = getFormValues<{ id: string }>(formData);
+
+		const event = await deleteScheduledEvent(id);
+
+		if (event) {
+			return { success: true };
+		}
+
+		return fail(400, { error: 'Failed to delete event' });
+	},
+
+	editEvent: async ({ request }) => {
+		const formData = await request.formData();
+		const data = getFormValues<InferInsertModel<typeof scheduleEvent> & { id: string }>(formData);
+
+		console.log(data);
+
+		const event = await editScheduleEvent(data.id, {
+			projectId: data.projectId,
+			description: data.description,
+			startsAt: new Date(data.startsAt)
+		});
+
+		if (event) {
+			return { success: true };
+		}
+
+		return fail(400, { error: 'Failed to edit event' });
 	}
 };

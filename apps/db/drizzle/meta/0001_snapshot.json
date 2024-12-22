@@ -1,6 +1,6 @@
 {
-  "id": "fdbba4bc-a615-4ac4-8b54-51af07a29599",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5338f201-c2fd-4627-a74f-e388e00e3ddc",
+  "prevId": "fdbba4bc-a615-4ac4-8b54-51af07a29599",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -214,12 +214,6 @@
         },
         "startsAt": {
           "name": "startsAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "duration": {
-          "name": "duration",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true

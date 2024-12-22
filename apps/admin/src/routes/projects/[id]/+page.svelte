@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Schedule from '../../../modules/schedule/Schedule.svelte';
+
 	let { data } = $props();
 </script>
 
@@ -8,3 +10,6 @@
 	<input type="hidden" name="id" value={data.slug} />
 	<button>Delete project</button>
 </form>
+
+<hr />
+<Schedule events={data.scheduleEvents || []} projectId={data.id?.toString() || ''} />

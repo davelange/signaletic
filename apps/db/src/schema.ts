@@ -1,5 +1,7 @@
-import { sql, SQL } from "drizzle-orm";
+import { relations, sql, SQL } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
+
+// Project
 
 export const project = pg.pgTable("projects", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -7,25 +9,31 @@ export const project = pg.pgTable("projects", {
   slug: pg.varchar().unique(),
 });
 
-export const schedule = pg.pgTable("schedules", {
+export const projectRelations = relations(project, (type) => ({
+  scheduleEvents: type.many(scheduleEvent),
+}));
+
+// Schedule Event
+
+export const scheduleEvent = pg.pgTable("scheduleEvents", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
   projectId: pg
     .integer()
     .references(() => project.id)
     .notNull(),
-});
-
-export const scheduleEvent = pg.pgTable("scheduleEvents", {
-  id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
-  scheduleId: pg
-    .integer()
-    .references(() => schedule.id)
-    .notNull(),
 
   startsAt: pg.timestamp().notNull(),
-  duration: pg.timestamp().notNull(),
   description: pg.text(),
 });
+
+export const scheduleEventRelations = relations(scheduleEvent, (type) => ({
+  project: type.one(project, {
+    fields: [scheduleEvent.projectId],
+    references: [project.id],
+  }),
+}));
+
+//Display
 
 export const display = pg.pgTable("displays", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),

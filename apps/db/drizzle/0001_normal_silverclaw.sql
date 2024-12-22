@@ -1,0 +1,1 @@
+ALTER TABLE "scheduleEvents" DROP COLUMN "duration";
