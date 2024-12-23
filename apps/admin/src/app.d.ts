@@ -8,6 +8,10 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	namespace AppElements {
+		type TagType = 'button' | 'a';
+	}
 }
 
 export {};

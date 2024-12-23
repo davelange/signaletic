@@ -1,4 +1,4 @@
-import { eq, InferInsertModel } from "drizzle-orm";
+import { asc, eq, InferInsertModel } from "drizzle-orm";
 import { db } from "../src";
 import { project, scheduleEvent } from "../src/schema";
 
@@ -21,7 +21,9 @@ export async function getProjectBySlug(slug: string) {
   return db.query.project.findFirst({
     where: eq(project.slug, slug),
     with: {
-      scheduleEvents: true,
+      scheduleEvents: {
+        orderBy: asc(scheduleEvent.startsAt),
+      },
     },
   });
 }
@@ -44,7 +46,7 @@ export async function deleteScheduledEvent(id: string) {
 
 export async function editScheduleEvent(
   id: string,
-  params: InferInsertModel<typeof scheduleEvent>
+  params: Omit<InferInsertModel<typeof scheduleEvent>, "projectId">
 ) {
   return db
     .update(scheduleEvent)

@@ -1,89 +1,43 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { scheduleEvent } from '$db/src/schema';
-	import type { InferSelectModel } from 'drizzle-orm';
+  import type { scheduleEvent } from '$db/src/schema';
+  import type { InferSelectModel } from 'drizzle-orm';
+  import DayWrapper from './DayWrapper.svelte';
+  import AddDay from './AddDay.svelte';
+  import EventList from './EventList.svelte';
 
-	type Props = { events: InferSelectModel<typeof scheduleEvent>[]; projectId: string };
+  type Props = {
+    events: InferSelectModel<typeof scheduleEvent>[];
+    projectId: string;
+  };
 
-	let { events, projectId }: Props = $props();
+  let { events, projectId }: Props = $props();
 
-	let eventDays = $state<Date[]>([new Date()]); //TODO: set initial value
-	let activeDay = $state(0);
-	let formInEdit = $state(-1);
-	let eventsInDay = $derived(
-		events.filter((event) => event.startsAt.getDate() === eventDays[activeDay].getDate())
-	);
+  function getEventDays() {
+    return events
+      .map((item) => {
+        let d = new Date(item.startsAt);
+        d.setHours(0);
+        d.setMinutes(0);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d.getTime();
+      })
+      .filter((item, idx, arr) => arr.indexOf(item) === idx)
+      .map((a) => new Date(a));
+  }
 
-	let startsAtTime = $state('');
-	let [hour, minute] = $derived(startsAtTime.split(':').map(Number));
-	let startsAt = $derived(new Date(eventDays[activeDay])?.setHours(hour, minute));
+  let eventDays = $state(getEventDays());
 </script>
 
-<div>
-	<h2>Schedule</h2>
-
-	<div>
-		{#each eventDays as day, idx}
-			<button onclick={() => (activeDay = idx)}>{day.toDateString()}</button>
-		{/each}
-		<form
-			action=""
-			onsubmit={(e) => {
-				e.preventDefault();
-				eventDays.push(new Date(e.currentTarget.day.value));
-				activeDay = eventDays.length - 1;
-			}}
-		>
-			<input type="date" name="day" />
-			<button type="submit">Add event day</button>
-		</form>
-	</div>
-
-	{#each eventsInDay as event, idx}
-		<div>
-			{#if formInEdit === idx}
-				<form method="post" action="?/editEvent" use:enhance>
-					<label for="">
-						Description
-						<input name="description" type="text" value={event.description} />
-					</label>
-					<label for="">
-						Starts at
-						<input name="startsAtTime" type="time" bind:value={startsAtTime} />
-					</label>
-					<input name="startsAt" type="hidden" value={event.startsAt} />
-					<input name="projectId" value={projectId} type="hidden" />
-					<input name="id" value={event.id} type="hidden" />
-
-					<button type="submit">Save</button>
-				</form>
-			{:else}
-				<p>{event.description}</p>
-				<p>starts at {event.startsAt.toLocaleTimeString()}</p>
-			{/if}
-
-			<form method="post" action="?/deleteEvent" use:enhance>
-				<input name="id" value={event.id} type="hidden" />
-				<button type="submit">Delete</button>
-				<button type="button" onclick={() => (formInEdit = idx)}>Edit</button>
-			</form>
-		</div>
-	{/each}
-
-	{#if eventDays[activeDay]}
-		<form method="post" action="?/addEvent" use:enhance>
-			<label for="">
-				Description
-				<input name="description" type="text" placeholder="New event" />
-			</label>
-			<label for="">
-				Starts at
-				<input name="startsAtTime" type="time" bind:value={startsAtTime} />
-			</label>
-			<input name="startsAt" type="hidden" value={startsAt} />
-			<input name="projectId" value={projectId} type="hidden" />
-
-			<button type="submit">Add event</button>
-		</form>
-	{/if}
+<div class="flex gap-8 pt-4">
+  {#each eventDays as day}
+    <DayWrapper {day}>
+      <EventList {projectId} {events} {day} />
+    </DayWrapper>
+  {/each}
+  <AddDay
+    onSubmit={(value) => {
+      eventDays.push(value);
+    }}
+  />
 </div>

@@ -2,12 +2,27 @@
 	let { data } = $props();
 </script>
 
-<h1>The dashboard</h1>
-<a href="/projects/new">New project</a>
+<h2 class="title">Projects</h2>
 
-{#each data.projects as project}
-	<div>
-		<h2>{project.name}</h2>
-		<a href="/projects/{project.slug}">Edit</a>
-	</div>
-{/each}
+<div class="project-list">
+	{#each data.projects as project (project.id)}
+		<a class="card" href="/projects/{project.slug}">
+			<p>{project.name}</p>
+		</a>
+	{/each}
+</div>
+
+<a href="/projects/new" class="add-new">Add new project</a>
+
+<style>
+	.title {
+		font-size: 2rem;
+		margin-bottom: var(--spacing-4);
+	}
+	.project-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-1);
+		margin-bottom: var(--spacing-4);
+	}
+</style>
