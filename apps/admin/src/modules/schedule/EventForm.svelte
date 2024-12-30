@@ -5,6 +5,8 @@
   import FormField from '$components/ui/form-field/FormField.svelte';
   import Input from '$components/ui/input/input.svelte';
   import { TimePicker } from '$components/ui/time-picker';
+  import { NiceForm } from '$lib/NiceForm.svelte';
+  import Loading from 'lucide-svelte/icons/loader-circle';
 
   type Props = {
     projectId: string;
@@ -19,13 +21,19 @@
   let startsAtInput = $state('');
   let [hour, minute] = $derived(startsAtInput.split(':').map(Number));
   let startsAt = $derived(new Date(baseDate)?.setHours(hour, minute));
+
+  let form = new NiceForm({
+    onSuccess: () => {
+      isShowing = false;
+    }
+  });
 </script>
 
 {#if isShowing}
   <form
     method="post"
     action="?/addEvent"
-    use:enhance
+    use:enhance={() => form.enhance()}
     class="flex flex-col gap-4"
   >
     <FormField label="Description">
@@ -39,11 +47,16 @@
     <input name="startsAt" type="hidden" value={startsAt} />
     <input name="projectId" value={projectId} type="hidden" />
 
-    <Button type="submit">Add event</Button>
+    <Button type="submit">
+      {#if form.isLoading}
+        <Loading size={14} class="mr-1 animate-spin" />
+      {/if}
+      Add event
+    </Button>
   </form>
 {:else}
   <div
-    class="py-10 bg-slate-50 rounded-sm border-dashed border flex justify-center"
+    class="flex justify-center rounded-sm border border-dashed bg-slate-50 py-10"
   >
     <Button variant="ghost" onclick={() => (isShowing = true)}>
       <PlusIcon size={16} class="mr-1" />

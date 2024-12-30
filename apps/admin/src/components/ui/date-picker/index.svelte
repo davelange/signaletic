@@ -14,13 +14,13 @@
   export let onChange: (val: DateValue | undefined) => void;
 
   let value: DateValue | undefined = undefined;
-
+  let open = false;
   const df = new DateFormatter('en-US', {
     dateStyle: 'long'
   });
 </script>
 
-<Popover.Root openFocus>
+<Popover.Root openFocus bind:open>
   <Popover.Trigger asChild let:builder>
     <Button
       variant="outline"
@@ -36,7 +36,14 @@
     </Button>
   </Popover.Trigger>
   <Popover.Content class="w-auto p-0">
-    <Calendar bind:value initialFocus onValueChange={onChange} />
+    <Calendar
+      bind:value
+      initialFocus
+      onValueChange={(val) => {
+        onChange?.(val);
+        open = false;
+      }}
+    />
   </Popover.Content>
   <input type="hidden" bind:value {name} />
 </Popover.Root>

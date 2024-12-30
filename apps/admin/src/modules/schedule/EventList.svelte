@@ -25,14 +25,14 @@
   }
 </script>
 
-<div class="flex flex-col gap-2 mb-3">
+<div class="mb-3 flex flex-col gap-2">
   {#if !eventsInDay.length}
-    <p class="text-sm text-slate-600 mb-4">No events on this day yet</p>
+    <p class="mb-4 text-sm text-slate-600">No events on this day yet</p>
   {:else}
     {#each eventsInDay as event, idx}
       {@const showEdit = formInEdit === idx}
       <div
-        class="border rounded-sm py-2 px-4 relative"
+        class="relative rounded-sm border px-4 py-2"
         class:border-indigo-600={showEdit}
         class:bg-indigo-600={!showEdit}
       >
@@ -43,7 +43,7 @@
             {event}
           />
         {:else}
-          <div class="grid grid-rows-2 items-center text-slate-200">
+          <div class="grid grid-rows-2 items-center text-slate-100">
             <p class="text-sm">
               {formatStartTime(event.startsAt)}
             </p>
@@ -65,7 +65,7 @@
               </ActionButton>
             </div>
 
-            <p class="font-bold col-span-2">{event.description}</p>
+            <p class="col-span-2 font-bold">{event.description}</p>
           </div>
         {/if}
       </div>

@@ -9,7 +9,7 @@
 </script>
 
 <label class="h-fit">
-  <p class="text-sm text-slate-500 mb-1">Add day</p>
+  <p class="mb-1 text-sm text-slate-500">Add day</p>
   <DatePicker
     onChange={(val) => {
       if (val) {
