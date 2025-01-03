@@ -41,12 +41,32 @@ export const display = pg.pgTable("displays", {
     .integer()
     .references(() => project.id)
     .notNull(),
+  name: pg.varchar(),
 });
 
-export const scene = pg.pgTable("scenes", {
+export const displayRelations = relations(display, (type) => ({
+  project: type.one(project, {
+    fields: [display.projectId],
+    references: [project.id],
+  }),
+}));
+
+// Display Scene
+
+export const displayScene = pg.pgTable("displayScenes", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
   displayId: pg.integer().references(() => display.id),
   scheduleEventId: pg.integer().references(() => scheduleEvent.id),
   startsAt: pg.timestamp().notNull(),
-  duration: pg.timestamp().notNull(),
 });
+
+export const displaySceneRelations = relations(displayScene, (type) => ({
+  display: type.one(display, {
+    fields: [displayScene.displayId],
+    references: [display.id],
+  }),
+  scheduleEvent: type.one(scheduleEvent, {
+    fields: [displayScene.scheduleEventId],
+    references: [scheduleEvent.id],
+  }),
+}));

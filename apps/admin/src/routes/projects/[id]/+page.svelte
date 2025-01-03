@@ -31,15 +31,16 @@
   </div>
 </header>
 
-<Tabs.Root value="account">
-  <Tabs.List class="grid  grid-cols-2 w-[400px]">
-    <Tabs.Trigger value="account">Schedule</Tabs.Trigger>
-    <Tabs.Trigger value="password">Displays</Tabs.Trigger>
+<Tabs.Root>
+  <Tabs.List class="grid  w-[400px] grid-cols-2">
+    <Tabs.Trigger value="schedule">Schedule</Tabs.Trigger>
+    <Tabs.Trigger value="displays">Displays</Tabs.Trigger>
   </Tabs.List>
-  <Tabs.Content value="account">
+  <Tabs.Content value="schedule">
     <Schedule
       events={data.scheduleEvents || []}
       projectId={data.id.toString()}
     />
   </Tabs.Content>
+  <Tabs.Content value="displays">dispaltys</Tabs.Content>
 </Tabs.Root>
