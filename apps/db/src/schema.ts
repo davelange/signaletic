@@ -11,6 +11,7 @@ export const project = pg.pgTable("projects", {
 
 export const projectRelations = relations(project, (type) => ({
   scheduleEvents: type.many(scheduleEvent),
+  displays: type.many(display),
 }));
 
 // Schedule Event
@@ -49,6 +50,7 @@ export const displayRelations = relations(display, (type) => ({
     fields: [display.projectId],
     references: [project.id],
   }),
+  displayScenes: type.many(displayScene),
 }));
 
 // Display Scene

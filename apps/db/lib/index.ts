@@ -1,6 +1,6 @@
 import { asc, eq, InferInsertModel } from "drizzle-orm";
 import { db } from "../src";
-import { project, scheduleEvent } from "../src/schema";
+import { display, project, scheduleEvent } from "../src/schema";
 
 export async function getAllProjects() {
   return await db.query.project.findMany();
@@ -24,6 +24,7 @@ export async function getProjectBySlug(slug: string) {
       scheduleEvents: {
         orderBy: asc(scheduleEvent.startsAt),
       },
+      displays: true,
     },
   });
 }
@@ -52,4 +53,14 @@ export async function editScheduleEvent(
     .update(scheduleEvent)
     .set(params)
     .where(eq(scheduleEvent.id, Number(id)));
+}
+
+export async function createDisplay(fields: InferInsertModel<typeof display>) {
+  return db.insert(display).values(fields).returning();
+}
+
+export async function getDisplayById(id: string) {
+  return db.query.display.findFirst({
+    where: eq(display.id, Number(id)),
+  });
 }

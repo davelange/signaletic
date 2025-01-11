@@ -29,7 +29,7 @@
   let eventDays = $state(getEventDays());
 </script>
 
-<div class="flex gap-8 pt-4">
+<div class="flex gap-8">
   {#each eventDays as day}
     <DayWrapper {day}>
       <EventList {projectId} {events} {day} />

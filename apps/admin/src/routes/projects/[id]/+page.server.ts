@@ -1,26 +1,14 @@
 import {
+  createDisplay,
   createScheduleEvent,
   deleteProjectBySlug,
   deleteScheduledEvent,
-  editScheduleEvent,
-  getProjectBySlug
+  editScheduleEvent
 } from '$db/lib';
-import { error, fail, redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
+import { fail, redirect } from '@sveltejs/kit';
+import type { Actions } from './$types';
 import type { InferInsertModel } from 'drizzle-orm';
-import type { scheduleEvent } from '$db/src/schema';
-
-export const load: PageServerLoad = async ({ params }) => {
-  const project = await getProjectBySlug(params.id);
-
-  if (!project) {
-    error(404, 'Project not found');
-  }
-
-  return {
-    ...project
-  };
-};
+import type { display, scheduleEvent } from '$db/src/schema';
 
 function getFormValues<T>(formData: FormData) {
   const values: Record<string, string> = {};
@@ -91,5 +79,21 @@ export const actions: Actions = {
     }
 
     return fail(400, { error: 'Failed to edit event' });
+  },
+
+  addDisplay: async ({ request }) => {
+    const formData = await request.formData();
+    const data = getFormValues<InferInsertModel<typeof display>>(formData);
+
+    const createdDisplay = await createDisplay({
+      name: data.name,
+      projectId: data.projectId
+    });
+
+    if (createdDisplay) {
+      return { success: true };
+    }
+
+    return fail(400, { error: 'Failed to create display' });
   }
 };
