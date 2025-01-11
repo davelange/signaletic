@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
+import type { scheduleEvent } from '$db/src/schema';
+import type { InferSelectModel } from 'drizzle-orm';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -60,3 +62,40 @@ export const flyAndScale = (
     easing: cubicOut
   };
 };
+
+export function getEventDays(events: InferSelectModel<typeof scheduleEvent>[]) {
+  return events
+    .map((item) => {
+      const d = new Date(item.startsAt);
+      d.setHours(0);
+      d.setMinutes(0);
+      d.setSeconds(0);
+      d.setMilliseconds(0);
+      return d.getTime();
+    })
+    .filter((item, idx, arr) => arr.indexOf(item) === idx)
+    .map((a) => new Date(a));
+}
+
+export function getFormValues<T>(formData: FormData) {
+  const values: Record<string, string> = {};
+
+  for (const [key, value] of formData.entries()) {
+    values[key] = value as string;
+  }
+
+  return values as T;
+}
+
+export function getItemsInDay<T extends { startsAt: Date }>(
+  items: T[],
+  day: Date
+) {
+  return items.filter((event) => event.startsAt.getDate() === day.getDate());
+}
+
+export function toTimeInput(date: Date) {
+  const pad = (val: number) => val.toString().padStart(2, '0');
+
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}

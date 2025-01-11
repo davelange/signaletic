@@ -7,6 +7,7 @@
   import ActionButton from '$components/ActionButton.svelte';
   import Button from '$components/ui/button/button.svelte';
   import EditEventForm from './EditEventForm.svelte';
+  import { getItemsInDay } from '$lib/utils';
 
   type Props = {
     projectId: string;
@@ -16,9 +17,7 @@
 
   let { events, day, projectId }: Props = $props();
   let formInEdit = $state(-1);
-  let eventsInDay = $derived(
-    events.filter((event) => event.startsAt.getDate() === day.getDate())
-  );
+  let eventsInDay = $derived(getItemsInDay(events, day));
 
   function formatStartTime(value: Date) {
     return `${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`;

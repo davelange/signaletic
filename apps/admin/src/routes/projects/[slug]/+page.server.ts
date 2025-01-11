@@ -1,6 +1,9 @@
 import {
   createDisplay,
+  createDisplayScene,
   createScheduleEvent,
+  deleteDisplay,
+  deleteDisplayScene,
   deleteProjectBySlug,
   deleteScheduledEvent,
   editScheduleEvent
@@ -8,17 +11,8 @@ import {
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import type { InferInsertModel } from 'drizzle-orm';
-import type { display, scheduleEvent } from '$db/src/schema';
-
-function getFormValues<T>(formData: FormData) {
-  const values: Record<string, string> = {};
-
-  for (const [key, value] of formData.entries()) {
-    values[key] = value as string;
-  }
-
-  return values as T;
-}
+import type { display, displayScene, scheduleEvent } from '$db/src/schema';
+import { getFormValues } from '$lib/utils';
 
 export const actions: Actions = {
   deleteProject: async ({ request }) => {
@@ -95,5 +89,48 @@ export const actions: Actions = {
     }
 
     return fail(400, { error: 'Failed to create display' });
+  },
+
+  deleteDisplay: async ({ request, params }) => {
+    const formData = await request.formData();
+    const data = getFormValues<{ displayId: string }>(formData);
+
+    const update = await deleteDisplay(data.displayId);
+
+    if (update) {
+      throw redirect(302, `/projects/${params.slug}`);
+    }
+
+    return fail(400, { error: 'Failed to delete display' });
+  },
+
+  addDisplayScene: async ({ request }) => {
+    const formData = await request.formData();
+    const data = getFormValues<InferInsertModel<typeof displayScene>>(formData);
+
+    const createdDisplay = await createDisplayScene({
+      displayId: data.displayId,
+      startsAt: new Date(Number(data.startsAt)),
+      scheduleEventId: data.scheduleEventId
+    });
+
+    if (createdDisplay) {
+      return { success: true };
+    }
+
+    return fail(400, { error: 'Failed to create display scene' });
+  },
+
+  deleteDisplayScene: async ({ request }) => {
+    const formData = await request.formData();
+    const data = getFormValues<{ id: string }>(formData);
+
+    const update = await deleteDisplayScene(data.id);
+
+    if (update) {
+      return { success: true };
+    }
+
+    return fail(400, { error: 'Failed to delete scene' });
   }
 };

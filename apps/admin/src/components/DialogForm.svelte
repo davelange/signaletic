@@ -9,13 +9,20 @@
 
   type Props = {
     children: Snippet;
+    altAction?: Snippet;
     title: string;
     submitButtonText: string;
     onSuccess?: () => void;
   } & HTMLFormAttributes;
 
-  let { children, title, submitButtonText, onSuccess, ...props }: Props =
-    $props();
+  let {
+    children,
+    altAction,
+    title,
+    submitButtonText,
+    onSuccess,
+    ...props
+  }: Props = $props();
 
   let isVisible = $state(false);
 
@@ -41,6 +48,9 @@
           {@render children()}
 
           <div class="flex justify-end gap-2">
+            <div class="mr-auto">
+              {@render altAction?.()}
+            </div>
             <Button type="submit" class="order-2">
               {#if form.isLoading}
                 <Loading size={14} class="mr-1 animate-spin" />

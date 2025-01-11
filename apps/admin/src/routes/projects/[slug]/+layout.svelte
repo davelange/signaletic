@@ -5,6 +5,7 @@
   import Schedule from '$modules/schedule/Schedule.svelte';
   import AddDisplayForm from '$modules/displays/AddDisplayForm.svelte';
   import { Button } from '$components/ui/button';
+  import { page } from '$app/state';
 
   let { data, children } = $props();
 </script>
@@ -33,7 +34,7 @@
   </div>
 </header>
 
-<Tabs.Root>
+<Tabs.Root value={page.params.displayId != undefined ? 'displays' : 'schedule'}>
   <Tabs.List class="mb-4  grid w-[400px] grid-cols-2">
     <Tabs.Trigger value="schedule">Schedule</Tabs.Trigger>
     <Tabs.Trigger value="displays">Displays</Tabs.Trigger>
@@ -53,7 +54,10 @@
           {#each data.displays as display}
             <Button
               variant="link"
-              class="w-full text-left"
+              class="text-bold w-full {page.params.displayId ==
+              display.id.toString()
+                ? 'font-bold'
+                : ''}"
               href={`/projects/${data.slug}/displays/${display.id}`}
             >
               {display.name}

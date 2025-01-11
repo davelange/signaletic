@@ -57,7 +57,10 @@ export const displayRelations = relations(display, (type) => ({
 
 export const displayScene = pg.pgTable("displayScenes", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
-  displayId: pg.integer().references(() => display.id),
+  displayId: pg
+    .integer()
+    .references(() => display.id)
+    .notNull(),
   scheduleEventId: pg.integer().references(() => scheduleEvent.id),
   startsAt: pg.timestamp().notNull(),
 });

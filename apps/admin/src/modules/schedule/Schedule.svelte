@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { scheduleEvent } from '$db/src/schema';
   import type { InferSelectModel } from 'drizzle-orm';
-  import DayWrapper from './DayWrapper.svelte';
-  import AddDay from './AddDay.svelte';
+  import DayWrapper from '$components/DayWrapper.svelte';
+  import AddDay from '$components/AddDay.svelte';
   import EventList from './EventList.svelte';
+  import { getEventDays } from '$lib/utils';
 
   type Props = {
     events: InferSelectModel<typeof scheduleEvent>[];
@@ -12,21 +13,7 @@
 
   let { events, projectId }: Props = $props();
 
-  function getEventDays() {
-    return events
-      .map((item) => {
-        let d = new Date(item.startsAt);
-        d.setHours(0);
-        d.setMinutes(0);
-        d.setSeconds(0);
-        d.setMilliseconds(0);
-        return d.getTime();
-      })
-      .filter((item, idx, arr) => arr.indexOf(item) === idx)
-      .map((a) => new Date(a));
-  }
-
-  let eventDays = $state(getEventDays());
+  let eventDays = $state(getEventDays(events));
 </script>
 
 <div class="flex gap-8">

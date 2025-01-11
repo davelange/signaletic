@@ -1,6 +1,6 @@
 import { asc, eq, InferInsertModel } from "drizzle-orm";
 import { db } from "../src";
-import { display, project, scheduleEvent } from "../src/schema";
+import { display, displayScene, project, scheduleEvent } from "../src/schema";
 
 export async function getAllProjects() {
   return await db.query.project.findMany();
@@ -59,8 +59,30 @@ export async function createDisplay(fields: InferInsertModel<typeof display>) {
   return db.insert(display).values(fields).returning();
 }
 
+export async function deleteDisplay(id: string) {
+  return db.delete(display).where(eq(display.id, Number(id)));
+}
+
 export async function getDisplayById(id: string) {
   return db.query.display.findFirst({
     where: eq(display.id, Number(id)),
+    with: {
+      displayScenes: {
+        orderBy: asc(displayScene.startsAt),
+        with: {
+          scheduleEvent: true,
+        },
+      },
+    },
   });
+}
+
+export async function createDisplayScene(
+  fields: InferInsertModel<typeof displayScene>
+) {
+  return db.insert(displayScene).values(fields).returning();
+}
+
+export async function deleteDisplayScene(id: string) {
+  return db.delete(displayScene).where(eq(displayScene.id, Number(id)));
 }
