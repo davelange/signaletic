@@ -5,9 +5,8 @@
   import DialogForm from '$components/DialogForm.svelte';
   import { TimePicker } from '$components/ui/time-picker';
   import { page } from '$app/state';
-  import { getItemsInDay, toTimeInput } from '$lib/utils';
-  import type { InferSelectModel } from 'drizzle-orm';
-  import type { scheduleEvent } from '$db/src/schema';
+  import { getItemsInDay } from '$lib/utils';
+  import { useTimePicker } from '$components/ui/time-picker/timePicker.svelte';
 
   type Props = {
     displayId: number;
@@ -16,18 +15,12 @@
   };
 
   let { displayId, projectId, day }: Props = $props();
-  let attachedEvent: InferSelectModel<typeof scheduleEvent> | undefined =
-    $state();
 
   let dialogForm: DialogForm;
-
   let eventsToPick = getItemsInDay(page.data.scheduleEvents || [], day);
-
-  let startsAtInput = $state('');
-  let [hour, minute] = $derived(startsAtInput.split(':').map(Number));
-  let startsAt = $derived(new Date(day)?.setHours(hour, minute));
-
-  $inspect(attachedEvent);
+  let timePicker = useTimePicker({
+    baseDate: day
+  });
 </script>
 
 <div class="my-2">
@@ -47,7 +40,7 @@
           const match = page.data.scheduleEvents.find(
             ({ id }) => id === Number(event.currentTarget.value)
           );
-          startsAtInput = toTimeInput(match!.startsAt);
+          timePicker.setTime(match!.startsAt);
         }}
       >
         <option value="">None</option>
@@ -58,11 +51,11 @@
     </FormField>
 
     <FormField label="Start showing at">
-      <TimePicker name="startsAtTime" bind:value={startsAtInput} />
+      <TimePicker name="startsAtTime" bind:value={timePicker.inputValue} />
     </FormField>
 
     <input name="displayId" value={displayId} type="hidden" />
-    <input name="startsAt" type="hidden" value={startsAt} />
+    <input name="startsAt" type="hidden" value={timePicker.dateValue} />
   </DialogForm>
   <div
     class="flex justify-center rounded-md border border-dashed border-slate-300 bg-slate-50"

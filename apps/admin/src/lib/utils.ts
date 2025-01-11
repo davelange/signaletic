@@ -94,8 +94,14 @@ export function getItemsInDay<T extends { startsAt: Date }>(
   return items.filter((event) => event.startsAt.getDate() === day.getDate());
 }
 
-export function toTimeInput(date: Date) {
+export function toTimeInput(date?: Date) {
+  if (!date) return '';
+
   const pad = (val: number) => val.toString().padStart(2, '0');
 
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+export function formatStartTime(value: Date) {
+  return `${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`;
 }
