@@ -15,8 +15,7 @@
   "description": "",
   "workspaces": [
     "apps/admin",
-    "apps/db",
-    "apps/api"
+    "apps/db"
   ],
   "devDependencies": {
     "@types/node": "^22.10.2",
