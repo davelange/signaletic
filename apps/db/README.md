@@ -1,9 +1,6 @@
-```mermaid
 erDiagram    
     PROJECT {
         string id
-        string name
-        string slug
     }
     PROJECT ||--o{ SCHEDULE-EVENT : has
     SCHEDULE-EVENT {
@@ -24,8 +21,24 @@ erDiagram
         string displayId
         string eventId
         string startsAt
-        string visual_TODO
+        string templateId
+        json templateConfig
     }
     DISPLAY-SCENE |o--o| SCHEDULE-EVENT : has
+    DISPLAY-SCENE ||--|| TEMPLATE : has
+    TEMPLATE {
+        string id
+        string name
+        json config
+    }
+    TEMPLATE ||--o{ PRESET : has
+    PRESET {
+        string id
+        string templateId  
+        string name
+        json templateConfig      
+    }
 
-```
+    
+    
+

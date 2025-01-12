@@ -89,6 +89,7 @@ export const displaySceneRelations = relations(displayScene, (type) => ({
 export const template = pg.pgTable("templates", {
   id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
   config: pg.jsonb(),
+  name: pg.varchar(),
 });
 
 export const templateRelations = relations(template, (type) => ({
@@ -105,6 +106,7 @@ export const preset = pg.pgTable("presets", {
     .references(() => template.id)
     .notNull(),
   templateConfig: pg.jsonb(),
+  name: pg.varchar(),
 });
 
 export const presetRelations = relations(preset, (type) => ({
