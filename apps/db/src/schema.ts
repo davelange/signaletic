@@ -1,4 +1,4 @@
-import { relations, sql, SQL } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 
 // Project
@@ -61,6 +61,10 @@ export const displayScene = pg.pgTable("displayScenes", {
     .integer()
     .references(() => display.id)
     .notNull(),
+  templateId: pg
+    .integer()
+    .references(() => template.id)
+    .notNull(),
   scheduleEventId: pg.integer().references(() => scheduleEvent.id),
   startsAt: pg.timestamp().notNull(),
 });
@@ -73,5 +77,39 @@ export const displaySceneRelations = relations(displayScene, (type) => ({
   scheduleEvent: type.one(scheduleEvent, {
     fields: [displayScene.scheduleEventId],
     references: [scheduleEvent.id],
+  }),
+  template: type.one(template, {
+    fields: [displayScene.templateId],
+    references: [template.id],
+  }),
+}));
+
+// Template
+
+export const template = pg.pgTable("templates", {
+  id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
+  config: pg.jsonb(),
+});
+
+export const templateRelations = relations(template, (type) => ({
+  displayScenes: type.many(displayScene),
+  presets: type.many(preset),
+}));
+
+// Preset
+
+export const preset = pg.pgTable("presets", {
+  id: pg.integer().primaryKey().generatedAlwaysAsIdentity(),
+  templateId: pg
+    .integer()
+    .references(() => template.id)
+    .notNull(),
+  templateConfig: pg.jsonb(),
+});
+
+export const presetRelations = relations(preset, (type) => ({
+  template: type.one(template, {
+    fields: [preset.templateId],
+    references: [template.id],
   }),
 }));

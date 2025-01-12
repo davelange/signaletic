@@ -1,5 +1,5 @@
 {
-  "id": "fdbba4bc-a615-4ac4-8b54-51af07a29599",
+  "id": "98dbeda7-ab28-4409-8e62-082f904a3f01",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -30,6 +30,12 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -40,6 +46,156 @@
           "tableTo": "projects",
           "columnsFrom": [
             "projectId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.displayScenes": {
+      "name": "displayScenes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "displayScenes_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "displayId": {
+          "name": "displayId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "templateId": {
+          "name": "templateId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scheduleEventId": {
+          "name": "scheduleEventId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "startsAt": {
+          "name": "startsAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "displayScenes_displayId_displays_id_fk": {
+          "name": "displayScenes_displayId_displays_id_fk",
+          "tableFrom": "displayScenes",
+          "tableTo": "displays",
+          "columnsFrom": [
+            "displayId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "displayScenes_templateId_templates_id_fk": {
+          "name": "displayScenes_templateId_templates_id_fk",
+          "tableFrom": "displayScenes",
+          "tableTo": "templates",
+          "columnsFrom": [
+            "templateId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "displayScenes_scheduleEventId_scheduleEvents_id_fk": {
+          "name": "displayScenes_scheduleEventId_scheduleEvents_id_fk",
+          "tableFrom": "displayScenes",
+          "tableTo": "scheduleEvents",
+          "columnsFrom": [
+            "scheduleEventId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.presets": {
+      "name": "presets",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "presets_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "templateId": {
+          "name": "templateId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "templateConfig": {
+          "name": "templateConfig",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "presets_templateId_templates_id_fk": {
+          "name": "presets_templateId_templates_id_fk",
+          "tableFrom": "presets",
+          "tableTo": "templates",
+          "columnsFrom": [
+            "templateId"
           ],
           "columnsTo": [
             "id"
@@ -104,87 +260,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.scenes": {
-      "name": "scenes",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "scenes_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
-        },
-        "displayId": {
-          "name": "displayId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "scheduleEventId": {
-          "name": "scheduleEventId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "startsAt": {
-          "name": "startsAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "duration": {
-          "name": "duration",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "scenes_displayId_displays_id_fk": {
-          "name": "scenes_displayId_displays_id_fk",
-          "tableFrom": "scenes",
-          "tableTo": "displays",
-          "columnsFrom": [
-            "displayId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "scenes_scheduleEventId_scheduleEvents_id_fk": {
-          "name": "scenes_scheduleEventId_scheduleEvents_id_fk",
-          "tableFrom": "scenes",
-          "tableTo": "scheduleEvents",
-          "columnsFrom": [
-            "scheduleEventId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.scheduleEvents": {
       "name": "scheduleEvents",
       "schema": "",
@@ -218,12 +293,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "duration": {
-          "name": "duration",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
         "description": {
           "name": "description",
           "type": "text",
@@ -247,6 +316,42 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.templates": {
+      "name": "templates",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "templates_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "config": {
+          "name": "config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1734817259352,
-      "tag": "0000_true_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1734889129158,
-      "tag": "0001_normal_silverclaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1735921280512,
-      "tag": "0002_whole_screwball",
+      "when": 1736691207944,
+      "tag": "0000_freezing_shiva",
       "breakpoints": true
     }
   ]
