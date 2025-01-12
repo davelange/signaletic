@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:admin": "cd apps/api && npm run dev & cd apps/admin && npm run dev",
-    "dev:api": "cd apps/api && npm run dev",
+    "dev:vis": "cd apps/visualizer && npm run dev",
     "db:generate": "npx drizzle-kit generate --dialect=postgresql --schema=apps/db/src/schema.ts --out=apps/db/drizzle",
     "db:migrate": "tsx apps/db/src/migrate.ts"
   },
@@ -14,7 +14,7 @@
   "license": "ISC",
   "description": "",
   "workspaces": [
-    "apps/admin",
+    "apps/visualizer",
     "apps/db"
   ],
   "devDependencies": {

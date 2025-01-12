@@ -111,7 +111,8 @@ export const actions: Actions = {
     const createdDisplay = await createDisplayScene({
       displayId: data.displayId,
       startsAt: new Date(Number(data.startsAt)),
-      scheduleEventId: data.scheduleEventId
+      scheduleEventId: data.scheduleEventId,
+      templateId: 1
     });
 
     if (createdDisplay) {
