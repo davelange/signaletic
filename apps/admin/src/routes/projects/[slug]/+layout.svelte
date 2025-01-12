@@ -49,23 +49,23 @@
 
   <Tabs.Content value="displays">
     <div class="mt-4 flex gap-10">
-      {#if data.displays.length > 0}
-        <div class="bg-muted flex basis-[200px] flex-col gap-2 rounded-md p-4">
-          {#each data.displays as display}
-            <Button
-              variant="link"
-              class="text-bold w-full {page.params.displayId ==
-              display.id.toString()
-                ? 'font-bold'
-                : ''}"
-              href={`/projects/${data.slug}/displays/${display.id}`}
-            >
-              {display.name}
-            </Button>
-          {/each}
-          <AddDisplayForm projectId={data.id.toString()} />
-        </div>
-      {:else}
+      <div class="bg-muted flex basis-[200px] flex-col gap-2 rounded-md p-4">
+        {#each data.displays as display}
+          <Button
+            variant="link"
+            class="text-bold w-full {page.params.displayId ==
+            display.id.toString()
+              ? 'font-bold'
+              : ''}"
+            href={`/projects/${data.slug}/displays/${display.id}`}
+          >
+            {display.name}
+          </Button>
+        {/each}
+        <AddDisplayForm projectId={data.id.toString()} />
+      </div>
+
+      {#if !data.displays.length}
         <p class="mb-2 mt-6 text-sm text-gray-500">
           This project doesn't have any display yet
         </p>
