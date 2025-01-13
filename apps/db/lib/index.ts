@@ -63,6 +63,12 @@ export async function deleteDisplay(id: string) {
   return db.delete(display).where(eq(display.id, Number(id)));
 }
 
+export async function getDisplays(projectId: string) {
+  return db.query.display.findMany({
+    where: eq(display.projectId, Number(projectId)),
+  });
+}
+
 export async function getDisplayById(id: string) {
   return db.query.display.findFirst({
     where: eq(display.id, Number(id)),
@@ -71,6 +77,7 @@ export async function getDisplayById(id: string) {
         orderBy: asc(displayScene.startsAt),
         with: {
           scheduleEvent: true,
+          template: true,
         },
       },
     },

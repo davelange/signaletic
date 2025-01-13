@@ -9,8 +9,6 @@ export const load: PageServerLoad = async ({ params }) => {
     throw error(404, 'Display not found');
   }
 
-  console.log(display);
-
   display.displayScenes = display?.displayScenes || [];
 
   return { display };
