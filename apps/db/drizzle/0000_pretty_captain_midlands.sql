@@ -6,16 +6,19 @@ CREATE TABLE "displays" (
 --> statement-breakpoint
 CREATE TABLE "displayScenes" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "displayScenes_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"name" varchar,
 	"displayId" integer NOT NULL,
 	"templateId" integer NOT NULL,
 	"scheduleEventId" integer,
-	"startsAt" timestamp NOT NULL
+	"startsAt" timestamp NOT NULL,
+	"endsAt" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "presets" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "presets_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"templateId" integer NOT NULL,
-	"templateConfig" jsonb
+	"templateConfig" jsonb,
+	"name" varchar
 );
 --> statement-breakpoint
 CREATE TABLE "projects" (
@@ -34,7 +37,8 @@ CREATE TABLE "scheduleEvents" (
 --> statement-breakpoint
 CREATE TABLE "templates" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "templates_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"config" jsonb
+	"config" jsonb,
+	"name" varchar
 );
 --> statement-breakpoint
 ALTER TABLE "displays" ADD CONSTRAINT "displays_projectId_projects_id_fk" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

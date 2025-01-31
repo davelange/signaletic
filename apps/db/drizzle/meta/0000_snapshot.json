@@ -1,5 +1,5 @@
 {
-  "id": "98dbeda7-ab28-4409-8e62-082f904a3f01",
+  "id": "2a965bfe-42a6-47f6-beca-7a0b5c58444d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -81,6 +81,12 @@
             "cycle": false
           }
         },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "displayId": {
           "name": "displayId",
           "type": "integer",
@@ -101,6 +107,12 @@
         },
         "startsAt": {
           "name": "startsAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endsAt": {
+          "name": "endsAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
@@ -184,6 +196,12 @@
         "templateConfig": {
           "name": "templateConfig",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
@@ -346,6 +364,12 @@
         "config": {
           "name": "config",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
