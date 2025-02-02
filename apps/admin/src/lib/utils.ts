@@ -2,8 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import type { scheduleEvent } from '$db/src/schema';
-import type { InferSelectModel } from 'drizzle-orm';
+import { CalendarDate, Time } from '@internationalized/date';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -63,7 +62,7 @@ export const flyAndScale = (
   };
 };
 
-export function getEventDays(events: InferSelectModel<typeof scheduleEvent>[]) {
+export function getEventDays<T extends { startsAt: Date }>(events: T[]) {
   return events
     .map((item) => {
       const d = new Date(item.startsAt);
@@ -89,9 +88,9 @@ export function getFormValues<T>(formData: FormData) {
 
 export function getItemsInDay<T extends { startsAt: Date }>(
   items: T[],
-  day: Date
+  day: CalendarDate
 ) {
-  return items.filter((event) => event.startsAt.getDate() === day.getDate());
+  return items.filter((event) => event.startsAt.getDate() === day.day);
 }
 
 export function toTimeInput(date?: Date) {
@@ -102,6 +101,30 @@ export function toTimeInput(date?: Date) {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+export function timeToInput(time: Time) {
+  const pad = (val: number) => val.toString().padStart(2, '0');
+
+  return `${pad(time.hour)}:${pad(time.minute)}`;
+}
+
+export function timeFromInput(input: string) {
+  const [hour, minute] = input.split(':');
+
+  return new Time(Number(hour), Number(minute));
+}
+
 export function formatStartTime(value: Date) {
   return `${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`;
+}
+
+export function dateToCalendarDate(value: Date) {
+  return new CalendarDate(
+    value.getFullYear(),
+    value.getMonth(),
+    value.getDate()
+  );
+}
+
+export function dateToTime(value: Date) {
+  return new Time(value.getHours(), value.getMinutes(), value.getSeconds());
 }

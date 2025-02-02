@@ -24,7 +24,11 @@ export async function getProjectBySlug(slug: string) {
       scheduleEvents: {
         orderBy: asc(scheduleEvent.startsAt),
       },
-      displays: true,
+      displays: {
+        with: {
+          displayScenes: true,
+        },
+      },
     },
   });
 }
