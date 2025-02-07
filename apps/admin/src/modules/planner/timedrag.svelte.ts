@@ -1,6 +1,6 @@
 import type { displayScene } from '$db/src/schema';
-import { dateToTime } from '$lib/utils';
-import type { Time } from '@internationalized/date';
+import { dateToTime, timeToDate } from '$lib/utils';
+import { Time } from '@internationalized/date';
 import type { MouseEventHandler } from 'svelte/elements';
 
 const MIN_BLOCK_HEIGHT = 2;
@@ -18,14 +18,14 @@ type Block = {
 
 export class TimeDrag {
   blocks: Block[] = $state([]);
-  scenes: Scene[] = $state([]);
+  scenes: Scene[] = [];
   timeEdges: Time[] = $state([]);
   maxTimeSpan = 0;
   isDragging = false;
   activeBlockIdx = $state(-1);
 
   constructor(scenes: Scene[], timeEdges: Time[]) {
-    this.scenes = scenes;
+    this.scenes = [...scenes];
 
     this.updateTimeframe(timeEdges);
   }
@@ -47,8 +47,9 @@ export class TimeDrag {
 
   createBlocks() {
     this.blocks = this.scenes.map((scene) => {
-      const sceneStartTime = dateToTime(scene.startsAt);
-      const sceneDuration = dateToTime(scene.endsAt);
+      const sceneToUse = scene;
+      const sceneStartTime = dateToTime(sceneToUse.startsAt);
+      const sceneDuration = dateToTime(sceneToUse.endsAt);
       const startDiff =
         (sceneStartTime.compare(this.timeEdges[0]) * 100) / this.maxTimeSpan;
       const endDiff =
@@ -70,13 +71,34 @@ export class TimeDrag {
     this.blocks[blockIdx].resizeHandle = resizeHandle;
   }
 
+  getTimeFromPos(value: number) {
+    return this.timeEdges[0].add({
+      milliseconds: (value * this.maxTimeSpan) / 100
+    });
+  }
+
+  updateSceneTimes() {
+    this.scenes = this.scenes.map((scene, idx) => ({
+      ...scene,
+      startsAt: timeToDate(
+        this.getTimeFromPos(this.blocks[idx].top),
+        scene.startsAt
+      ),
+      endsAt: timeToDate(
+        this.getTimeFromPos(invert(this.blocks[idx].bottom)),
+        scene.endsAt
+      )
+    }));
+  }
+
   handleDragEnd() {
     if (!this.isDragging) return;
+
+    this.updateSceneTimes();
 
     this.isDragging = false;
     this.blocks[this.activeBlockIdx].isResizing = false;
     this.activeBlockIdx = -1;
-    // mutate
   }
 
   handleMouseMove: MouseEventHandler<HTMLDivElement> = (event) => {
@@ -137,6 +159,7 @@ export class TimeDrag {
     dir: AdjustDir
   ): Block[] {
     const exitIdx = dir === 'up' ? 0 : state.length - 1;
+
     if (idx === exitIdx) {
       state[idx] = newBlock;
       return state;
@@ -145,7 +168,6 @@ export class TimeDrag {
     const op = dir === 'up' ? -1 : 1;
     const next = state[idx + op];
     const overlap = this.collides(newBlock, next, dir);
-    console.log(overlap);
 
     if (overlap > 0) {
       const nextBlockCanAdjust =
@@ -159,9 +181,9 @@ export class TimeDrag {
         }
       } else {
         if (dir === 'up') {
-          newBlock.top = normalize(invert(next.bottom) - overlap);
+          newBlock.top = normalize(invert(next.bottom));
         } else {
-          newBlock.bottom = normalize(invert(next.top) - overlap);
+          newBlock.bottom = normalize(invert(next.top));
         }
       }
     }
@@ -173,11 +195,9 @@ export class TimeDrag {
 
   collides(a: Block, b: Block, dir: AdjustDir) {
     if (dir === 'up') {
-      //return a.top <= invert(b.bottom);
       return invert(b.bottom) - a.top;
     }
 
-    //return invert(a.bottom) >= b.top;
     return invert(a.bottom) - b.top;
   }
 }

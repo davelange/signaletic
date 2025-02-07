@@ -11,7 +11,7 @@
     width: 90%;
     height: 100%;
     max-width: 1200px;
-    margin: 5vh auto;
+    margin: 1rem auto;
     padding: var(--spacing-4) var(--spacing-8);
     border-radius: var(--spacing-1);
   }

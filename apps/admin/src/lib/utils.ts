@@ -128,3 +128,18 @@ export function dateToCalendarDate(value: Date) {
 export function dateToTime(value: Date) {
   return new Time(value.getHours(), value.getMinutes(), value.getSeconds());
 }
+
+export function msToHours(val: number) {
+  return val / 1000 / 60 / 60;
+}
+
+export function timeToDate(time: Time, baseDate: Date) {
+  return new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth(),
+    baseDate.getDate(),
+    time.hour,
+    time.minute,
+    time.second
+  );
+}

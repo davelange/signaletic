@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { displayScene } from '$db/src/schema';
-  import { getItemsInDay, timeFromInput, timeToInput } from '$lib/utils';
+  import {
+    getItemsInDay,
+    msToHours,
+    timeFromInput,
+    timeToInput
+  } from '$lib/utils';
   import { CalendarDate, Time } from '@internationalized/date';
-  import type {
-    ChangeEventHandler,
-    MouseEventHandler,
-    UIEventHandler
-  } from 'svelte/elements';
+  import type { ChangeEventHandler } from 'svelte/elements';
   import DayList from './DayList.svelte';
 
   let {
@@ -22,10 +23,12 @@
 
   let timeRange = $derived.by(() => {
     let [start, end] = timeEdges;
-    const diffInHrs = end.compare(start) / 1000 / 60 / 60 + 1;
+
+    const diffInHrs = msToHours(end.compare(start)) + 1;
+    const startPoint = start.add({ minutes: 60 - start.minute });
 
     return Array.from({ length: diffInHrs }).map((_o, idx) => {
-      return start.add({ hours: idx });
+      return startPoint.add({ hours: idx });
     });
   });
 
@@ -48,25 +51,49 @@
     }
   };
 
-  const handleScroll = (event: WheelEvent) => {
-    const up = event.deltaY > 0;
+  const handleDaysScroll = (event: WheelEvent) => {
+    const down = event.deltaY < 0;
+    const op = down ? 'add' : 'subtract';
 
-    if (!up) {
-      const diff = timeEdges[1].compare(timeEdges[0]) / 1000 / 60 / 60;
+    timeEdges[0] = timeEdges[0][op]({
+      minutes: 10
+    });
+    timeEdges[1] = timeEdges[1][op]({
+      minutes: 10
+    });
+  };
 
-      console.log('zoom in', diff);
+  const handleScroll = (
+    event: WheelEvent & { currentTarget: HTMLDivElement }
+  ) => {
+    if (!event.currentTarget) return;
 
+    const diff = msToHours(timeEdges[1].compare(timeEdges[0]));
+    const unit = 5;
+
+    const down = event.deltaY < 0;
+    const { top, height } = event.currentTarget.getBoundingClientRect();
+    const y = event.clientY - top;
+    const yRelative = y / height;
+
+    if (down) {
       if (diff <= 1) return;
 
-      timeEdges[0] = timeEdges[0].add({ minutes: 5 });
-      timeEdges[1] = timeEdges[1].subtract({ minutes: 5 });
+      timeEdges[0] = timeEdges[0].add({
+        minutes: Math.round(unit * yRelative)
+      });
+      timeEdges[1] = timeEdges[1].subtract({
+        minutes: Math.round(unit * (1 - yRelative))
+      });
     } else {
-      const diff = timeEdges[1].compare(timeEdges[0]) / 1000 / 60 / 60;
-
       if (diff >= 24) return;
 
-      timeEdges[0].add({ minutes: 5 });
-      timeEdges[1].add({ minutes: 5 });
+      timeEdges[0] = timeEdges[0].subtract({
+        minutes: Math.round(unit * yRelative)
+      });
+      timeEdges[1] = timeEdges[1].add({
+        minutes: Math.round(unit * (1 - yRelative))
+      });
     }
   };
 </script>
@@ -93,7 +120,7 @@
       {/if}
     {/each}
   </div>
-  <div class="days-wrapper">
+  <div class="days-wrapper" onwheel={handleDaysScroll}>
     <div class="overlay">
       {#each timeRange}
         <div class="time-line"></div>
@@ -139,6 +166,7 @@
     display: flex;
     gap: 1rem;
     flex: 1 0 auto;
+    overflow: hidden;
   }
 
   .overlay {

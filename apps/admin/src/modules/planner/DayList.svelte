@@ -45,7 +45,7 @@
     </div>
   {/each}
 
-  <button onclick={() => console.log($state.snapshot(timeDrag.timeEdges))}
+  <button onclick={() => console.log($state.snapshot(timeDrag.scenes))}
     >State</button
   >
 </div>
