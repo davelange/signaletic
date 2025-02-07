@@ -12,10 +12,12 @@
 
   let {
     dates: initialDates,
-    allDisplayScenes
+    allDisplayScenes,
+    projectId
   }: {
     dates: CalendarDate[];
     allDisplayScenes: (typeof displayScene.$inferSelect)[];
+    projectId: number;
   } = $props();
 
   let allDates = $state(initialDates);
@@ -25,7 +27,9 @@
     let [start, end] = timeEdges;
 
     const diffInHrs = msToHours(end.compare(start)) + 1;
-    const startPoint = start.add({ minutes: 60 - start.minute });
+    const startPoint = start.minute
+      ? start.add({ minutes: 60 - start.minute })
+      : start;
 
     return Array.from({ length: diffInHrs }).map((_o, idx) => {
       return startPoint.add({ hours: idx });
@@ -133,7 +137,11 @@
           {date.toString()}
         </div>
         <div class="day">
-          <DayList scenes={getItemsInDay(allDisplayScenes, date)} {timeEdges} />
+          <DayList
+            scenes={getItemsInDay(allDisplayScenes, date)}
+            {timeEdges}
+            {projectId}
+          />
         </div>
       </div>
     {/each}

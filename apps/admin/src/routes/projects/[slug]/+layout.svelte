@@ -20,6 +20,6 @@
 
 <p style="margin-bottom: 2rem;">{project.name}</p>
 
-<DaysWrapper {dates} {allDisplayScenes} />
+<DaysWrapper {dates} {allDisplayScenes} projectId={project.id} />
 
 {@render children()}

@@ -6,6 +6,7 @@ import {
   deleteDisplayScene,
   deleteProjectBySlug,
   deleteScheduledEvent,
+  editDisplayScene,
   editScheduleEvent
 } from '$db/lib';
 import { fail, redirect } from '@sveltejs/kit';
@@ -133,5 +134,29 @@ export const actions: Actions = {
     }
 
     return fail(400, { error: 'Failed to delete scene' });
+  },
+
+  editDisplayScene: async ({ request }) => {
+    const formData = await request.formData();
+    const data = getFormValues<typeof displayScene.$inferSelect>(formData);
+
+    //console.log(data);
+
+    const update = await editDisplayScene(data.id, {
+      displayId: Number(data.displayId),
+      scheduleEventId: data.scheduleEventId
+        ? Number(data.scheduleEventId)
+        : undefined,
+      name: data.name,
+      startsAt: new Date(data.startsAt),
+      endsAt: new Date(data.endsAt),
+      templateId: data.templateId
+    });
+
+    if (update) {
+      return { success: true };
+    }
+
+    return fail(400, { error: 'Failed to edit diplay scene' });
   }
 };

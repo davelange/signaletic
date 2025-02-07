@@ -78,16 +78,19 @@ export class TimeDrag {
   }
 
   updateSceneTimes() {
-    this.scenes = this.scenes.map((scene, idx) => ({
-      ...scene,
-      startsAt: timeToDate(
-        this.getTimeFromPos(this.blocks[idx].top),
-        scene.startsAt
-      ),
-      endsAt: timeToDate(
-        this.getTimeFromPos(invert(this.blocks[idx].bottom)),
-        scene.endsAt
-      )
+    this.blocks = this.blocks.map((block, idx) => ({
+      ...block,
+      scene: {
+        ...block.scene,
+        startsAt: timeToDate(
+          this.getTimeFromPos(this.blocks[idx].top),
+          block.scene.startsAt
+        ),
+        endsAt: timeToDate(
+          this.getTimeFromPos(invert(this.blocks[idx].bottom)),
+          block.scene.endsAt
+        )
+      }
     }));
   }
 

@@ -1,14 +1,19 @@
 <script lang="ts">
   import type { displayScene } from '$db/src/schema';
+  import SettingsIcon from 'lucide-svelte/icons/settings';
   import { Time } from '@internationalized/date';
   import { TimeDrag } from './timedrag.svelte';
+  import { Button } from '$components/ui/button';
+  import DisplaySceneForm from './DisplaySceneForm.svelte';
 
   let {
     scenes,
-    timeEdges
+    timeEdges,
+    projectId
   }: {
     scenes: (typeof displayScene.$inferSelect)[];
     timeEdges: Time[];
+    projectId: number;
   } = $props();
 
   let timeDrag = new TimeDrag(scenes, timeEdges);
@@ -22,6 +27,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="wrapper" onmousemove={(e) => timeDrag.handleMouseMove(e)}>
   {#each timeDrag.blocks as block, idx}
+    {@const form = { bind: undefined }}
     <div
       class="scene-block"
       style:top="{block.top}%"
@@ -36,6 +42,21 @@
 
       {block.scene.name}, Display {block.scene.name}
 
+      <Button
+        variant="ghost"
+        onclick={() => {
+          console.log(block);
+          form.bind?.toggleDialog();
+        }}
+      >
+        <SettingsIcon size={16} />
+      </Button>
+
+      <DisplaySceneForm
+        scene={block.scene}
+        {projectId}
+        bind:sceneDialogForm={form.bind}
+      />
       <button
         type="button"
         class="drag-area"

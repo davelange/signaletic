@@ -97,3 +97,15 @@ export async function createDisplayScene(
 export async function deleteDisplayScene(id: string) {
   return db.delete(displayScene).where(eq(displayScene.id, Number(id)));
 }
+
+export async function editDisplayScene(
+  id: number,
+  params: typeof displayScene.$inferInsert
+) {
+  console.log(id);
+  console.log(params);
+  return db
+    .update(displayScene)
+    .set(params)
+    .where(eq(displayScene.id, Number(id)));
+}
