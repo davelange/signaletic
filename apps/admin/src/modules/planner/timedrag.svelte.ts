@@ -11,7 +11,6 @@ type AdjustDir = 'up' | 'down';
 type Block = {
   top: number;
   bottom: number;
-  scene: Scene;
   isResizing: boolean;
   resizeHandle?: ResizeHandle;
 };
@@ -38,6 +37,10 @@ export class TimeDrag {
     this.blocks[this.activeBlockIdx] = value;
   }
 
+  scene(idx: number) {
+    return this.scenes[idx];
+  }
+
   updateTimeframe(timeEdges: Time[]) {
     this.maxTimeSpan = timeEdges[1].compare(timeEdges[0]);
     this.timeEdges = timeEdges;
@@ -56,7 +59,6 @@ export class TimeDrag {
         (sceneDuration.compare(this.timeEdges[0]) * 100) / this.maxTimeSpan;
 
       return {
-        scene,
         top: normalize(startDiff),
         bottom: normalize(100 - endDiff),
         isResizing: false
@@ -78,19 +80,16 @@ export class TimeDrag {
   }
 
   updateSceneTimes() {
-    this.blocks = this.blocks.map((block, idx) => ({
-      ...block,
-      scene: {
-        ...block.scene,
-        startsAt: timeToDate(
-          this.getTimeFromPos(this.blocks[idx].top),
-          block.scene.startsAt
-        ),
-        endsAt: timeToDate(
-          this.getTimeFromPos(invert(this.blocks[idx].bottom)),
-          block.scene.endsAt
-        )
-      }
+    this.scenes = this.scenes.map((scene, idx) => ({
+      ...scene,
+      startsAt: timeToDate(
+        this.getTimeFromPos(this.blocks[idx].top),
+        scene.startsAt
+      ),
+      endsAt: timeToDate(
+        this.getTimeFromPos(invert(this.blocks[idx].bottom)),
+        scene.endsAt
+      )
     }));
   }
 

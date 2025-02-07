@@ -28,6 +28,7 @@
 <div class="wrapper" onmousemove={(e) => timeDrag.handleMouseMove(e)}>
   {#each timeDrag.blocks as block, idx}
     {@const form = { bind: undefined }}
+    {@const scene = timeDrag.scene(idx)}
     <div
       class="scene-block"
       style:top="{block.top}%"
@@ -40,7 +41,7 @@
         aria-label="Drag"
       ></button>
 
-      {block.scene.name}, Display {block.scene.name}
+      {scene.name}, Display {scene.name}
 
       <Button
         variant="ghost"
@@ -52,11 +53,7 @@
         <SettingsIcon size={16} />
       </Button>
 
-      <DisplaySceneForm
-        scene={block.scene}
-        {projectId}
-        bind:sceneDialogForm={form.bind}
-      />
+      <DisplaySceneForm {scene} {projectId} bind:sceneDialogForm={form.bind} />
       <button
         type="button"
         class="drag-area"
