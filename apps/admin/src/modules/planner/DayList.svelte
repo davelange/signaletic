@@ -66,7 +66,7 @@
     </div>
   {/each}
 
-  <button onclick={() => console.log($state.snapshot(timeDrag.scenes))}
+  <button onclick={() => console.log($state.snapshot(timeDrag.blocks))}
     >State</button
   >
 </div>
