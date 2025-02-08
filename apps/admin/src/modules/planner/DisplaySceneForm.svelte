@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/state';
   import DialogForm from '$components/DialogForm.svelte';
   import { Input } from '$components/ui/input';
   import { TimePicker } from '$components/ui/time-picker';
@@ -36,7 +37,6 @@
   <input name="id" value={scene.id} type="hidden" />
   <input name="displayId" value={scene.displayId} type="hidden" />
   <input name="scheduleEventId" value={scene.scheduleEventId} type="hidden" />
-  <input name="templateId" value={scene.templateId} type="hidden" />
   <input
     name="startsAt"
     value={timeToDate(timeFromInput(startsAtInput), baseDate)}
@@ -56,6 +56,16 @@
     <label>
       To
       <TimePicker name="endsAtInput" bind:value={endsAtInput} />
+    </label>
+  </div>
+  <div>
+    <label>
+      Template
+      <select name="templateId" id="" value={scene.templateId}>
+        {#each page.data.templates as template}
+          <option value={template.id}>{template.name}</option>
+        {/each}
+      </select>
     </label>
   </div>
 </DialogForm>

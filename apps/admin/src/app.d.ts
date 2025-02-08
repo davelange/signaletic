@@ -1,7 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { scheduleEvent } from '$db/src/schema';
-import type { InferSelectModel } from 'drizzle-orm';
+import type { template } from '$db/src/schema';
 
 // for information about these interfaces
 declare global {
@@ -9,7 +8,7 @@ declare global {
     // interface Error {}
     // interface Locals {}
     interface PageData {
-      scheduleEvents: InferSelectModel<typeof scheduleEvent>[];
+      templates: (typeof template.$inferSelect)[];
     }
     // interface PageState {}
     // interface Platform {}

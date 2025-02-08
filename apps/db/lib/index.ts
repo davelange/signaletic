@@ -33,6 +33,10 @@ export async function getProjectBySlug(slug: string) {
   });
 }
 
+export async function getTemplates() {
+  return db.query.template.findMany();
+}
+
 export async function deleteProjectBySlug(slug: string) {
   return db.delete(project).where(eq(project.slug, slug));
 }

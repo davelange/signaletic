@@ -40,7 +40,6 @@ export class TimeDrag {
 
     this.updateTimeframe(timeEdges);
     this.updateScenes(scenes);
-    this.createBlocks();
   }
 
   get activeBlock() {
@@ -64,6 +63,7 @@ export class TimeDrag {
     this.scenes = [...scenes].sort((a, b) =>
       Math.sign(a.startsAt.getTime() - b.startsAt.getTime())
     );
+    $inspect(this.scenes);
   }
 
   createBlocks() {

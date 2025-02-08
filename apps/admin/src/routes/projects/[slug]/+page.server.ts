@@ -142,7 +142,16 @@ export const actions: Actions = {
     const formData = await request.formData();
     const data = getFormValues<typeof displayScene.$inferSelect>(formData);
 
-    //console.log(data);
+    console.log({
+      displayId: Number(data.displayId),
+      scheduleEventId: data.scheduleEventId
+        ? Number(data.scheduleEventId)
+        : undefined,
+      name: data.name,
+      startsAt: new Date(data.startsAt),
+      endsAt: new Date(data.endsAt),
+      templateId: data.templateId
+    });
 
     const update = await editDisplayScene(data.id, {
       displayId: Number(data.displayId),

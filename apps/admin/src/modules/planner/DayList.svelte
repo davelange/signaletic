@@ -42,6 +42,7 @@
 <svelte:document onmouseup={() => timeDrag.handleDragEnd()} />
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="wrapper" onmousemove={(e) => timeDrag.handleMouseMove(e)}>
+  {scenes.at(2)?.name}
   {#each timeDrag.blocks as block, idx}
     {@const form = { bind: undefined }}
     {@const scene = timeDrag.scene(idx)}

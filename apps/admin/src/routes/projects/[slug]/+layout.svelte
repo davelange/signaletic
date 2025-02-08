@@ -4,11 +4,10 @@
   import DaysWrapper from '$modules/planner/DaysWrapper.svelte';
   import { getEventDays, dateToCalendarDate } from '$lib/utils';
 
-  let { data: project, children }: { data: PageData; children: Snippet } =
-    $props();
+  let { data, children }: { data: PageData; children: Snippet } = $props();
 
   const allDisplayScenes = $derived(
-    project.displays.flatMap((d) => d.displayScenes)
+    data.project.displays.flatMap((d) => d.displayScenes)
   );
 
   const dates = $derived(
@@ -16,8 +15,8 @@
   );
 </script>
 
-<p style="margin-bottom: 2rem;">{project.name}</p>
+<p style="margin-bottom: 2rem;">{data.project.name}</p>
 
-<DaysWrapper {dates} {allDisplayScenes} projectId={project.id} />
+<DaysWrapper {dates} {allDisplayScenes} projectId={data.project.id} />
 
 {@render children()}
