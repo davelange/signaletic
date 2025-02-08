@@ -7,8 +7,6 @@
   let { data: project, children }: { data: PageData; children: Snippet } =
     $props();
 
-  $inspect(project);
-
   const allDisplayScenes = $derived(
     project.displays.flatMap((d) => d.displayScenes)
   );

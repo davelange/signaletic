@@ -1,24 +1,26 @@
 <script lang="ts">
   import type { displayScene } from '$db/src/schema';
   import SettingsIcon from 'lucide-svelte/icons/settings';
-  import AddIcon from 'lucide-svelte/icons/circle-plus';
-  import { Time } from '@internationalized/date';
+  import { CalendarDate, Time } from '@internationalized/date';
   import { TimeDrag } from './timedrag.svelte';
   import { Button } from '$components/ui/button';
   import DisplaySceneForm from './DisplaySceneForm.svelte';
   import { untrack } from 'svelte';
+  import AddDisplayScene from './AddDisplayScene.svelte';
 
   let {
     scenes,
     timeEdges,
-    projectId
+    projectId,
+    baseDate
   }: {
     scenes: (typeof displayScene.$inferSelect)[];
     timeEdges: Time[];
     projectId: number;
+    baseDate: CalendarDate;
   } = $props();
 
-  let timeDrag = new TimeDrag(scenes, timeEdges);
+  let timeDrag = new TimeDrag({ scenes, timeEdges, baseDate });
 
   $effect(() => {
     timeDrag.updateScenes(scenes);
@@ -79,10 +81,13 @@
   <!-- <button onclick={() => console.log($state.snapshot(timeDrag.blocks))}
     >State</button
   > -->
-  <Button variant="ghost">
-    <AddIcon size={16} />
-    New scene
-  </Button>
+
+  <AddDisplayScene
+    {projectId}
+    baseDate={timeDrag.baseDate}
+    displayId={timeDrag.displayId}
+    startTime={timeDrag.timeEdges[0]}
+  />
 </div>
 
 <style>

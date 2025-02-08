@@ -107,12 +107,14 @@ export const actions: Actions = {
 
   addDisplayScene: async ({ request }) => {
     const formData = await request.formData();
-    const data = getFormValues<InferInsertModel<typeof displayScene>>(formData);
+    const data = getFormValues<typeof displayScene.$inferInsert>(formData);
 
     const createdDisplay = await createDisplayScene({
       displayId: data.displayId,
-      startsAt: new Date(Number(data.startsAt)),
+      startsAt: new Date(data.startsAt),
+      endsAt: new Date(data.endsAt),
       scheduleEventId: data.scheduleEventId,
+      name: data.name,
       templateId: 1
     });
 

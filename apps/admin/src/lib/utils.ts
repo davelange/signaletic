@@ -125,6 +125,10 @@ export function dateToCalendarDate(value: Date) {
   );
 }
 
+export function calendarDateToDate(value: CalendarDate) {
+  return new Date(value.year, value.month - 1, value.day);
+}
+
 export function dateToTime(value: Date) {
   return new Time(value.getHours(), value.getMinutes(), value.getSeconds());
 }

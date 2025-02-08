@@ -1,6 +1,6 @@
 import type { displayScene } from '$db/src/schema';
 import { dateToTime, timeToDate } from '$lib/utils';
-import { Time } from '@internationalized/date';
+import { CalendarDate, Time } from '@internationalized/date';
 import type { MouseEventHandler } from 'svelte/elements';
 
 const MIN_BLOCK_HEIGHT = 2;
@@ -22,9 +22,21 @@ export class TimeDrag {
   maxTimeSpan = 0;
   isDragging = false;
   activeBlockIdx = $state(-1);
+  baseDate: CalendarDate;
+  displayId?: number;
 
-  constructor(scenes: Scene[], timeEdges: Time[]) {
+  constructor({
+    scenes,
+    timeEdges,
+    baseDate
+  }: {
+    scenes: Scene[];
+    timeEdges: Time[];
+    baseDate: CalendarDate;
+  }) {
     this.scenes = [...scenes];
+    this.displayId = scenes.at(0)?.displayId;
+    this.baseDate = baseDate;
 
     this.updateTimeframe(timeEdges);
     this.updateScenes(scenes);

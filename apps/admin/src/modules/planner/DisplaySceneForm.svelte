@@ -47,7 +47,6 @@
     value={timeToDate(timeFromInput(endsAtInput), baseDate)}
     type="hidden"
   />
-
   <Input name="name" placeholder="Name" value={scene.name} type="string" />
   <div style="display: flex">
     <label>

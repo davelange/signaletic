@@ -141,6 +141,7 @@
             scenes={getItemsInDay(allDisplayScenes, date)}
             {timeEdges}
             {projectId}
+            baseDate={date}
           />
         </div>
       </div>
@@ -197,7 +198,7 @@
   }
   .day-header {
     position: absolute;
-    top: -2rem;
+    top: 2rem;
     left: 0.5rem;
   }
   .day {
