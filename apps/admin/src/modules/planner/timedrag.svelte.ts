@@ -17,7 +17,7 @@ type Block = {
 
 export class TimeDrag {
   blocks: Block[] = $state([]);
-  scenes: Scene[] = [];
+  scenes: Scene[] = $state([]);
   timeEdges: Time[] = $state([]);
   maxTimeSpan = 0;
   isDragging = false;
@@ -27,6 +27,8 @@ export class TimeDrag {
     this.scenes = [...scenes];
 
     this.updateTimeframe(timeEdges);
+    this.updateScenes(scenes);
+    this.createBlocks();
   }
 
   get activeBlock() {
@@ -44,8 +46,12 @@ export class TimeDrag {
   updateTimeframe(timeEdges: Time[]) {
     this.maxTimeSpan = timeEdges[1].compare(timeEdges[0]);
     this.timeEdges = timeEdges;
+  }
 
-    this.createBlocks();
+  updateScenes(scenes: Scene[]) {
+    this.scenes = [...scenes].sort((a, b) =>
+      Math.sign(a.startsAt.getTime() - b.startsAt.getTime())
+    );
   }
 
   createBlocks() {

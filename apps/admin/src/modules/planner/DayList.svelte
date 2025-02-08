@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { displayScene } from '$db/src/schema';
   import SettingsIcon from 'lucide-svelte/icons/settings';
+  import AddIcon from 'lucide-svelte/icons/circle-plus';
   import { Time } from '@internationalized/date';
   import { TimeDrag } from './timedrag.svelte';
   import { Button } from '$components/ui/button';
   import DisplaySceneForm from './DisplaySceneForm.svelte';
+  import { untrack } from 'svelte';
 
   let {
     scenes,
@@ -19,7 +21,19 @@
   let timeDrag = new TimeDrag(scenes, timeEdges);
 
   $effect(() => {
+    timeDrag.updateScenes(scenes);
+
+    untrack(() => {
+      timeDrag.createBlocks();
+    });
+  });
+
+  $effect(() => {
     timeDrag.updateTimeframe(timeEdges);
+
+    untrack(() => {
+      timeDrag.createBlocks();
+    });
   });
 </script>
 
@@ -46,7 +60,6 @@
       <Button
         variant="ghost"
         onclick={() => {
-          console.log(block);
           form.bind?.toggleDialog();
         }}
       >
@@ -63,9 +76,13 @@
     </div>
   {/each}
 
-  <button onclick={() => console.log($state.snapshot(timeDrag.blocks))}
+  <!-- <button onclick={() => console.log($state.snapshot(timeDrag.blocks))}
     >State</button
-  >
+  > -->
+  <Button variant="ghost">
+    <AddIcon size={16} />
+    New scene
+  </Button>
 </div>
 
 <style>
