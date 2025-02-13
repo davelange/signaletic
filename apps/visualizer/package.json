@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint ."
 	},
 	"dependencies": {
-		"drizzle-orm": "^0.38.0"
+		"drizzle-orm": "^0.38.0",
+		"lil-gui": "*"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",

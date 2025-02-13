@@ -150,7 +150,8 @@ export const actions: Actions = {
       name: data.name,
       startsAt: new Date(data.startsAt),
       endsAt: new Date(data.endsAt),
-      templateId: data.templateId
+      templateId: data.templateId,
+      templateConfig: data.templateConfig
     });
 
     const update = await editDisplayScene(data.id, {
@@ -161,7 +162,8 @@ export const actions: Actions = {
       name: data.name,
       startsAt: new Date(data.startsAt),
       endsAt: new Date(data.endsAt),
-      templateId: data.templateId
+      templateId: data.templateId,
+      templateConfig: data.templateConfig
     });
 
     if (update) {

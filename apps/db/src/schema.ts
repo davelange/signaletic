@@ -66,6 +66,7 @@ export const displayScene = pg.pgTable("displayScenes", {
     .integer()
     .references(() => template.id)
     .notNull(),
+  templateConfig: pg.jsonb(),
   scheduleEventId: pg.integer().references(() => scheduleEvent.id),
   startsAt: pg.timestamp().notNull(),
   endsAt: pg.timestamp().notNull(),

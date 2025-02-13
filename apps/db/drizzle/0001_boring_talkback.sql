@@ -1,0 +1,1 @@
+ALTER TABLE "displayScenes" ADD COLUMN "templateConfig" jsonb;

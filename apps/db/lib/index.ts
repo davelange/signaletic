@@ -106,10 +106,17 @@ export async function editDisplayScene(
   id: number,
   params: typeof displayScene.$inferInsert
 ) {
-  console.log(id);
-  console.log(params);
   return db
     .update(displayScene)
     .set(params)
     .where(eq(displayScene.id, Number(id)));
+}
+
+export async function getDisplaySceneById(id: string) {
+  return db.query.displayScene.findFirst({
+    where: eq(displayScene.id, Number(id)),
+    with: {
+      template: true,
+    },
+  });
 }
