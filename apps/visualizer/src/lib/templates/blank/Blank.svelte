@@ -1,20 +1,18 @@
 <script lang="ts">
+	import type { BaseTemplate } from '$templates/BaseTemplate.svelte';
 	import { onMount } from 'svelte';
 
-	let { template } = $props();
-	/* let config = $state(
-		props.config || {
-			textInput: 'hello world'
-		}
-	); */
+	let { template }: { template: BaseTemplate } = $props();
 
 	onMount(() => {
 		template.loadGUI();
 	});
+
+	$inspect(template);
 </script>
 
 <div class="wrapper">
-	<p>{template.config?.textInput}</p>
+	<p>{template.parameters?.textInput}</p>
 </div>
 
 <style>

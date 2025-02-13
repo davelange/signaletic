@@ -1,12 +1,12 @@
 <script lang="ts">
+	import type { BaseTemplate } from '$templates/BaseTemplate.svelte';
 	import type { PageData } from './$types';
 	import { onMount, type Component } from 'svelte';
-	import type { BlankTemplate } from '$templates/blank/index.svelte.js';
 
 	let { data }: { data: PageData } = $props();
 
 	let scene = $derived(data.scene);
-	let template = $state<BlankTemplate>();
+	let template = $state<BaseTemplate>();
 	let RenderedComponent = $state<Component>();
 
 	$inspect(scene);
