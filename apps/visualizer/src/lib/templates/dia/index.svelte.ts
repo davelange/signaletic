@@ -1,19 +1,24 @@
 import { BaseTemplate, type TemplateParameters } from '$templates/BaseTemplate.svelte';
 
 export const config = {
-	name: 'Blank',
+	name: 'Dia',
 	parameters: {
-		textInput: '' // Schema for this
+		// Schema for this
+		word: '',
+		animationSpeed: 0.1,
+		timeOffset: 1
 	}
 };
 
 const defaultParameters = {
-	textInput: 'Hello world'
+	word: 'Hello world',
+	animationSpeed: 0.1,
+	timeOffset: 1
 };
 
 export type Options = { textInput: string }; // TODO: use zod?
 
-export class BlankTemplate extends BaseTemplate {
+export class DiaTemplate extends BaseTemplate {
 	constructor(parameters: TemplateParameters) {
 		super({
 			config,
@@ -24,5 +29,5 @@ export class BlankTemplate extends BaseTemplate {
 }
 
 export function load(config: Options) {
-	return new BlankTemplate(config);
+	return new DiaTemplate(config);
 }

@@ -12,6 +12,7 @@ export class BaseTemplate {
 	gui = new GUI();
 	parameters = $state<TemplateParameters>();
 	config: TemplateConfig;
+	targetOrigin = import.meta.env.VITE_ADMIN_URL as string;
 
 	constructor({
 		config,
@@ -23,11 +24,15 @@ export class BaseTemplate {
 		parameters: TemplateParameters;
 	}) {
 		this.config = config;
-		this.parameters = parameters || defaultParameters;
+		this.parameters = {
+			...defaultParameters,
+			...parameters
+		};
 	}
 
-	loadGUI() {
+	loadGUI({ onFinishChange }: { onFinishChange?: () => void }) {
 		if (this.parameters) {
+			console.log(this.config.parameters);
 			for (const key in this.config.parameters) {
 				this.gui.add(this.parameters, key);
 			}
@@ -39,8 +44,10 @@ export class BaseTemplate {
 					type: 'templateConfigUpdate',
 					value: $state.snapshot(this.parameters)
 				},
-				`http://localhost:5173`
+				this.targetOrigin
 			);
+
+			onFinishChange?.();
 		});
 	}
 
