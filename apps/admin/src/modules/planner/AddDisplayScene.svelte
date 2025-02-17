@@ -9,7 +9,7 @@
     timeToInput
   } from '$lib/utils';
   import AddIcon from 'lucide-svelte/icons/circle-plus';
-  import { TimePicker } from '$components/ui/time-picker';
+  import { TimePicker } from '$components/time-picker';
   import type { CalendarDate, Time } from '@internationalized/date';
 
   let {

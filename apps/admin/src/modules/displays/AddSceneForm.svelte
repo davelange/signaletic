@@ -3,10 +3,10 @@
   import Button from '$components/ui/button/button.svelte';
   import FormField from '$components/ui/form-field/FormField.svelte';
   import DialogForm from '$components/DialogForm.svelte';
-  import { TimePicker } from '$components/ui/time-picker';
+  import { TimePicker } from '$components/time-picker';
   import { page } from '$app/state';
   import { getItemsInDay } from '$lib/utils';
-  import { useTimePicker } from '$components/ui/time-picker/timePicker.svelte';
+  import { useTimePicker } from '$components/time-picker/timePicker.svelte';
 
   type Props = {
     displayId: number;

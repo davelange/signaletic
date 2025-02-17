@@ -7,6 +7,7 @@
   import DisplaySceneForm from './DisplaySceneForm.svelte';
   import { untrack } from 'svelte';
   import AddDisplayScene from './AddDisplayScene.svelte';
+  import { useDialog } from '$components/dialog/index.svelte';
 
   let {
     scenes,
@@ -37,6 +38,8 @@
       timeDrag.createBlocks();
     });
   });
+
+  const dialog = useDialog();
 </script>
 
 <svelte:document onmouseup={() => timeDrag.handleDragEnd()} />
@@ -44,7 +47,6 @@
 <div class="wrapper" onmousemove={(e) => timeDrag.handleMouseMove(e)}>
   {scenes.at(2)?.name}
   {#each timeDrag.blocks as block, idx}
-    {@const form = { bind: undefined }}
     {@const scene = timeDrag.scene(idx)}
     <div
       class="scene-block"
@@ -60,16 +62,23 @@
 
       {scene.name}, Display {scene.name}
 
+      {#snippet editDisplaySceneForm()}
+        <DisplaySceneForm {scene} {projectId} />
+      {/snippet}
+
       <Button
         variant="ghost"
         onclick={() => {
-          form.bind?.toggleDialog();
+          dialog.open({
+            title: `Edit scene (${scene.name})`,
+            description: '',
+            content: editDisplaySceneForm
+          });
         }}
       >
         <SettingsIcon size={16} />
       </Button>
 
-      <DisplaySceneForm {scene} {projectId} bind:sceneDialogForm={form.bind} />
       <button
         type="button"
         class="drag-area"
@@ -79,10 +88,6 @@
     </div>
   {/each}
 
-  <!-- <button onclick={() => console.log($state.snapshot(timeDrag.blocks))}
-    >State</button
-  > -->
-
   <AddDisplayScene
     {projectId}
     baseDate={timeDrag.baseDate}
@@ -90,6 +95,8 @@
     startTime={timeDrag.timeEdges[0]}
   />
 </div>
+
+<dialog.Dialog {...dialog.props} />
 
 <style>
   .wrapper {

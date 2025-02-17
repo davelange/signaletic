@@ -41,33 +41,31 @@
 <Dialog.Root open={isVisible} onOpenChange={(val) => (isVisible = val)}>
   <Dialog.Content>
     <Dialog.Header>
-      <Dialog.Content>
-        <Dialog.Title>{title}</Dialog.Title>
+      <Dialog.Title>{title}</Dialog.Title>
 
-        <form use:enhance={() => form.enhance()} {...props}>
-          {@render children()}
+      <form use:enhance={() => form.enhance()} {...props}>
+        {@render children()}
 
-          <div class="flex justify-end gap-2">
-            <div class="mr-auto">
-              {@render altAction?.()}
-            </div>
-            <Button type="submit" class="order-2">
-              {#if form.isLoading}
-                <Loading size={14} class="mr-1 animate-spin" />
-              {/if}
-              {submitButtonText}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onclick={() => (isVisible = false)}
-              class="order-1"
-            >
-              Cancel
-            </Button>
+        <div class="flex justify-end gap-2">
+          <div class="mr-auto">
+            {@render altAction?.()}
           </div>
-        </form>
-      </Dialog.Content>
+          <Button type="submit" class="order-2">
+            {#if form.isLoading}
+              <Loading size={14} class="mr-1 animate-spin" />
+            {/if}
+            {submitButtonText}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onclick={() => (isVisible = false)}
+            class="order-1"
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
     </Dialog.Header>
   </Dialog.Content>
 </Dialog.Root>

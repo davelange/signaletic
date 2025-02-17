@@ -32,7 +32,6 @@ export class BaseTemplate {
 
 	loadGUI({ onFinishChange }: { onFinishChange?: () => void }) {
 		if (this.parameters) {
-			console.log(this.config.parameters);
 			for (const key in this.config.parameters) {
 				this.gui.add(this.parameters, key);
 			}

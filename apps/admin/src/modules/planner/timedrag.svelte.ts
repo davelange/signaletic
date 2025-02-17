@@ -63,7 +63,6 @@ export class TimeDrag {
     this.scenes = [...scenes].sort((a, b) =>
       Math.sign(a.startsAt.getTime() - b.startsAt.getTime())
     );
-    $inspect(this.scenes);
   }
 
   createBlocks() {

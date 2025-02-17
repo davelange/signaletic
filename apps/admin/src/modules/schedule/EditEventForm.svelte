@@ -1,8 +1,8 @@
 <script lang="ts">
   import FormField from '$components/ui/form-field/FormField.svelte';
   import Input from '$components/ui/input/input.svelte';
-  import { TimePicker } from '$components/ui/time-picker';
-  import { useTimePicker } from '$components/ui/time-picker/timePicker.svelte';
+  import { TimePicker } from '$components/time-picker';
+  import { useTimePicker } from '$components/time-picker/timePicker.svelte';
   import type { scheduleEvent } from '$db/src/schema';
   import type { InferSelectModel } from 'drizzle-orm';
 

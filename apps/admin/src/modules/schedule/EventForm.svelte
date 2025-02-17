@@ -4,7 +4,7 @@
   import Button from '$components/ui/button/button.svelte';
   import FormField from '$components/ui/form-field/FormField.svelte';
   import Input from '$components/ui/input/input.svelte';
-  import { TimePicker } from '$components/ui/time-picker';
+  import { TimePicker } from '$components/time-picker';
   import { NiceForm } from '$lib/NiceForm.svelte';
   import Loading from 'lucide-svelte/icons/loader-circle';
 

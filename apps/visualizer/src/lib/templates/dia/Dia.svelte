@@ -72,10 +72,13 @@
 		function setup() {
 			let canvas = document.querySelector('#canvas');
 
-			createCanvas(1000, 1000, WEBGL, canvas);
+			let w = window.innerHeight * 0.6;
+			let h = window.innerHeight * 0.6;
+
+			createCanvas(w, h, WEBGL, canvas);
 			// buffer = createGraphics(1000, 1000, WEBGL);
 
-			textSize(400);
+			textSize(h / 2);
 			wordTexture = createGraphics(width, height);
 			cacheInput();
 			displacement = createGraphics(width, height);
@@ -118,7 +121,7 @@
 		function cacheInput() {
 			wordTexture.textAlign(CENTER, CENTER);
 			wordTexture.textFont(font);
-			wordTexture.textSize(400);
+			wordTexture.textSize(height / 2);
 			wordTexture.fill(255);
 			wordTexture.noStroke();
 			wordTexture.background(0);
