@@ -1,16 +1,21 @@
 <script lang="ts">
-  import DialogForm from '$components/DialogForm.svelte';
-  import { Input } from '$components/ui/input';
-  import { Button } from '$components/ui/button';
+  import { NiceForm } from '$lib/NiceForm.svelte';
+  import { Input } from '$components/input';
   import {
     calendarDateToDate,
     timeFromInput,
     timeToDate,
     timeToInput
   } from '$lib/utils';
-  import AddIcon from 'lucide-svelte/icons/circle-plus';
   import { TimePicker } from '$components/time-picker';
   import type { CalendarDate, Time } from '@internationalized/date';
+  import { enhance } from '$app/forms';
+  import { Select } from '$components/select';
+  import { page } from '$app/state';
+  import { Button } from '$components/button';
+  import type { display } from '$db/src/schema';
+
+  const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
   let {
     projectId,
@@ -24,27 +29,32 @@
     startTime: Time;
   } = $props();
 
-  let dialog: DialogForm | undefined = $state();
-
   let baseDateAsDate = calendarDateToDate(baseDate);
   let startsAtInput = $state(timeToInput(startTime));
   let endsAtInput = $state(timeToInput(startTime));
+
+  $inspect({ baseDateAsDate, startsAtInput, endsAtInput });
+
+  let templateOptions = page.data.templates.map((template) => ({
+    label: template.name || '',
+    value: template.id.toString()
+  }));
+
+  let templateId = $state('');
+
+  let form = new NiceForm({});
+
+  let displays = page.data.project.displays.map((display) => ({
+    label: display.name || '',
+    value: display.id.toString()
+  }));
 </script>
 
-<div class="new-scene">
-  <Button variant="secondary" onclick={() => dialog?.toggleDialog()}>
-    <AddIcon size={16} />
-    New scene
-  </Button>
-</div>
-
-<DialogForm
-  bind:this={dialog}
-  title="Add scene"
-  submitButtonText="Confirm"
+<form
   method="post"
   action={`/projects/${projectId}?/addDisplayScene`}
-  class="flex flex-col gap-4"
+  class="flex w-full flex-col gap-4"
+  use:enhance={() => form.enhance()}
 >
   <input name="displayId" value={displayId} type="hidden" />
   <input name="templateId" value="1" type="hidden" />
@@ -60,25 +70,45 @@
     type="hidden"
   />
 
-  <Input name="name" placeholder="Name" type="string" />
-  <div style="display: flex">
-    <label>
-      From
-      <TimePicker name="startsAtInput" bind:value={startsAtInput} />
-    </label>
-    <label>
-      To
-      <TimePicker name="endsAtInput" bind:value={endsAtInput} />
-    </label>
-  </div>
-</DialogForm>
+  <div class="flex flex-1 gap-4">
+    <div class="w-full flex-1">
+      <Input
+        label="Name"
+        type="text"
+        name="name"
+        placeholder="Scene name"
+        required
+      />
+    </div>
 
-<style>
-  .new-scene {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-</style>
+    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
+    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+  </div>
+  <div class="flex gap-4">
+    <Select label="Display" options={displays} name="displayId" />
+    {templateId}
+    <Select
+      label="Template"
+      options={templateOptions}
+      name="templateId"
+      bind:value={templateId}
+    />
+  </div>
+
+  <div
+    class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
+  >
+    {#if templateId}
+      <iframe
+        src={`${VISUALIZER_URL}/edit/template/${templateId}`}
+        frameborder="0"
+        title="Preview"
+        onmessage={(e) => {
+          console.log(e);
+        }}
+        class="h-full w-full"
+      ></iframe>
+    {/if}
+  </div>
+  <Button type="submit" fullWidth size="default">Save</Button>
+</form>

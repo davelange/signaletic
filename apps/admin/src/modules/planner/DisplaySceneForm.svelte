@@ -57,25 +57,21 @@
   class="flex w-full flex-col gap-4"
   use:enhance={() => form.enhance()}
 >
-  <div class="flex w-full max-w-[400px] flex-col gap-4">
-    <Input label="Name" type="text" name="name" bind:value={scene.name} />
-    <div class="flex w-full gap-4">
-      <TimePicker
-        label="From"
-        name="startsAtInput"
-        bind:value={startsAtInput}
-      />
-      <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+  <div class="flex flex-1 gap-4">
+    <div class="w-full flex-1">
+      <Input label="Name" type="text" name="name" bind:value={scene.name} />
     </div>
-    <div>
-      <Select
-        label="Template"
-        options={templateOptions}
-        name="templateId"
-        bind:value={scene.templateId}
-      />
-    </div>
+
+    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
+    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
+
+  <Select
+    label="Template"
+    options={templateOptions}
+    name="templateId"
+    bind:value={scene.templateId}
+  />
 
   <div class="flex aspect-video w-[1000px] items-center justify-center">
     <iframe
@@ -87,6 +83,19 @@
       }}
       class="h-full w-full"
     ></iframe>
+  </div>
+
+  <div class="flex gap-4">
+    <Button
+      type="submit"
+      fullWidth
+      size="default"
+      variant="destructive"
+      formaction={`/projects/${projectId}?/deleteDisplayScene`}
+    >
+      Delete
+    </Button>
+    <Button type="submit" fullWidth size="default">Save</Button>
   </div>
 
   <input name="id" value={scene.id} type="hidden" />
@@ -103,6 +112,4 @@
     value={timeToDate(timeFromInput(endsAtInput), baseDate)}
     type="hidden"
   />
-
-  <Button type="submit" fullWidth size="default">Save</Button>
 </form>

@@ -1,6 +1,12 @@
 import { asc, eq, InferInsertModel } from "drizzle-orm";
 import { db } from "../src";
-import { display, displayScene, project, scheduleEvent } from "../src/schema";
+import {
+  display,
+  displayScene,
+  project,
+  scheduleEvent,
+  template,
+} from "../src/schema";
 
 export async function getAllProjects() {
   return await db.query.project.findMany();
@@ -118,5 +124,11 @@ export async function getDisplaySceneById(id: string) {
     with: {
       template: true,
     },
+  });
+}
+
+export async function getTemplateById(id: string) {
+  return db.query.template.findFirst({
+    where: eq(template.id, Number(id)),
   });
 }

@@ -14,7 +14,7 @@
   let timeInputNode = $state<HTMLInputElement>();
 </script>
 
-<div class="relative w-full">
+<div class="relative w-[200px]">
   <input
     type="time"
     class="invisible absolute bottom-0 left-0"
@@ -27,6 +27,7 @@
   >
     <p>{label}</p>
     <Button
+      type="button"
       variant="outline"
       class={cn(
         'justify-start text-left font-normal',

@@ -110,12 +110,12 @@ export const actions: Actions = {
     const data = getFormValues<typeof displayScene.$inferInsert>(formData);
 
     const createdDisplay = await createDisplayScene({
-      displayId: data.displayId,
+      displayId: Number(data.displayId),
       startsAt: new Date(data.startsAt),
       endsAt: new Date(data.endsAt),
       scheduleEventId: data.scheduleEventId,
       name: data.name,
-      templateId: 1
+      templateId: data.templateId
     });
 
     if (createdDisplay) {

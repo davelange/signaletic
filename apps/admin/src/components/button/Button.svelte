@@ -20,7 +20,7 @@
 </script>
 
 <Button.Root
-  class={cn(buttonVariants({ variant, size, fullWidth, className }))}
+  class={cn(buttonVariants({ variant, size, fullWidth }), className)}
   {...props}
 >
   {@render children?.()}

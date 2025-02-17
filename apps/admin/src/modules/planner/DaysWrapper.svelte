@@ -102,8 +102,11 @@
   };
 </script>
 
-<div class="wrapper">
-  <div class="times" onwheel={handleScroll}>
+<div class="relative flex h-[90vh]">
+  <div
+    class="flex flex-col justify-between border-r border-r-slate-200"
+    onwheel={handleScroll}
+  >
     {#each timeRange as item, idx}
       {#if idx === 0}
         <input
@@ -124,7 +127,7 @@
       {/if}
     {/each}
   </div>
-  <div class="days-wrapper" onwheel={handleDaysScroll}>
+  <div class="relative flex flex-1 gap-4" onwheel={handleDaysScroll}>
     <div class="overlay">
       {#each timeRange}
         <div class="time-line"></div>
@@ -132,11 +135,13 @@
     </div>
 
     {#each allDates as date}
-      <div class="day-column">
-        <div class="day-header">
+      <div class="relative">
+        <div
+          class="absolute top-4 w-full -translate-y-12 p-1 text-center text-sm font-medium"
+        >
           {date.toString()}
         </div>
-        <div class="day">
+        <div class="relative h-full min-w-[200px] border-r border-slate-200">
           <DayList
             scenes={getItemsInDay(allDisplayScenes, date)}
             {timeEdges}
@@ -156,28 +161,6 @@
 </div>
 
 <style>
-  .wrapper {
-    position: relative;
-    display: flex;
-    height: 90vh;
-  }
-
-  .times {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-right: 1px solid #eee;
-    margin: -12px 0;
-  }
-
-  .days-wrapper {
-    position: relative;
-    display: flex;
-    gap: 1rem;
-    flex: 1 0 auto;
-    overflow: hidden;
-  }
-
   .overlay {
     position: absolute;
     inset: 0;
@@ -192,19 +175,5 @@
       background: #ddd;
       width: 100%;
     }
-  }
-  .day-column {
-    position: relative;
-  }
-  .day-header {
-    position: absolute;
-    top: 2rem;
-    left: 0.5rem;
-  }
-  .day {
-    position: relative;
-    min-width: 200px;
-    border-right: 1px solid #eee;
-    height: 100%;
   }
 </style>

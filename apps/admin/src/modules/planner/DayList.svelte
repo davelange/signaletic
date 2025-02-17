@@ -3,11 +3,12 @@
   import SettingsIcon from 'lucide-svelte/icons/settings';
   import { CalendarDate, Time } from '@internationalized/date';
   import { TimeDrag } from './timedrag.svelte';
-  import { Button } from '$components/ui/button';
+  import { Button } from '$components/button';
   import DisplaySceneForm from './DisplaySceneForm.svelte';
   import { untrack } from 'svelte';
   import AddDisplayScene from './AddDisplayScene.svelte';
   import { useDialog } from '$components/dialog/index.svelte';
+  import type { MouseEventHandler } from 'svelte/elements';
 
   let {
     scenes,
@@ -40,79 +41,85 @@
   });
 
   const dialog = useDialog();
+  const addSceneDialog = useDialog();
 </script>
+
+{#snippet dragHandle(onmousedown: MouseEventHandler<HTMLButtonElement>)}
+  <button
+    type="button"
+    class="h-2 cursor-move bg-red-200 hover:bg-red-300"
+    {onmousedown}
+    aria-label="Drag"
+  ></button>
+{/snippet}
 
 <svelte:document onmouseup={() => timeDrag.handleDragEnd()} />
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="wrapper" onmousemove={(e) => timeDrag.handleMouseMove(e)}>
-  {scenes.at(2)?.name}
+<div
+  class="group relative h-full overflow-hidden"
+  onmousemove={(e) => timeDrag.handleMouseMove(e)}
+>
   {#each timeDrag.blocks as block, idx}
     {@const scene = timeDrag.scene(idx)}
     <div
-      class="scene-block"
+      class="absolute flex w-full flex-col justify-between bg-red-100"
       style:top="{block.top}%"
       style:bottom="{block.bottom}%"
     >
-      <button
-        type="button"
-        class="drag-area"
-        onmousedown={() => timeDrag.handleDragStart(idx, 'top')}
-        aria-label="Drag"
-      ></button>
+      {@render dragHandle(() => timeDrag.handleDragStart(idx, 'top'))}
 
-      {scene.name}, Display {scene.name}
+      <div class="relative flex-1 p-2">
+        <p class="text-sm">{scene.name}</p>
 
-      {#snippet editDisplaySceneForm()}
-        <DisplaySceneForm {scene} {projectId} />
-      {/snippet}
+        {#snippet editDisplaySceneForm()}
+          <DisplaySceneForm {scene} {projectId} />
+        {/snippet}
 
-      <Button
-        variant="ghost"
-        onclick={() => {
-          dialog.open({
-            title: `Edit scene (${scene.name})`,
-            description: '',
-            content: editDisplaySceneForm
-          });
-        }}
-      >
-        <SettingsIcon size={16} />
-      </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          class="absolute right-2 top-2"
+          onclick={() => {
+            dialog.open({
+              title: `Edit scene (${scene.name})`,
+              description: '',
+              content: editDisplaySceneForm
+            });
+          }}
+        >
+          <SettingsIcon opacity={0.7} size={16} />
+        </Button>
+      </div>
 
-      <button
-        type="button"
-        class="drag-area"
-        onmousedown={() => timeDrag.handleDragStart(idx, 'bottom')}
-        aria-label="Drag"
-      ></button>
+      {@render dragHandle(() => timeDrag.handleDragStart(idx, 'bottom'))}
     </div>
   {/each}
 
-  <AddDisplayScene
-    {projectId}
-    baseDate={timeDrag.baseDate}
-    displayId={timeDrag.displayId}
-    startTime={timeDrag.timeEdges[0]}
-  />
+  {#snippet addDisplaySceneForm()}
+    <AddDisplayScene
+      {projectId}
+      baseDate={timeDrag.baseDate}
+      displayId={timeDrag.displayId}
+      startTime={timeDrag.timeEdges[0]}
+    />
+  {/snippet}
+
+  <Button
+    type="button"
+    variant="secondary"
+    class="absolute bottom-2 left-2 right-2 z-10 m-auto hidden group-hover:block"
+    onclick={() => {
+      addSceneDialog.open({
+        title: 'Add scene',
+        description: '',
+        content: addDisplaySceneForm
+      });
+    }}
+  >
+    Add scene
+  </Button>
 </div>
 
 <dialog.Dialog {...dialog.props} />
-
-<style>
-  .wrapper {
-    height: 100%;
-  }
-  .scene-block {
-    position: absolute;
-    width: 100%;
-    background: #e65e6522;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .drag-area {
-    cursor: move;
-    background: #e65e6522;
-    height: 0.5rem;
-  }
-</style>
+<addSceneDialog.Dialog {...addSceneDialog.props} />
