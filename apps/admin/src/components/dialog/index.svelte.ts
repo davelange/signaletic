@@ -1,4 +1,4 @@
-import type { Component, Snippet } from 'svelte';
+import { setContext, type Snippet } from 'svelte';
 import DialogComponent, { type DialogComponentProps } from './Dialog.svelte';
 
 export type DialogOptions = {
@@ -7,12 +7,15 @@ export type DialogOptions = {
   description: string;
 };
 
-class Dialog {
+export class Dialog {
   isOpen = $state(false);
+  id = $state();
 
   options: DialogOptions | undefined;
 
-  constructor(options?: DialogOptions) {
+  constructor(id: string, options?: DialogOptions) {
+    this.id = id;
+
     if (options) {
       this.isOpen = true;
       this.options = options;
@@ -46,6 +49,10 @@ class Dialog {
   }
 }
 
-export function useDialog(options?: DialogOptions) {
-  return new Dialog(options);
+export function useDialog(id: string, options?: DialogOptions) {
+  const dialog = new Dialog(id, options);
+
+  setContext(id, dialog);
+
+  return dialog;
 }

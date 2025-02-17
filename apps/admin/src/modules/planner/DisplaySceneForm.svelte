@@ -8,6 +8,8 @@
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
   import { enhance } from '$app/forms';
   import { NiceForm } from '$lib/NiceForm.svelte';
+  import type { Dialog } from '$components/dialog/index.svelte';
+  import { getContext } from 'svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -18,6 +20,8 @@
     projectId: number;
     scene: typeof displayScene.$inferSelect;
   } = $props();
+
+  const thisDialog = getContext<Dialog>('editDisplayScene');
 
   let baseDate = new Date(scene.startsAt);
   let startsAtInput = $state(toTimeInput(scene.startsAt));
@@ -47,7 +51,16 @@
     value: template.id.toString()
   }));
 
-  let form = new NiceForm({});
+  let form = new NiceForm({
+    onSuccess() {
+      thisDialog.close();
+    }
+  });
+
+  let displays = page.data.project.displays.map((display) => ({
+    label: display.name || '',
+    value: display.id.toString()
+  }));
 </script>
 
 <svelte:window onmessage={handleMessage} />
@@ -66,12 +79,20 @@
     <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
 
-  <Select
-    label="Template"
-    options={templateOptions}
-    name="templateId"
-    bind:value={scene.templateId}
-  />
+  <div class="flex gap-4">
+    <Select
+      label="Display"
+      options={displays}
+      name="displayId"
+      bind:value={scene.displayId}
+    />
+    <Select
+      label="Template"
+      options={templateOptions}
+      name="templateId"
+      bind:value={scene.templateId}
+    />
+  </div>
 
   <div class="flex aspect-video w-[1000px] items-center justify-center">
     <iframe
@@ -99,7 +120,6 @@
   </div>
 
   <input name="id" value={scene.id} type="hidden" />
-  <input name="displayId" value={scene.displayId} type="hidden" />
   <input name="scheduleEventId" value={scene.scheduleEventId} type="hidden" />
   <input name="templateConfig" value={payloadJSON} type="hidden" />
   <input

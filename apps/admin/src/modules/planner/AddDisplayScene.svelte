@@ -33,7 +33,7 @@
   let startsAtInput = $state(timeToInput(startTime));
   let endsAtInput = $state(timeToInput(startTime));
 
-  $inspect({ baseDateAsDate, startsAtInput, endsAtInput });
+  $inspect({ baseDate, baseDateAsDate, startsAtInput, endsAtInput });
 
   let templateOptions = page.data.templates.map((template) => ({
     label: template.name || '',
@@ -86,7 +86,6 @@
   </div>
   <div class="flex gap-4">
     <Select label="Display" options={displays} name="displayId" />
-    {templateId}
     <Select
       label="Template"
       options={templateOptions}

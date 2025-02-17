@@ -17,8 +17,6 @@
     name = ''
   }: { options: Option[]; label?: string } & HTMLSelectAttributes = $props();
 
-  $inspect(value);
-
   const selectedLabel = $derived(
     value
       ? options.find((option) => option.value?.toString() === value?.toString())

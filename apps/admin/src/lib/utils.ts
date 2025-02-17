@@ -4,6 +4,13 @@ import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { CalendarDate, Time } from '@internationalized/date';
 
+export const colors = [
+  { light: '#FEE2E2', default: '#FECACA' },
+  { light: '#FEF3C7', default: '#FDE68A' },
+  { light: '#ECFCCB', default: '#D9F99D' },
+  { light: '#CFFAFE', default: '#A5F3FC' }
+];
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -73,7 +80,8 @@ export function getEventDays<T extends { startsAt: Date }>(events: T[]) {
       return d.getTime();
     })
     .filter((item, idx, arr) => arr.indexOf(item) === idx)
-    .map((a) => new Date(a));
+    .map((a) => new Date(a))
+    .sort((a, b) => (a > b ? 1 : -1));
 }
 
 export function getFormValues<T>(formData: FormData) {
@@ -120,7 +128,7 @@ export function formatStartTime(value: Date) {
 export function dateToCalendarDate(value: Date) {
   return new CalendarDate(
     value.getFullYear(),
-    value.getMonth(),
+    value.getMonth() + 1,
     value.getDate()
   );
 }

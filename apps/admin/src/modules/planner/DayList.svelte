@@ -9,17 +9,20 @@
   import AddDisplayScene from './AddDisplayScene.svelte';
   import { useDialog } from '$components/dialog/index.svelte';
   import type { MouseEventHandler } from 'svelte/elements';
+  import { colors } from '$lib/utils';
 
   let {
     scenes,
     timeEdges,
     projectId,
-    baseDate
+    baseDate,
+    color
   }: {
     scenes: (typeof displayScene.$inferSelect)[];
     timeEdges: Time[];
     projectId: number;
     baseDate: CalendarDate;
+    color: (typeof colors)[number];
   } = $props();
 
   let timeDrag = new TimeDrag({ scenes, timeEdges, baseDate });
@@ -40,14 +43,15 @@
     });
   });
 
-  const dialog = useDialog();
-  const addSceneDialog = useDialog();
+  const dialog = useDialog('editDisplayScene');
+  const addSceneDialog = useDialog('addDisplayScene');
 </script>
 
 {#snippet dragHandle(onmousedown: MouseEventHandler<HTMLButtonElement>)}
   <button
     type="button"
-    class="h-2 cursor-move bg-red-200 hover:bg-red-300"
+    class="h-2 cursor-move opacity-50 hover:opacity-100"
+    style:background={color.default}
     {onmousedown}
     aria-label="Drag"
   ></button>
@@ -56,13 +60,14 @@
 <svelte:document onmouseup={() => timeDrag.handleDragEnd()} />
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="group relative h-full overflow-hidden"
+  class="group relative h-full w-full overflow-hidden"
   onmousemove={(e) => timeDrag.handleMouseMove(e)}
 >
   {#each timeDrag.blocks as block, idx}
     {@const scene = timeDrag.scene(idx)}
     <div
-      class="absolute flex w-full flex-col justify-between bg-red-100"
+      class="absolute flex w-full flex-col justify-between"
+      style:background={color.light}
       style:top="{block.top}%"
       style:bottom="{block.bottom}%"
     >
@@ -109,6 +114,7 @@
     type="button"
     variant="secondary"
     class="absolute bottom-2 left-2 right-2 z-10 m-auto hidden group-hover:block"
+    size="sm"
     onclick={() => {
       addSceneDialog.open({
         title: 'Add scene',

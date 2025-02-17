@@ -3,20 +3,37 @@
   import type { PageData } from './$types';
   import DaysWrapper from '$modules/planner/DaysWrapper.svelte';
   import { getEventDays, dateToCalendarDate } from '$lib/utils';
+  import DisplaysList from '$modules/planner/DisplaysList.svelte';
 
   let { data, children }: { data: PageData; children: Snippet } = $props();
 
-  const allDisplayScenes = $derived(
-    data.project.displays.flatMap((d) => d.displayScenes)
+  let allDisplays = $derived(data.project.displays);
+  let selectedDisplayIds = $state(data.project.displays.map((item) => item.id));
+  let selectedDisplays = $derived(
+    data.project.displays.filter((item) => selectedDisplayIds.includes(item.id))
   );
 
-  const dates = $derived(
-    getEventDays(allDisplayScenes).map(dateToCalendarDate)
+  let allDisplayScenes = $derived(
+    selectedDisplays.flatMap((d) => d.displayScenes)
   );
+  let dates = $derived(getEventDays(allDisplayScenes).map(dateToCalendarDate));
+
+  $inspect({
+    selectedDisplayIds
+  });
 </script>
 
-<p style="margin-bottom: 2rem;">{data.project.name}</p>
+<div class="flex flex-col gap-4">
+  <p class="text-lg font-semibold">{data.project.name}</p>
 
-<DaysWrapper {dates} {allDisplayScenes} projectId={data.project.id} />
+  <DisplaysList {allDisplays} bind:selectedDisplayIds />
 
-{@render children()}
+  <DaysWrapper
+    {dates}
+    {allDisplayScenes}
+    {selectedDisplays}
+    projectId={data.project.id}
+  />
+
+  {@render children()}
+</div>

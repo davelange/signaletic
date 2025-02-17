@@ -1,23 +1,26 @@
 <script lang="ts">
-  import type { displayScene } from '$db/src/schema';
+  import type { display, displayScene } from '$db/src/schema';
   import {
+    colors,
     getItemsInDay,
     msToHours,
     timeFromInput,
     timeToInput
   } from '$lib/utils';
-  import { CalendarDate, Time } from '@internationalized/date';
+  import { CalendarDate, DateFormatter, Time } from '@internationalized/date';
   import type { ChangeEventHandler } from 'svelte/elements';
   import DayList from './DayList.svelte';
 
   let {
     dates: initialDates,
     allDisplayScenes,
-    projectId
+    projectId,
+    selectedDisplays
   }: {
     dates: CalendarDate[];
     allDisplayScenes: (typeof displayScene.$inferSelect)[];
     projectId: number;
+    selectedDisplays: (typeof display.$inferSelect)[];
   } = $props();
 
   let allDates = $state(initialDates);
@@ -35,6 +38,8 @@
       return startPoint.add({ hours: idx });
     });
   });
+
+  $inspect(timeRange);
 
   function handleAddDay() {
     const lastDay = allDates.at(-1);
@@ -104,7 +109,7 @@
 
 <div class="relative flex h-[90vh]">
   <div
-    class="flex flex-col justify-between border-r border-r-slate-200"
+    class="-my-[10px] flex flex-col justify-between border-r border-r-slate-200"
     onwheel={handleScroll}
   >
     {#each timeRange as item, idx}
@@ -123,31 +128,48 @@
           onchange={handleTimeEdgeChange}
         />
       {:else}
-        <p>{item.toString()}</p>
+        <p>
+          {item.hour.toString().padStart(2, '0')}:{item.minute
+            .toString()
+            .padStart(2, '0')}
+        </p>
       {/if}
     {/each}
   </div>
-  <div class="relative flex flex-1 gap-4" onwheel={handleDaysScroll}>
-    <div class="overlay">
+  <div class="relative flex flex-1" onwheel={handleDaysScroll}>
+    <div class="absolute inset-0 flex h-full w-full flex-col justify-between">
       {#each timeRange}
-        <div class="time-line"></div>
+        <div
+          class="border-dark-10 z-10 h-px w-full border-b border-dashed"
+        ></div>
       {/each}
     </div>
 
     {#each allDates as date}
-      <div class="relative">
+      <div class="relative border-r border-slate-300">
         <div
           class="absolute top-4 w-full -translate-y-12 p-1 text-center text-sm font-medium"
         >
           {date.toString()}
         </div>
-        <div class="relative h-full min-w-[200px] border-r border-slate-200">
-          <DayList
-            scenes={getItemsInDay(allDisplayScenes, date)}
-            {timeEdges}
-            {projectId}
-            baseDate={date}
-          />
+        <div class="relative flex h-full min-w-[200px]">
+          {#each selectedDisplays as display, idx}
+            {@const list = getItemsInDay(
+              allDisplayScenes.filter(
+                (scene) => scene.displayId === display.id
+              ),
+              date
+            )}
+            {#if list.length}
+              <DayList
+                scenes={list}
+                color={colors[display.id % colors.length]}
+                {timeEdges}
+                {projectId}
+                baseDate={date}
+              />
+            {/if}
+          {/each}
         </div>
       </div>
     {/each}
@@ -159,21 +181,3 @@
     </button>
   </div>
 </div>
-
-<style>
-  .overlay {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    & .time-line {
-      height: 1px;
-      background: #ddd;
-      width: 100%;
-    }
-  }
-</style>
