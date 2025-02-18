@@ -96,7 +96,7 @@
 
   <div class="flex aspect-video w-[1000px] items-center justify-center">
     <iframe
-      src={`${VISUALIZER_URL}/edit/${scene.id}`}
+      src={`${VISUALIZER_URL}/edit/template/${scene.templateId}`}
       frameborder="0"
       title="Preview"
       onmessage={(e) => {

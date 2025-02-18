@@ -27,7 +27,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.min.js"></script>
 	<script>
 		// Adapted from https://tools.dia.tv/scan/
-
 		let basePath = '/assets/dia';
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;

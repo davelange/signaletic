@@ -17,10 +17,6 @@
     selectedDisplays.flatMap((d) => d.displayScenes)
   );
   let dates = $derived(getEventDays(allDisplayScenes).map(dateToCalendarDate));
-
-  $inspect({
-    selectedDisplayIds
-  });
 </script>
 
 <div class="flex flex-col gap-4">

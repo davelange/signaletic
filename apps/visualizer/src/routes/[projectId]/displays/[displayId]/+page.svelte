@@ -1,27 +1,46 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
+	import type { BaseTemplate } from '$templates/BaseTemplate.svelte.js';
 	import { onMount, type Component } from 'svelte';
-	import type { BlankTemplate } from '$templates/blank/index.js';
 
 	let { data } = $props();
 
-	let scene = $state(data.scenes?.[0]);
-	let template = $state<BlankTemplate>();
+	let currentScene = $derived(
+		data.scenes.find(
+			(scene) => scene.startsAt.getTime() <= Date.now() && scene.endsAt.getTime() > Date.now()
+		)
+	);
+	let prevTemplate = $state();
+
+	let template = $state<BaseTemplate>();
 	let RenderedComponent = $state<Component>();
 
 	async function loadTemplate() {
-		if (!scene) return;
+		if (currentScene) {
+			const module = await import(`$templates/${currentScene.template.name}/index.svelte.ts`);
+			template = module.load(currentScene.templateConfig || null);
+			RenderedComponent = await template?.loadComponent();
+			if (prevTemplate && prevTemplate !== currentScene.templateId) {
+				window.location.reload(); // Workaround
+			}
+			prevTemplate = currentScene.templateId;
+		}
 
-		const module = await import(`$templates/${scene.template.config.name}/index.ts`);
-		template = module.load(scene.template.config.config);
-		RenderedComponent = await template?.loadComponent();
+		scheduleRefetch();
+	}
+
+	function scheduleRefetch() {
+		setTimeout(async () => {
+			await invalidateAll();
+			loadTemplate();
+		}, 1000 * 60);
 	}
 
 	onMount(async () => {
-		await loadTemplate();
-		console.log(template?.config.textInput);
+		loadTemplate();
 	});
 </script>
 
-{#if RenderedComponent}
-	<RenderedComponent config={template?.config} text="hello" />
+{#if template && RenderedComponent}
+	<RenderedComponent {template} />
 {/if}

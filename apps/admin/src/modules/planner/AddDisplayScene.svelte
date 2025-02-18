@@ -13,7 +13,6 @@
   import { Select } from '$components/select';
   import { page } from '$app/state';
   import { Button } from '$components/button';
-  import type { display } from '$db/src/schema';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -85,7 +84,12 @@
     <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
   <div class="flex gap-4">
-    <Select label="Display" options={displays} name="displayId" />
+    <Select
+      label="Display"
+      options={displays}
+      name="displayId"
+      bind:value={displayId}
+    />
     <Select
       label="Template"
       options={templateOptions}

@@ -30,7 +30,7 @@ export class BaseTemplate {
 		};
 	}
 
-	loadGUI({ onFinishChange }: { onFinishChange?: () => void }) {
+	loadGUI(options?: { onFinishChange?: () => void }) {
 		if (this.parameters) {
 			for (const key in this.config.parameters) {
 				this.gui.add(this.parameters, key);
@@ -46,7 +46,7 @@ export class BaseTemplate {
 				this.targetOrigin
 			);
 
-			onFinishChange?.();
+			options?.onFinishChange?.();
 		});
 	}
 

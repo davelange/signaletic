@@ -7,8 +7,6 @@
 	onMount(() => {
 		template.loadGUI();
 	});
-
-	$inspect(template);
 </script>
 
 <div class="wrapper">
@@ -19,6 +17,15 @@
 	.wrapper {
 		width: 100vw;
 		height: 100vh;
-		background: lightblue;
+		background: black;
+		display: flex;
+
+		& p {
+			color: #eee;
+			margin: auto;
+			font-family: sans-serif;
+			font-size: 120px;
+			text-align: center;
+		}
 	}
 </style>
