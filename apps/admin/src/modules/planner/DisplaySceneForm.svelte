@@ -79,7 +79,7 @@
     <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
 
-  <div class="flex gap-4">
+  <div class="flex items-center gap-4">
     <Select
       label="Display"
       options={displays}
@@ -92,6 +92,13 @@
       name="templateId"
       bind:value={scene.templateId}
     />
+    <a
+      href={`${VISUALIZER_URL}/1/displays/2`}
+      class="text-blue-600 underline"
+      target="_blank"
+    >
+      Preview
+    </a>
   </div>
 
   <div class="flex aspect-video w-[1000px] items-center justify-center">

@@ -9,8 +9,6 @@
 	let template = $state<BaseTemplate>();
 	let RenderedComponent = $state<Component>();
 
-	$inspect(templateData);
-
 	async function loadTemplate() {
 		if (!templateData) return;
 

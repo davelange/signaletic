@@ -32,8 +32,6 @@
   let startsAtInput = $state(timeToInput(startTime));
   let endsAtInput = $state(timeToInput(startTime));
 
-  $inspect({ baseDate, baseDateAsDate, startsAtInput, endsAtInput });
-
   let templateOptions = page.data.templates.map((template) => ({
     label: template.name || '',
     value: template.id.toString()

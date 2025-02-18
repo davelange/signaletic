@@ -13,6 +13,7 @@ export class BaseTemplate {
 	parameters = $state<TemplateParameters>();
 	config: TemplateConfig;
 	targetOrigin = import.meta.env.VITE_ADMIN_URL as string;
+	debug = $state(true);
 
 	constructor({
 		config,
@@ -31,6 +32,11 @@ export class BaseTemplate {
 	}
 
 	loadGUI(options?: { onFinishChange?: () => void }) {
+		if (!this.debug) {
+			this.gui.hide();
+			return;
+		}
+
 		if (this.parameters) {
 			for (const key in this.config.parameters) {
 				this.gui.add(this.parameters, key);

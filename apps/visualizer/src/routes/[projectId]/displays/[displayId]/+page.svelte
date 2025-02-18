@@ -19,7 +19,13 @@
 		if (currentScene) {
 			const module = await import(`$templates/${currentScene.template.name}/index.svelte.ts`);
 			template = module.load(currentScene.templateConfig || null);
+
+			if (template) {
+				template.debug = false;
+			}
+
 			RenderedComponent = await template?.loadComponent();
+
 			if (prevTemplate && prevTemplate !== currentScene.templateId) {
 				window.location.reload(); // Workaround
 			}
