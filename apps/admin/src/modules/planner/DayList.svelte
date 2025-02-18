@@ -2,14 +2,14 @@
   import type { displayScene } from '$db/src/schema';
   import SettingsIcon from 'lucide-svelte/icons/settings';
   import { CalendarDate, Time } from '@internationalized/date';
-  import { TimeDrag } from './timedrag.svelte';
+  import { invert, TimeDrag } from './timedrag.svelte';
   import { Button } from '$components/button';
   import DisplaySceneForm from './DisplaySceneForm.svelte';
   import { untrack } from 'svelte';
   import AddDisplayScene from './AddDisplayScene.svelte';
   import { useDialog } from '$components/dialog/index.svelte';
   import type { MouseEventHandler } from 'svelte/elements';
-  import { colors } from '$lib/utils';
+  import { colors, formatTime, toHsl } from '$lib/utils';
 
   let {
     scenes,
@@ -51,7 +51,7 @@
   <button
     type="button"
     class="h-2 cursor-move opacity-50 hover:opacity-100"
-    style:background={color.default}
+    style:background={toHsl(color.default, 1.2)}
     {onmousedown}
     aria-label="Drag"
   ></button>
@@ -62,19 +62,30 @@
 <div
   class="group relative h-full w-full overflow-hidden"
   onmousemove={(e) => timeDrag.handleMouseMove(e)}
+  style="--bg-color: {toHsl(color.light, 0.7)}; --bg-color-alt: {toHsl(
+    color.light,
+    0.5
+  )};"
 >
   {#each timeDrag.blocks as block, idx}
     {@const scene = timeDrag.scene(idx)}
     <div
-      class="absolute flex w-full flex-col justify-between"
-      style:background={color.light}
+      class="absolute flex w-full flex-col justify-between bg-[var(--bg-color-alt)] hover:bg-[var(--bg-color)]"
       style:top="{block.top}%"
       style:bottom="{block.bottom}%"
     >
       {@render dragHandle(() => timeDrag.handleDragStart(idx, 'top'))}
 
-      <div class="relative flex-1 p-2">
-        <p class="text-sm">{scene.name}</p>
+      <div
+        class="pointer-events-none absolute flex w-full flex-1 flex-col justify-between p-2"
+      >
+        <p class="text-sm">
+          {formatTime(timeDrag.getTimeFromPos(block.top))}
+        </p>
+        <p class="text-sm font-semibold">{scene.name}</p>
+        <p class="mt-auto text-sm">
+          {formatTime(timeDrag.getTimeFromPos(invert(block.bottom)))}
+        </p>
 
         {#snippet editDisplaySceneForm()}
           <DisplaySceneForm {scene} {projectId} />
@@ -84,7 +95,7 @@
           type="button"
           variant="ghost"
           size="sm"
-          class="absolute right-2 top-2"
+          class="pointer-events-auto absolute right-2 top-2"
           onclick={() => {
             dialog.open({
               title: `Edit scene (${scene.name})`,

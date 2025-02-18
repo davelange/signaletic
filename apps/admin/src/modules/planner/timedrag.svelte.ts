@@ -19,7 +19,7 @@ export class TimeDrag {
   blocks: Block[] = $state([]);
   scenes: Scene[] = $state([]);
   timeEdges: Time[] = $state([]);
-  maxTimeSpan = 0;
+  maxTimeSpan = $state(0);
   isDragging = false;
   activeBlockIdx = $state(-1);
   baseDate: CalendarDate;
@@ -221,10 +221,11 @@ export class TimeDrag {
   }
 }
 
-function invert(val: number) {
+export function invert(val: number) {
   return Math.abs(val - 100);
 }
 
 function normalize(num: number) {
-  return Math.round(num * 100) / 100;
+  return num;
+  //return Math.round(num * 100) / 100;
 }

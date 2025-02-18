@@ -5,10 +5,10 @@ import type { TransitionConfig } from 'svelte/transition';
 import { CalendarDate, Time } from '@internationalized/date';
 
 export const colors = [
-  { light: '#FEE2E2', default: '#FECACA' },
-  { light: '#FEF3C7', default: '#FDE68A' },
-  { light: '#ECFCCB', default: '#D9F99D' },
-  { light: '#CFFAFE', default: '#A5F3FC' }
+  { light: '0 87% 90%', default: '0 98% 85%' },
+  { light: '45 96% 85%', default: '50 97% 76%' },
+  { light: '90 80% 88%', default: '90 83% 78%' },
+  { light: '189 91% 88%', default: '189 92% 80%' }
 ];
 
 export function cn(...inputs: ClassValue[]) {
@@ -154,4 +154,13 @@ export function timeToDate(time: Time, baseDate: Date) {
     time.minute,
     time.second
   );
+}
+
+export function formatTime(time: Time) {
+  if (!time) return '';
+  return `${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}`;
+}
+
+export function toHsl(vals: string, alpha = 1) {
+  return `hsl(${vals} / ${alpha})`;
 }

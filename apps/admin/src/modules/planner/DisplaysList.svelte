@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { display } from '$db/src/schema';
-  import { colors } from '$lib/utils';
+  import { colors, toHsl } from '$lib/utils';
 
   let {
     allDisplays,
@@ -18,8 +18,7 @@
 
     <button
       class="text-dark/80 rounded-xl px-3 py-1 text-xs"
-      style:background={selected ? color.light : 'transparent'}
-      style:border="1px solid {color.default}"
+      style:background={toHsl(color.light, selected ? 1 : 0.2)}
       onclick={() => {
         if (selected) {
           selectedDisplayIds = selectedDisplayIds.filter(
