@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Label } from 'bits-ui';
   import CalendarIcon from 'lucide-svelte/icons/clock';
-  import { cn } from '$lib/utils.js';
   import { Button } from '$components/button';
+  import clsx from 'clsx';
 
   type Props = {
     name: string;
@@ -29,7 +29,7 @@
     <Button
       type="button"
       variant="outline"
-      class={cn(
+      class={clsx(
         'justify-start text-left font-normal',
         !value && 'text-muted-foreground'
       )}

@@ -1,10 +1,7 @@
-<script lang="ts" generics="C extends 'button' | 'a' = 'button'">
+<script lang="ts">
   import type { ComponentProps, Snippet } from 'svelte';
-  import type {
-    HTMLAnchorAttributes,
-    HTMLButtonAttributes
-  } from 'svelte/elements';
-  import Button from './ui/button/button.svelte';
+  import type { HTMLButtonAttributes } from 'svelte/elements';
+  import { Button } from './button/index';
   import { NiceForm } from '$lib/NiceForm.svelte';
   import { enhance } from '$app/forms';
   import Loading from 'lucide-svelte/icons/loader-circle';
@@ -17,12 +14,10 @@
   type Props = {
     children: Snippet;
     action?: FormProps;
-    as?: C;
-  } & ComponentProps<Button> &
-    (C extends 'button' ? HTMLButtonAttributes : HTMLAnchorAttributes);
+  } & ComponentProps<typeof Button>;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let { children, as, action, ...props }: Props = $props();
+  let { children, action, ...props }: Props = $props();
 
   let formVals = $derived(
     Object.entries(action || {}).filter((entry) => entry[0] !== 'action')

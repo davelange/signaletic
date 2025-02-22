@@ -1,7 +1,3 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { cubicOut } from 'svelte/easing';
-import type { TransitionConfig } from 'svelte/transition';
 import { CalendarDate, Time } from '@internationalized/date';
 
 export const colors = [
@@ -10,64 +6,6 @@ export const colors = [
   { light: '90 80% 88%', default: '90 83% 78%' },
   { light: '189 91% 88%', default: '189 92% 80%' }
 ];
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-type FlyAndScaleParams = {
-  y?: number;
-  x?: number;
-  start?: number;
-  duration?: number;
-};
-
-export const flyAndScale = (
-  node: Element,
-  params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }
-): TransitionConfig => {
-  const style = getComputedStyle(node);
-  const transform = style.transform === 'none' ? '' : style.transform;
-
-  const scaleConversion = (
-    valueA: number,
-    scaleA: [number, number],
-    scaleB: [number, number]
-  ) => {
-    const [minA, maxA] = scaleA;
-    const [minB, maxB] = scaleB;
-
-    const percentage = (valueA - minA) / (maxA - minA);
-    const valueB = percentage * (maxB - minB) + minB;
-
-    return valueB;
-  };
-
-  const styleToString = (
-    style: Record<string, number | string | undefined>
-  ): string => {
-    return Object.keys(style).reduce((str, key) => {
-      if (style[key] === undefined) return str;
-      return str + `${key}:${style[key]};`;
-    }, '');
-  };
-
-  return {
-    duration: params.duration ?? 200,
-    delay: 0,
-    css: (t) => {
-      const y = scaleConversion(t, [0, 1], [params.y ?? 5, 0]);
-      const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
-      const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
-
-      return styleToString({
-        transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-        opacity: t
-      });
-    },
-    easing: cubicOut
-  };
-};
 
 export function getEventDays<T extends { startsAt: Date }>(events: T[]) {
   return events
@@ -85,10 +23,28 @@ export function getEventDays<T extends { startsAt: Date }>(events: T[]) {
 }
 
 export function getFormValues<T>(formData: FormData) {
-  const values: Record<string, string> = {};
+  const values: Record<string, unknown> = {};
 
   for (const [key, value] of formData.entries()) {
-    values[key] = value as string;
+    switch (key) {
+      case 'id':
+      case 'projectId':
+      case 'displayId':
+      case 'scheduleEventId':
+      case 'templateId':
+        values[key] = value ? Number(value) : undefined;
+        break;
+
+      case 'startsAt':
+      case 'endsAt':
+        values[key] =
+          typeof value === 'string' ? new Date(value) : new Date(Number(value));
+        break;
+
+      default:
+        values[key] = value as string;
+        break;
+    }
   }
 
   return values as T;

@@ -1,20 +1,27 @@
-import { asc, eq, InferInsertModel } from "drizzle-orm";
-import { db } from "../src";
+import { asc, eq } from "drizzle-orm";
+import { db } from "..";
 import {
   display,
   displayScene,
   project,
   scheduleEvent,
   template,
-} from "../src/schema";
+} from "../schema";
+import { DB } from "./types";
+
+function omit<T extends Record<string, any>, K extends keyof T>(
+  obj: T,
+  key: K
+): Omit<T, K> {
+  const { [key]: omitted, ...rest } = obj;
+  return rest;
+}
 
 export async function getAllProjects() {
   return await db.query.project.findMany();
 }
 
-export async function createNewProject(
-  fields: InferInsertModel<typeof project>
-) {
+export async function createNewProject(fields: DB.Project.Insert) {
   const insert = await db
     .insert(project)
     .values(fields)
@@ -47,34 +54,32 @@ export async function deleteProjectBySlug(slug: string) {
   return db.delete(project).where(eq(project.slug, slug));
 }
 
-export async function createScheduleEvent(
-  fields: InferInsertModel<typeof scheduleEvent>
-) {
+export async function createScheduleEvent(fields: DB.ScheduleEvent.Insert) {
   const insert = await db.insert(scheduleEvent).values(fields).returning();
 
   return insert.at(0);
 }
 
-export async function deleteScheduledEvent(id: string) {
-  return db.delete(scheduleEvent).where(eq(scheduleEvent.id, Number(id)));
+export async function deleteScheduledEvent(id: number) {
+  return db.delete(scheduleEvent).where(eq(scheduleEvent.id, id));
 }
 
 export async function editScheduleEvent(
-  id: string,
-  params: Omit<InferInsertModel<typeof scheduleEvent>, "projectId">
+  id: number,
+  params: DB.ScheduleEvent.Select
 ) {
   return db
     .update(scheduleEvent)
-    .set(params)
-    .where(eq(scheduleEvent.id, Number(id)));
+    .set(omit(params, "id"))
+    .where(eq(scheduleEvent.id, id));
 }
 
-export async function createDisplay(fields: InferInsertModel<typeof display>) {
+export async function createDisplay(fields: DB.Display.Insert) {
   return db.insert(display).values(fields).returning();
 }
 
-export async function deleteDisplay(id: string) {
-  return db.delete(display).where(eq(display.id, Number(id)));
+export async function deleteDisplay(id: number) {
+  return db.delete(display).where(eq(display.id, id));
 }
 
 export async function getDisplays(projectId: string) {
@@ -98,24 +103,22 @@ export async function getDisplayById(id: string) {
   });
 }
 
-export async function createDisplayScene(
-  fields: InferInsertModel<typeof displayScene>
-) {
+export async function createDisplayScene(fields: DB.DisplayScene.Insert) {
   return db.insert(displayScene).values(fields).returning();
 }
 
-export async function deleteDisplayScene(id: string) {
-  return db.delete(displayScene).where(eq(displayScene.id, Number(id)));
+export async function deleteDisplayScene(id: number) {
+  return db.delete(displayScene).where(eq(displayScene.id, id));
 }
 
 export async function editDisplayScene(
   id: number,
-  params: typeof displayScene.$inferInsert
+  params: DB.DisplayScene.Select
 ) {
   return db
     .update(displayScene)
-    .set(params)
-    .where(eq(displayScene.id, Number(id)));
+    .set(omit(params, "id"))
+    .where(eq(displayScene.id, id));
 }
 
 export async function getDisplaySceneById(id: string) {
@@ -132,3 +135,5 @@ export async function getTemplateById(id: string) {
     where: eq(template.id, Number(id)),
   });
 }
+
+export * from "./types";
