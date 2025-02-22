@@ -13,20 +13,21 @@
   import { Select } from '$components/select';
   import { page } from '$app/state';
   import { Button } from '$components/button';
+  import { getPlannerState } from './planner.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
   let {
-    projectId,
     displayId,
     baseDate,
     startTime
   }: {
-    projectId: number;
     displayId?: number;
     baseDate: CalendarDate;
     startTime: Time;
   } = $props();
+
+  const planner = getPlannerState();
 
   let baseDateAsDate = calendarDateToDate(baseDate);
   let startsAtInput = $state(timeToInput(startTime));
@@ -49,7 +50,7 @@
 
 <form
   method="post"
-  action={`/projects/${projectId}?/addDisplayScene`}
+  action={`/projects/${planner.project.id}?/addDisplayScene`}
   class="flex w-full flex-col gap-4"
   use:enhance={() => form.enhance()}
 >

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { displayScene } from '$db/src/schema';
   import SettingsIcon from 'lucide-svelte/icons/settings';
-  import { CalendarDate, Time } from '@internationalized/date';
-  import { invert, TimeDrag } from './timedrag.svelte';
+  import { CalendarDate } from '@internationalized/date';
+  import { invert } from './timedrag.svelte';
   import { Button } from '$components/button';
   import DisplaySceneForm from './DisplaySceneForm.svelte';
   import { untrack } from 'svelte';
@@ -10,22 +9,24 @@
   import { useDialog } from '$components/dialog/index.svelte';
   import type { MouseEventHandler } from 'svelte/elements';
   import { colors, formatTime, toHsl } from '$lib/utils';
+  import type { DB } from '$db/lib';
+  import { getPlannerState } from './planner.svelte';
 
   let {
     scenes,
-    timeEdges,
-    projectId,
     baseDate,
-    color
+    color,
+    displayId
   }: {
-    scenes: (typeof displayScene.$inferSelect)[];
-    timeEdges: Time[];
-    projectId: number;
+    scenes: DB.DisplayScene.Select[];
     baseDate: CalendarDate;
     color: (typeof colors)[number];
+    displayId: number;
   } = $props();
 
-  let timeDrag = new TimeDrag({ scenes, timeEdges, baseDate });
+  const planner = getPlannerState();
+
+  let timeDrag = planner.addTimeDrag(scenes, baseDate, displayId);
 
   $effect(() => {
     timeDrag.updateScenes(scenes);
@@ -36,7 +37,7 @@
   });
 
   $effect(() => {
-    timeDrag.updateTimeframe(timeEdges);
+    timeDrag.updateTimeframe(planner.timeEdges);
 
     untrack(() => {
       timeDrag.createBlocks();
@@ -88,7 +89,7 @@
         </p>
 
         {#snippet editDisplaySceneForm()}
-          <DisplaySceneForm {scene} {projectId} />
+          <DisplaySceneForm scene={$state.snapshot(scene)} />
         {/snippet}
 
         <Button
@@ -114,10 +115,9 @@
 
   {#snippet addDisplaySceneForm()}
     <AddDisplayScene
-      {projectId}
       baseDate={timeDrag.baseDate}
       displayId={timeDrag.displayId}
-      startTime={timeDrag.timeEdges[0]}
+      startTime={timeDrag.timeEdges.start}
     />
   {/snippet}
 

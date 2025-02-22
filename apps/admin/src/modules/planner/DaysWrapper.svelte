@@ -1,32 +1,21 @@
 <script lang="ts">
-  import type { display, displayScene } from '$db/src/schema';
   import { colors, formatTime, getItemsInDay, msToHours } from '$lib/utils';
-  import { CalendarDate, Time } from '@internationalized/date';
+  import { Time } from '@internationalized/date';
   import DayList from './DayList.svelte';
+  import { getPlannerState } from './planner.svelte';
 
-  let {
-    dates: initialDates,
-    allDisplayScenes,
-    projectId,
-    selectedDisplays
-  }: {
-    dates: CalendarDate[];
-    allDisplayScenes: (typeof displayScene.$inferSelect)[];
-    projectId: number;
-    selectedDisplays: (typeof display.$inferSelect)[];
-  } = $props();
+  const planner = getPlannerState();
 
-  let allDates = $state(initialDates);
-  let timeEdges = $state([new Time(8, 0), new Time(20, 0)]);
-
-  let timeSpan = $derived(timeEdges[1].compare(timeEdges[0]));
+  let timeSpan = $derived(
+    planner.timeEdges.end.compare(planner.timeEdges.start)
+  );
 
   let timeRange = $derived.by(() => {
-    let [start] = timeEdges;
-
-    const minuteOffset = start.minute ? 60 - start.minute : 0;
+    const minuteOffset = planner.timeEdges.start.minute
+      ? 60 - planner.timeEdges.start.minute
+      : 0;
     const diffInHrs = msToHours(timeSpan) + 1;
-    const startPoint = start.add({ minutes: minuteOffset });
+    const startPoint = planner.timeEdges.start.add({ minutes: minuteOffset });
 
     return Array.from({ length: diffInHrs }).map((_o, idx) => {
       return startPoint.add({ hours: idx });
@@ -34,19 +23,19 @@
   });
 
   function handleAddDay() {
-    const lastDay = allDates.at(-1);
+    const lastDay = planner.dates.at(-1);
     if (!lastDay) return;
-    allDates.push(lastDay.add({ days: 1 }));
+    planner.dates.push(lastDay.add({ days: 1 }));
   }
 
   const handleDaysScroll = (event: WheelEvent) => {
     const down = event.deltaY < 0;
     const op = down ? 'add' : 'subtract';
 
-    timeEdges[0] = timeEdges[0][op]({
+    planner.timeEdges.start = planner.timeEdges.start[op]({
       minutes: 10
     });
-    timeEdges[1] = timeEdges[1][op]({
+    planner.timeEdges.end = planner.timeEdges.end[op]({
       minutes: 10
     });
   };
@@ -67,19 +56,19 @@
     if (down) {
       if (diff <= 1) return;
 
-      timeEdges[0] = timeEdges[0].add({
+      planner.timeEdges.start = planner.timeEdges.start.add({
         minutes: Math.round(unit * yRelative)
       });
-      timeEdges[1] = timeEdges[1].subtract({
+      planner.timeEdges.end = planner.timeEdges.end.subtract({
         minutes: Math.round(unit * (1 - yRelative))
       });
     } else {
       if (diff >= 24) return;
 
-      timeEdges[0] = timeEdges[0].subtract({
+      planner.timeEdges.start = planner.timeEdges.start.subtract({
         minutes: Math.round(unit * yRelative)
       });
-      timeEdges[1] = timeEdges[1].add({
+      planner.timeEdges.end = planner.timeEdges.end.add({
         minutes: Math.round(unit * (1 - yRelative))
       });
     }
@@ -88,7 +77,7 @@
   };
 
   function timeToPos(time: Time) {
-    return (time.compare(timeEdges[0]) * 100) / timeSpan;
+    return (time.compare(planner.timeEdges.start) * 100) / timeSpan;
   }
 </script>
 
@@ -117,7 +106,7 @@
       </div>
     </div>
 
-    {#each allDates as date}
+    {#each planner.dates as date}
       <div class="relative border-r border-slate-300">
         <div
           class="absolute top-4 w-full -translate-y-12 p-1 text-center text-sm font-medium"
@@ -125,20 +114,14 @@
           {date.toString()}
         </div>
         <div class="relative flex h-full min-w-[200px]">
-          {#each selectedDisplays as display}
-            {@const list = getItemsInDay(
-              allDisplayScenes.filter(
-                (scene) => scene.displayId === display.id
-              ),
-              date
-            )}
-            {#if list.length}
+          {#each planner.selectedDisplays as display}
+            {@const list = getItemsInDay(display.displayScenes, date)}
+            {#if list.length % colors.length}
               <DayList
                 scenes={list}
                 color={colors[display.id % colors.length]}
-                {timeEdges}
-                {projectId}
                 baseDate={date}
+                displayId={display.id}
               />
             {/if}
           {/each}
@@ -148,8 +131,20 @@
   </div>
 
   <div>
-    <button type="button" onclick={handleAddDay} disabled={!allDates.length}>
+    <button
+      type="button"
+      onclick={handleAddDay}
+      disabled={!planner.dates.length}
+    >
       Add day
+    </button>
+    <button
+      type="button"
+      onclick={() => {
+        console.log(planner.getAllTimeDragScenes());
+      }}
+    >
+      Get all things
     </button>
   </div>
 </div>

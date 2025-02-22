@@ -1,11 +1,11 @@
-import type { displayScene } from '$db/src/schema';
+import type { DB } from '$db/lib';
 import { dateToTime, timeToDate } from '$lib/utils';
 import { CalendarDate, Time } from '@internationalized/date';
 import type { MouseEventHandler } from 'svelte/elements';
+import { defaultTimeEges, type TimeEdges } from './planner.svelte';
 
 const MIN_BLOCK_HEIGHT = 2;
 
-type Scene = typeof displayScene.$inferSelect;
 type ResizeHandle = 'top' | 'bottom';
 type AdjustDir = 'up' | 'down';
 type Block = {
@@ -17,8 +17,8 @@ type Block = {
 
 export class TimeDrag {
   blocks: Block[] = $state([]);
-  scenes: Scene[] = $state([]);
-  timeEdges: Time[] = $state([]);
+  scenes: DB.DisplayScene.Select[] = $state([]);
+  timeEdges: TimeEdges = $state(defaultTimeEges);
   maxTimeSpan = $state(0);
   isDragging = false;
   activeBlockIdx = $state(-1);
@@ -30,8 +30,8 @@ export class TimeDrag {
     timeEdges,
     baseDate
   }: {
-    scenes: Scene[];
-    timeEdges: Time[];
+    scenes: DB.DisplayScene.Select[];
+    timeEdges: { start: Time; end: Time };
     baseDate: CalendarDate;
   }) {
     this.scenes = [...scenes];
@@ -54,12 +54,12 @@ export class TimeDrag {
     return this.scenes[idx];
   }
 
-  updateTimeframe(timeEdges: Time[]) {
-    this.maxTimeSpan = timeEdges[1].compare(timeEdges[0]);
+  updateTimeframe(timeEdges: { start: Time; end: Time }) {
+    this.maxTimeSpan = timeEdges.end.compare(timeEdges.start);
     this.timeEdges = timeEdges;
   }
 
-  updateScenes(scenes: Scene[]) {
+  updateScenes(scenes: DB.DisplayScene.Select[]) {
     this.scenes = [...scenes].sort((a, b) =>
       Math.sign(a.startsAt.getTime() - b.startsAt.getTime())
     );
@@ -71,9 +71,9 @@ export class TimeDrag {
       const sceneStartTime = dateToTime(sceneToUse.startsAt);
       const sceneDuration = dateToTime(sceneToUse.endsAt);
       const startDiff =
-        (sceneStartTime.compare(this.timeEdges[0]) * 100) / this.maxTimeSpan;
+        (sceneStartTime.compare(this.timeEdges.start) * 100) / this.maxTimeSpan;
       const endDiff =
-        (sceneDuration.compare(this.timeEdges[0]) * 100) / this.maxTimeSpan;
+        (sceneDuration.compare(this.timeEdges.start) * 100) / this.maxTimeSpan;
 
       return {
         top: normalize(startDiff),
@@ -91,7 +91,7 @@ export class TimeDrag {
   }
 
   getTimeFromPos(value: number) {
-    return this.timeEdges[0].add({
+    return this.timeEdges.start.add({
       milliseconds: (value * this.maxTimeSpan) / 100
     });
   }

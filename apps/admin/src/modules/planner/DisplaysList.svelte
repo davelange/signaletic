@@ -1,33 +1,19 @@
 <script lang="ts">
-  import type { display } from '$db/src/schema';
   import { colors, toHsl } from '$lib/utils';
+  import { getPlannerState } from './planner.svelte';
 
-  let {
-    allDisplays,
-    selectedDisplayIds = $bindable()
-  }: {
-    allDisplays: (typeof display.$inferSelect)[];
-    selectedDisplayIds: number[];
-  } = $props();
+  const planner = getPlannerState();
 </script>
 
 <div class="mb-4 flex gap-4">
-  {#each allDisplays as display}
+  {#each planner.allDisplays as display}
     {@const color = colors[display.id % colors.length]}
-    {@const selected = selectedDisplayIds.includes(display.id)}
+    {@const selected = planner.selectedDisplayIds.includes(display.id)}
 
     <button
       class="text-dark/80 rounded-xl px-3 py-1 text-xs"
       style:background={toHsl(color.light, selected ? 1 : 0.2)}
-      onclick={() => {
-        if (selected) {
-          selectedDisplayIds = selectedDisplayIds.filter(
-            (id) => display.id !== id
-          );
-        } else {
-          selectedDisplayIds.push(display.id);
-        }
-      }}
+      onclick={() => planner.toggleDisplay(display.id)}
     >
       {display.name}
     </button>

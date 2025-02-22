@@ -4,22 +4,23 @@
   import { Select } from '$components/select';
   import { TimePicker } from '$components/time-picker';
   import { Button } from '$components/button';
-  import type { displayScene } from '$db/src/schema';
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
   import { enhance } from '$app/forms';
   import { NiceForm } from '$lib/NiceForm.svelte';
   import type { Dialog } from '$components/dialog/index.svelte';
   import { getContext } from 'svelte';
+  import type { DB } from '$db/lib';
+  import { getPlannerState } from './planner.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
   let {
-    projectId,
     scene
   }: {
-    projectId: number;
-    scene: typeof displayScene.$inferSelect;
+    scene: DB.DisplayScene.Select;
   } = $props();
+
+  const planner = getPlannerState();
 
   const thisDialog = getContext<Dialog>('editDisplayScene');
 
@@ -66,7 +67,7 @@
 <svelte:window onmessage={handleMessage} />
 <form
   method="post"
-  action={`/projects/${projectId}?/editDisplayScene`}
+  action={`/projects/${planner.project.id}?/editDisplayScene`}
   class="flex w-full flex-col gap-4"
   use:enhance={() => form.enhance()}
 >
@@ -119,7 +120,7 @@
       fullWidth
       size="default"
       variant="destructive"
-      formaction={`/projects/${projectId}?/deleteDisplayScene`}
+      formaction={`/projects/${planner.project.id}?/deleteDisplayScene`}
     >
       Delete
     </Button>
