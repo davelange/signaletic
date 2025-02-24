@@ -1,9 +1,10 @@
-import type { DB } from '$db/lib';
+//import type { DB } from '$db/lib';
 import { getContext, setContext } from 'svelte';
 import type { PageData } from '../../routes/projects/[slug]/$types';
 import { dateToCalendarDate, getEventDays } from '$lib/utils';
 import { CalendarDate, Time } from '@internationalized/date';
 import { TimeDrag } from './timedrag.svelte';
+import type { DisplayScene } from '$db/entities/DisplayScene';
 
 type PlannerProps = {
   data: PageData['project'];
@@ -47,10 +48,6 @@ class Planner {
     )
   );
 
-  setScenes(scenes: DB.DisplayScene.Select[]) {
-    this.scenes = scenes;
-  }
-
   toggleDisplay(id: number) {
     if (this.selectedDisplayIds.includes(id)) {
       this.selectedDisplayIds = this.selectedDisplayIds.filter(
@@ -62,7 +59,7 @@ class Planner {
   }
 
   addTimeDrag(
-    scenes: DB.DisplayScene.Select[],
+    scenes: DisplayScene[],
     baseDate: CalendarDate,
     displayId: number
   ) {

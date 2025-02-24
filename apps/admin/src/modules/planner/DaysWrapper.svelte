@@ -26,8 +26,9 @@
 
   function handleAddDay() {
     const lastDay = planner.dates.at(-1);
-    console.log(planner.dates.at(-1));
+
     if (!lastDay) return;
+
     planner.dates.push(lastDay.add({ days: 1 }));
   }
 

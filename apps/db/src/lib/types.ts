@@ -1,4 +1,4 @@
-import {
+/* import {
   display,
   displayScene,
   project,
@@ -32,3 +32,4 @@ export namespace DB {
     export type Select = typeof template.$inferSelect;
   }
 }
+ */

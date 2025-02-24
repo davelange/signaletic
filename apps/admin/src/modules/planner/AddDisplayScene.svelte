@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { NiceForm } from '$lib/NiceForm.svelte';
   import { Input } from '$components/input';
   import {
     calendarDateToDate,
@@ -9,13 +8,10 @@
   } from '$lib/utils';
   import { TimePicker } from '$components/time-picker';
   import type { CalendarDate, Time } from '@internationalized/date';
-  import { enhance } from '$app/forms';
   import { Select } from '$components/select';
   import { page } from '$app/state';
   import { Button } from '$components/button';
-  import { getPlannerState } from './planner.svelte';
-  import { remult } from 'remult';
-  import { DisplayScene } from '../../shared/entities/DisplayScene';
+  import { displaySceneRepo } from '$db/lib';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -29,9 +25,13 @@
     startTime: Time;
   } = $props();
 
-  const repo = remult.repo(DisplayScene);
+  type InsertType = Parameters<typeof displaySceneRepo.insert>[0];
 
-  const planner = getPlannerState();
+  let formData: InsertType = $state({
+    name: '',
+    templateId: 0,
+    displayId
+  });
 
   let baseDateAsDate = calendarDateToDate(baseDate);
   let startsAtInput = $state(timeToInput(startTime));
@@ -42,10 +42,6 @@
     value: template.id.toString()
   }));
 
-  let templateId = $state('');
-
-  let form = new NiceForm({});
-
   let displays = page.data.project.displays.map((display) => ({
     label: display.name || '',
     value: display.id.toString()
@@ -54,38 +50,15 @@
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
-    const data = {
-      displayId,
-      templateId: Number(templateId),
+    await displaySceneRepo.insert({
+      ...formData,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDateAsDate),
-      endsAt: timeToDate(timeFromInput(endsAtInput), baseDateAsDate),
-      name: 'Remult'
-    };
-
-    await repo.insert(data);
+      endsAt: timeToDate(timeFromInput(endsAtInput), baseDateAsDate)
+    });
   }
 </script>
 
-<form
-  method="post"
-  action={`/projects/${planner.project.id}?/addDisplayScene`}
-  class="flex w-full flex-col gap-4"
-  onsubmit={handleSubmit}
->
-  <input name="displayId" value={displayId} type="hidden" />
-  <input name="templateId" value="1" type="hidden" />
-
-  <input
-    name="startsAt"
-    value={timeToDate(timeFromInput(startsAtInput), baseDateAsDate)}
-    type="hidden"
-  />
-  <input
-    name="endsAt"
-    value={timeToDate(timeFromInput(endsAtInput), baseDateAsDate)}
-    type="hidden"
-  />
-
+<form class="flex w-full flex-col gap-4" onsubmit={handleSubmit}>
   <div class="flex flex-1 gap-4">
     <div class="w-full flex-1">
       <Input
@@ -94,6 +67,7 @@
         name="name"
         placeholder="Scene name"
         required
+        bind:value={formData.name}
       />
     </div>
 
@@ -105,22 +79,22 @@
       label="Display"
       options={displays}
       name="displayId"
-      bind:value={displayId}
+      bind:value={formData.displayId}
     />
     <Select
       label="Template"
       options={templateOptions}
       name="templateId"
-      bind:value={templateId}
+      bind:value={formData.templateId}
     />
   </div>
 
   <div
     class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
   >
-    {#if templateId}
+    {#if formData.templateId}
       <iframe
-        src={`${VISUALIZER_URL}/edit/template/${templateId}`}
+        src={`${VISUALIZER_URL}/edit/template/${formData.templateId}`}
         frameborder="0"
         title="Preview"
         onmessage={(e) => {

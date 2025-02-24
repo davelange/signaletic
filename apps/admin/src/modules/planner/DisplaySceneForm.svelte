@@ -5,23 +5,21 @@
   import { TimePicker } from '$components/time-picker';
   import { Button } from '$components/button';
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
-  import { enhance } from '$app/forms';
-  import { NiceForm } from '$lib/NiceForm.svelte';
   import type { Dialog } from '$components/dialog/index.svelte';
   import { getContext } from 'svelte';
-  import type { DB } from '$db/lib';
   import { getPlannerState } from './planner.svelte';
+  import type { DisplayScene } from '$db/entities';
+  import { displaySceneRepo } from '$db/lib';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
   let {
     scene
   }: {
-    scene: DB.DisplayScene.Select;
+    scene: DisplayScene;
   } = $props();
 
   const planner = getPlannerState();
-
   const thisDialog = getContext<Dialog>('editDisplayScene');
 
   let baseDate = new Date(scene.startsAt);
@@ -29,7 +27,7 @@
   let endsAtInput = $state(toTimeInput(scene.endsAt));
 
   let payload = $state(scene.templateConfig);
-  let payloadJSON = $derived(JSON.stringify(payload));
+  //let payloadJSON = $derived(JSON.stringify(payload));
 
   $effect(() => {
     startsAtInput = toTimeInput(scene.startsAt);
@@ -52,11 +50,22 @@
     value: template.id.toString()
   }));
 
-  let form = new NiceForm({
+  /* let form = new NiceForm({
     onSuccess() {
       thisDialog.close();
     }
-  });
+  }); */
+
+  async function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+
+    await displaySceneRepo.update(scene.id, {
+      ...scene,
+      startsAt: timeToDate(timeFromInput(startsAtInput), baseDate),
+      endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),
+      templateConfig: JSON.stringify(payload)
+    });
+  }
 
   let displays = page.data.project.displays.map((display) => ({
     label: display.name || '',
@@ -65,12 +74,7 @@
 </script>
 
 <svelte:window onmessage={handleMessage} />
-<form
-  method="post"
-  action={`/projects/${planner.project.id}?/editDisplayScene`}
-  class="flex w-full flex-col gap-4"
-  use:enhance={() => form.enhance()}
->
+<form class="flex w-full flex-col gap-4" onsubmit={handleSubmit}>
   <div class="flex flex-1 gap-4">
     <div class="w-full flex-1">
       <Input label="Name" type="text" name="name" bind:value={scene.name} />
@@ -127,7 +131,7 @@
     <Button type="submit" fullWidth size="default">Save</Button>
   </div>
 
-  <input name="id" value={scene.id} type="hidden" />
+  <!-- <input name="id" value={scene.id} type="hidden" />
   <input name="scheduleEventId" value={scene.scheduleEventId} type="hidden" />
   <input name="templateConfig" value={payloadJSON} type="hidden" />
   <input
@@ -139,5 +143,5 @@
     name="endsAt"
     value={timeToDate(timeFromInput(endsAtInput), baseDate)}
     type="hidden"
-  />
+  /> -->
 </form>

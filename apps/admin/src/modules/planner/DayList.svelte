@@ -9,8 +9,8 @@
   import { useDialog } from '$components/dialog/index.svelte';
   import type { MouseEventHandler } from 'svelte/elements';
   import { colors, formatTime, toHsl } from '$lib/utils';
-  import type { DB } from '$db/lib';
   import { getPlannerState } from './planner.svelte';
+  import type { DisplayScene } from '$db/entities/DisplayScene';
 
   let {
     scenes,
@@ -18,7 +18,7 @@
     color,
     displayId
   }: {
-    scenes: DB.DisplayScene.Select[];
+    scenes: DisplayScene[];
     baseDate: CalendarDate;
     color: (typeof colors)[number];
     displayId: number;
