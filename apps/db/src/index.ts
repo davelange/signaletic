@@ -1,9 +1,14 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
-import * as schema from "./schema";
+import { remultSveltekit } from "remult/remult-sveltekit";
+import { createPostgresDataProvider } from "remult/postgres";
+import { entities } from "./entities";
 
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
 
-const client = neon(process.env.DATABASE_URL);
+const dataProvider = createPostgresDataProvider({
+  connectionString: process.env["DATABASE_URL"],
+});
 
-export const db = drizzle({ client, schema });
+export const api = remultSveltekit({
+  dataProvider,
+  entities,
+});

@@ -14,6 +14,8 @@
   import { page } from '$app/state';
   import { Button } from '$components/button';
   import { getPlannerState } from './planner.svelte';
+  import { remult } from 'remult';
+  import { DisplayScene } from '../../shared/entities/DisplayScene';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -26,6 +28,8 @@
     baseDate: CalendarDate;
     startTime: Time;
   } = $props();
+
+  const repo = remult.repo(DisplayScene);
 
   const planner = getPlannerState();
 
@@ -46,13 +50,27 @@
     label: display.name || '',
     value: display.id.toString()
   }));
+
+  async function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+
+    const data = {
+      displayId,
+      templateId: Number(templateId),
+      startsAt: timeToDate(timeFromInput(startsAtInput), baseDateAsDate),
+      endsAt: timeToDate(timeFromInput(endsAtInput), baseDateAsDate),
+      name: 'Remult'
+    };
+
+    await repo.insert(data);
+  }
 </script>
 
 <form
   method="post"
   action={`/projects/${planner.project.id}?/addDisplayScene`}
   class="flex w-full flex-col gap-4"
-  use:enhance={() => form.enhance()}
+  onsubmit={handleSubmit}
 >
   <input name="displayId" value={displayId} type="hidden" />
   <input name="templateId" value="1" type="hidden" />

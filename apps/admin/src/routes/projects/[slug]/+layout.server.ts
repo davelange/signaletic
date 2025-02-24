@@ -1,6 +1,6 @@
-import { getProjectBySlug, getTemplates } from '$db/lib';
 import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
+import { getProjectBySlug, getTemplates } from '$db/lib';
 
 export const load: LayoutServerLoad = async ({ params }) => {
   const project = await getProjectBySlug(params.slug);

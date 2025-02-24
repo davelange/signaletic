@@ -1,8 +1,8 @@
 import type { LayoutServerLoad } from './$types';
-import { getAllProjects } from '$db/lib';
+import { getProjects } from '$db/lib';
 
 export const load: LayoutServerLoad = async () => {
-  const projects = await getAllProjects();
+  const projects = await getProjects();
 
   return {
     projects

@@ -1,4 +1,4 @@
-import {
+/* import {
   batchUpdateDisplayScenes,
   createDisplay,
   createDisplayScene,
@@ -14,6 +14,8 @@ import {
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { getFormValues } from '$lib/utils';
+import { repo } from 'remult';
+import { ScheduleEvent } from '../../../shared/entities/ScheduleEvent';
 
 export const actions: Actions = {
   deleteProject: async ({ request }) => {
@@ -27,6 +29,10 @@ export const actions: Actions = {
   },
 
   addEvent: async ({ request }) => {
+    const data = await request.json();
+
+    const event = await repo(ScheduleEvent).insert(data);
+
     const formData = await request.formData();
     const data = getFormValues<DB.ScheduleEvent.Insert>(formData);
 
@@ -147,3 +153,4 @@ export const actions: Actions = {
     return fail(400, { error: 'Failed to edit diplay scene' });
   }
 };
+ */

@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+/* import { asc, eq } from "drizzle-orm";
 import { db } from "..";
 import {
   display,
@@ -153,3 +153,28 @@ export async function getTemplateById(id: string) {
 }
 
 export * from "./types";
+ */
+
+import { repo } from "remult";
+import { Project } from "../entities/Project";
+import { Template } from "../entities/Template";
+
+export async function getProjects() {
+  return repo(Project).find();
+}
+
+export async function getProjectBySlug(slug: string) {
+  return repo(Project).findOne({
+    where: { slug },
+    include: {
+      scheduleEvents: {
+        orderBy: { startsAt: "asc" },
+      },
+      displays: { include: { displayScenes: true } },
+    },
+  });
+}
+
+export function getTemplates() {
+  return repo(Template).find();
+}
