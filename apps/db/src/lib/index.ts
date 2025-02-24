@@ -8,6 +8,7 @@ import {
   template,
 } from "../schema";
 import { DB } from "./types";
+import { BatchItem } from "drizzle-orm/batch";
 
 function omit<T extends Record<string, any>, K extends keyof T>(
   obj: T,
@@ -119,6 +120,21 @@ export async function editDisplayScene(
     .update(displayScene)
     .set(omit(params, "id"))
     .where(eq(displayScene.id, id));
+}
+
+export async function batchUpdateDisplayScenes(
+  updates: DB.DisplayScene.Select[]
+) {
+  let op = await Promise.all(
+    updates.map((item) =>
+      db
+        .update(displayScene)
+        .set(omit(item, "id"))
+        .where(eq(displayScene.id, item.id))
+    )
+  );
+
+  return op;
 }
 
 export async function getDisplaySceneById(id: string) {

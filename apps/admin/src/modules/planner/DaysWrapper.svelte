@@ -3,6 +3,8 @@
   import { Time } from '@internationalized/date';
   import DayList from './DayList.svelte';
   import { getPlannerState } from './planner.svelte';
+  import { invalidateAll } from '$app/navigation';
+  import { Button } from '$components/button';
 
   const planner = getPlannerState();
 
@@ -24,6 +26,7 @@
 
   function handleAddDay() {
     const lastDay = planner.dates.at(-1);
+    console.log(planner.dates.at(-1));
     if (!lastDay) return;
     planner.dates.push(lastDay.add({ days: 1 }));
   }
@@ -82,19 +85,22 @@
 </script>
 
 <div class="relative mt-4 flex h-[80vh]">
-  <div
-    class="overflow-hidden border-r border-r-slate-200"
-    onwheel={handleScroll}
-  >
-    <div class="h-full w-[76px]">
+  <div onwheel={handleScroll}>
+    <div class="h-full w-[70px]">
       {#each timeRange as item}
-        <p class="absolute" style:top="{timeToPos(item)}%">
+        <p
+          class="absolute -translate-y-[10px] text-sm font-medium"
+          style:top="{timeToPos(item)}%"
+        >
           {formatTime(item)}
         </p>
       {/each}
     </div>
   </div>
-  <div class="relative flex flex-1" onwheel={handleDaysScroll}>
+  <div
+    class="relative flex flex-1 border border-dashed"
+    onwheel={handleDaysScroll}
+  >
     <div class="absolute inset-0 overflow-hidden">
       <div class="h-full w-full">
         {#each timeRange as item}
@@ -128,23 +134,39 @@
         </div>
       </div>
     {/each}
+    <div class="relative w-[100px] px-6">
+      <button
+        type="button"
+        class="absolute top-4 -translate-y-12 p-1 text-sm font-medium hover:underline"
+        onclick={handleAddDay}
+      >
+        Add day
+      </button>
+    </div>
   </div>
+</div>
+<div class="fixed bottom-[7%] right-[10%]">
+  <!-- <button
+    type="button"
+    onclick={handleAddDay}
+    disabled={!planner.dates.length}
+  >
+    Add day
+  </button> -->
+  <Button
+    type="button"
+    variant="accent"
+    onclick={async () => {
+      const data = planner.getAllTimeDragScenes();
 
-  <div>
-    <button
-      type="button"
-      onclick={handleAddDay}
-      disabled={!planner.dates.length}
-    >
-      Add day
-    </button>
-    <button
-      type="button"
-      onclick={() => {
-        console.log(planner.getAllTimeDragScenes());
-      }}
-    >
-      Get all things
-    </button>
-  </div>
+      await fetch(`?/batchUpdateDisplayScenes`, {
+        method: 'post',
+        body: JSON.stringify(data)
+      });
+
+      invalidateAll();
+    }}
+  >
+    Save changes
+  </Button>
 </div>

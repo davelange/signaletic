@@ -18,11 +18,13 @@ export const defaultTimeEges = {
 class Planner {
   data: PlannerProps['data'] = $state() as PlannerProps['data'];
   selectedDisplayIds: number[] = $state([]);
+  dates: CalendarDate[] = $state([]);
   timeEdges: TimeEdges = $state(defaultTimeEges);
   timeDrags: Record<string, TimeDrag> = {};
 
   constructor(props: PlannerProps) {
     this.data = props.data;
+    this.dates = getEventDays(this.scenes).map(dateToCalendarDate);
     this.selectedDisplayIds = this.data.displays.map((item) => item.id);
   }
 
@@ -44,7 +46,6 @@ class Planner {
       this.selectedDisplayIds.includes(item.displayId)
     )
   );
-  dates = $derived(getEventDays(this.scenes).map(dateToCalendarDate));
 
   setScenes(scenes: DB.DisplayScene.Select[]) {
     this.scenes = scenes;

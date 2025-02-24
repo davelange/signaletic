@@ -1,4 +1,5 @@
 import {
+  batchUpdateDisplayScenes,
   createDisplay,
   createDisplayScene,
   createScheduleEvent,
@@ -120,10 +121,24 @@ export const actions: Actions = {
     const formData = await request.formData();
     const data = getFormValues<DB.DisplayScene.Select>(formData);
 
-    console.log(formData);
-    console.log(data);
-
     const update = await editDisplayScene(data.id, data);
+
+    if (update) {
+      return { success: true };
+    }
+
+    return fail(400, { error: 'Failed to edit diplay scene' });
+  },
+
+  batchUpdateDisplayScenes: async ({ request }) => {
+    const reqJson = (await request.json()) as DB.DisplayScene.Select[];
+    const data = reqJson.map((item) => ({
+      ...item,
+      startsAt: new Date(item.startsAt),
+      endsAt: new Date(item.endsAt)
+    }));
+
+    const update = await batchUpdateDisplayScenes(data);
 
     if (update) {
       return { success: true };
