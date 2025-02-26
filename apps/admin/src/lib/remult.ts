@@ -3,7 +3,7 @@ import { entities } from '$db/entities';
 import { Remult, repo, type ClassType } from 'remult';
 import { createSubscriber } from 'svelte/reactivity';
 
-export function initRemultSvelteReactivity() {
+export function initRemult() {
   Remult.entityRefInit = (x) => {
     let update = () => {};
     const s = createSubscriber((u) => {

@@ -5,10 +5,7 @@
   import { TimePicker } from '$components/time-picker';
   import { Button } from '$components/button';
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
-  import type { Dialog } from '$components/dialog/index.svelte';
-  import { getContext } from 'svelte';
-  import { getPlannerState } from './planner.svelte';
-  import type { DisplayScene } from '$db/entities';
+  import type { Display, DisplayScene, Template } from '$db/entities';
   import { displaySceneRepo } from '$db/lib';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
@@ -19,15 +16,11 @@
     scene: DisplayScene;
   } = $props();
 
-  const planner = getPlannerState();
-  const thisDialog = getContext<Dialog>('editDisplayScene');
-
   let baseDate = new Date(scene.startsAt);
   let startsAtInput = $state(toTimeInput(scene.startsAt));
   let endsAtInput = $state(toTimeInput(scene.endsAt));
 
   let payload = $state(scene.templateConfig);
-  //let payloadJSON = $derived(JSON.stringify(payload));
 
   $effect(() => {
     startsAtInput = toTimeInput(scene.startsAt);
@@ -45,16 +38,10 @@
     payload = event.data.value;
   }
 
-  let templateOptions = page.data.templates.map((template) => ({
+  let templateOptions = page.data.templates.map((template: Template) => ({
     label: template.name || '',
     value: template.id.toString()
   }));
-
-  /* let form = new NiceForm({
-    onSuccess() {
-      thisDialog.close();
-    }
-  }); */
 
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -67,10 +54,14 @@
     });
   }
 
-  let displays = page.data.project.displays.map((display) => ({
+  let displays = page.data.project.displays.map((display: Display) => ({
     label: display.name || '',
-    value: display.id.toString()
+    value: display.id
   }));
+
+  async function handleDelete() {
+    await displaySceneRepo.delete(scene.id);
+  }
 </script>
 
 <svelte:window onmessage={handleMessage} />
@@ -120,28 +111,14 @@
 
   <div class="flex gap-4">
     <Button
-      type="submit"
+      type="button"
       fullWidth
       size="default"
       variant="destructive"
-      formaction={`/projects/${planner.project.id}?/deleteDisplayScene`}
+      onclick={handleDelete}
     >
       Delete
     </Button>
     <Button type="submit" fullWidth size="default">Save</Button>
   </div>
-
-  <!-- <input name="id" value={scene.id} type="hidden" />
-  <input name="scheduleEventId" value={scene.scheduleEventId} type="hidden" />
-  <input name="templateConfig" value={payloadJSON} type="hidden" />
-  <input
-    name="startsAt"
-    value={timeToDate(timeFromInput(startsAtInput), baseDate)}
-    type="hidden"
-  />
-  <input
-    name="endsAt"
-    value={timeToDate(timeFromInput(endsAtInput), baseDate)}
-    type="hidden"
-  /> -->
 </form>

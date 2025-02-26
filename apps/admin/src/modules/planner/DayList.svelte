@@ -25,6 +25,7 @@
   } = $props();
 
   const planner = getPlannerState();
+  const dialog = useDialog();
 
   let timeDrag = planner.addTimeDrag(scenes, baseDate, displayId);
 
@@ -43,9 +44,6 @@
       timeDrag.createBlocks();
     });
   });
-
-  const dialog = useDialog('editDisplayScene');
-  const addSceneDialog = useDialog('addDisplayScene');
 </script>
 
 {#snippet dragHandle(onmousedown: MouseEventHandler<HTMLButtonElement>)}
@@ -88,10 +86,6 @@
           {formatTime(timeDrag.getTimeFromPos(invert(block.bottom)))}
         </p>
 
-        {#snippet editDisplaySceneForm()}
-          <DisplaySceneForm scene={$state.snapshot(scene)} />
-        {/snippet}
-
         <Button
           type="button"
           variant="ghost"
@@ -101,7 +95,10 @@
             dialog.open({
               title: `Edit scene (${scene.name})`,
               description: '',
-              content: editDisplaySceneForm
+              content: DisplaySceneForm,
+              contentProps: {
+                scene: $state.snapshot(scene)
+              }
             });
           }}
         >
@@ -113,30 +110,24 @@
     </div>
   {/each}
 
-  {#snippet addDisplaySceneForm()}
-    <AddDisplayScene
-      baseDate={timeDrag.baseDate}
-      displayId={timeDrag.displayId}
-      startTime={timeDrag.timeEdges.start}
-    />
-  {/snippet}
-
   <Button
     type="button"
     variant="secondary"
     class="absolute bottom-2 left-2 right-2 z-10 m-auto hidden group-hover:block"
     size="sm"
     onclick={() => {
-      addSceneDialog.open({
+      dialog.open({
         title: 'Add scene',
         description: '',
-        content: addDisplaySceneForm
+        content: AddDisplayScene,
+        contentProps: {
+          baseDate: timeDrag.baseDate,
+          displayId: timeDrag.displayId,
+          startTime: timeDrag.timeEdges.start
+        }
       });
     }}
   >
     Add scene
   </Button>
 </div>
-
-<dialog.Dialog {...dialog.props} />
-<addSceneDialog.Dialog {...addSceneDialog.props} />

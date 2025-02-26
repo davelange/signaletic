@@ -1,10 +1,13 @@
 <script>
+  import Dialog from './dialog/Dialog.svelte';
+
   let { children } = $props();
 </script>
 
 <div class="container">
   {@render children()}
 </div>
+<Dialog />
 
 <style>
   .container {

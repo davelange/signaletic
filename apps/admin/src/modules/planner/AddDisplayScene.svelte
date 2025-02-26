@@ -12,6 +12,7 @@
   import { page } from '$app/state';
   import { Button } from '$components/button';
   import { displaySceneRepo } from '$db/lib';
+  import { type Display, type Template } from '$db/entities';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -25,9 +26,7 @@
     startTime: Time;
   } = $props();
 
-  type InsertType = Parameters<typeof displaySceneRepo.insert>[0];
-
-  let formData: InsertType = $state({
+  let mutation = $state({
     name: '',
     templateId: 0,
     displayId
@@ -37,21 +36,21 @@
   let startsAtInput = $state(timeToInput(startTime));
   let endsAtInput = $state(timeToInput(startTime));
 
-  let templateOptions = page.data.templates.map((template) => ({
+  let templateOptions = page.data.templates.map((template: Template) => ({
     label: template.name || '',
-    value: template.id.toString()
+    value: template.id
   }));
 
-  let displays = page.data.project.displays.map((display) => ({
+  let displays = page.data.project.displays.map((display: Display) => ({
     label: display.name || '',
-    value: display.id.toString()
+    value: display.id
   }));
 
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
     await displaySceneRepo.insert({
-      ...formData,
+      ...mutation,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDateAsDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDateAsDate)
     });
@@ -67,7 +66,7 @@
         name="name"
         placeholder="Scene name"
         required
-        bind:value={formData.name}
+        bind:value={mutation.name}
       />
     </div>
 
@@ -79,22 +78,22 @@
       label="Display"
       options={displays}
       name="displayId"
-      bind:value={formData.displayId}
+      bind:value={mutation.displayId}
     />
     <Select
       label="Template"
       options={templateOptions}
       name="templateId"
-      bind:value={formData.templateId}
+      bind:value={mutation.templateId}
     />
   </div>
 
   <div
     class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
   >
-    {#if formData.templateId}
+    {#if mutation.templateId}
       <iframe
-        src={`${VISUALIZER_URL}/edit/template/${formData.templateId}`}
+        src={`${VISUALIZER_URL}/edit/template/${mutation.templateId}`}
         frameborder="0"
         title="Preview"
         onmessage={(e) => {

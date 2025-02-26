@@ -23,7 +23,7 @@ class Planner {
   timeEdges: TimeEdges = $state(defaultTimeEges);
   timeDrags: Record<string, TimeDrag> = {};
 
-  constructor(props: PlannerProps) {
+  init(props: PlannerProps) {
     this.data = props.data;
     this.dates = getEventDays(this.scenes).map(dateToCalendarDate);
     this.selectedDisplayIds = this.data.displays.map((item) => item.id);
@@ -81,10 +81,16 @@ class Planner {
 
 const PLANNER_KEY = Symbol('PLANNER');
 
-export function setPlannerState(props: PlannerProps) {
-  return setContext(PLANNER_KEY, new Planner(props));
+export function initPlanner() {
+  return setContext(PLANNER_KEY, new Planner());
 }
 
 export function getPlannerState() {
-  return getContext<ReturnType<typeof setPlannerState>>(PLANNER_KEY);
+  return getContext<ReturnType<typeof initPlanner>>(PLANNER_KEY);
+}
+
+export function setPlannerState(props: PlannerProps) {
+  const planner = getPlannerState();
+  planner.init(props);
+  return planner;
 }

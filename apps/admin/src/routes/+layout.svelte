@@ -1,11 +1,15 @@
 <script>
   import '../app.css';
   import Layout from '$components/Layout.svelte';
-  import { initRemultSvelteReactivity } from '$lib/remult';
+  import { initRemult } from '$lib/remult';
+  import { initDialog } from '$components/dialog/index.svelte';
+  import { initPlanner } from '$modules/planner/planner.svelte';
 
   let { children } = $props();
 
-  initRemultSvelteReactivity();
+  initPlanner();
+  initRemult();
+  initDialog();
 </script>
 
 <Layout>
