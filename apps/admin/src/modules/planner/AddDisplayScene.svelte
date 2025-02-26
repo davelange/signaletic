@@ -13,6 +13,8 @@
   import { Button } from '$components/button';
   import { displaySceneRepo } from '$db/lib';
   import { type Display, type Template } from '$db/entities';
+  import { useMutation } from '$lib/api.svelte';
+  import { invalidateAll } from '$app/navigation';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -26,7 +28,13 @@
     startTime: Time;
   } = $props();
 
-  let mutation = $state({
+  let mutation = useMutation({
+    fn: displaySceneRepo.insert,
+    onSuccess: () => {
+      invalidateAll();
+    }
+  });
+  let formState = $state({
     name: '',
     templateId: 0,
     displayId
@@ -49,8 +57,8 @@
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
-    await displaySceneRepo.insert({
-      ...mutation,
+    mutation.mutate({
+      ...formState,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDateAsDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDateAsDate)
     });
@@ -66,7 +74,7 @@
         name="name"
         placeholder="Scene name"
         required
-        bind:value={mutation.name}
+        bind:value={formState.name}
       />
     </div>
 
@@ -78,22 +86,22 @@
       label="Display"
       options={displays}
       name="displayId"
-      bind:value={mutation.displayId}
+      bind:value={formState.displayId}
     />
     <Select
       label="Template"
       options={templateOptions}
       name="templateId"
-      bind:value={mutation.templateId}
+      bind:value={formState.templateId}
     />
   </div>
 
   <div
     class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
   >
-    {#if mutation.templateId}
+    {#if formState.templateId}
       <iframe
-        src={`${VISUALIZER_URL}/edit/template/${mutation.templateId}`}
+        src={`${VISUALIZER_URL}/edit/template/${formState.templateId}`}
         frameborder="0"
         title="Preview"
         onmessage={(e) => {
@@ -103,5 +111,7 @@
       ></iframe>
     {/if}
   </div>
-  <Button type="submit" fullWidth size="default">Save</Button>
+  <Button type="submit" fullWidth size="default" disabled={mutation.isPending}>
+    Save
+  </Button>
 </form>

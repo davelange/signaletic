@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { useDialog } from '$components/dialog/index.svelte';
   import { colors, toHsl } from '$lib/utils';
+  import DisplayEditor from './DisplayEditor.svelte';
   import { getPlannerState } from './planner.svelte';
 
   const planner = getPlannerState();
+  const dialog = useDialog();
 </script>
 
 <div class="mb-4 flex gap-4">
@@ -21,6 +24,14 @@
   <button
     class="text-dark/80 rounded-xl bg-slate-200 px-3 py-1 text-xs hover:bg-slate-300"
     type="button"
+    onclick={() => {
+      dialog.open({
+        title: 'Edit displays',
+        description: '',
+        content: DisplayEditor,
+        contentProps: {}
+      });
+    }}
   >
     Edit displays
   </button>

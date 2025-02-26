@@ -159,6 +159,7 @@ import { repo } from "remult";
 import { Project } from "../entities/Project";
 import { Template } from "../entities/Template";
 import { DisplayScene } from "../entities/DisplayScene";
+import { Display } from "../entities";
 
 export async function getProjects() {
   return repo(Project).find();
@@ -181,3 +182,4 @@ export function getTemplates() {
 }
 
 export const displaySceneRepo = repo(DisplayScene);
+export const displayRepo = repo(Display);

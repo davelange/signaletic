@@ -5,8 +5,10 @@
   import { TimePicker } from '$components/time-picker';
   import { Button } from '$components/button';
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
-  import type { Display, DisplayScene, Template } from '$db/entities';
+  import { DisplayScene, type Display, type Template } from '$db/entities';
   import { displaySceneRepo } from '$db/lib';
+  import { useMutation } from '$lib/api.svelte';
+  import { invalidateAll } from '$app/navigation';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -15,6 +17,13 @@
   }: {
     scene: DisplayScene;
   } = $props();
+
+  let mutation = useMutation({
+    fn: (id: number, scene: DisplayScene) => displaySceneRepo.update(id, scene),
+    onSuccess: () => {
+      invalidateAll();
+    }
+  });
 
   let baseDate = new Date(scene.startsAt);
   let startsAtInput = $state(toTimeInput(scene.startsAt));
@@ -46,7 +55,7 @@
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
-    await displaySceneRepo.update(scene.id, {
+    mutation.mutate(scene.id, {
       ...scene,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),

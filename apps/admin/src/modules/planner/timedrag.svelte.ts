@@ -1,8 +1,8 @@
-import type { DB } from '$db/lib';
 import { dateToTime, timeToDate } from '$lib/utils';
 import { CalendarDate, Time } from '@internationalized/date';
 import type { MouseEventHandler } from 'svelte/elements';
 import { defaultTimeEges, type TimeEdges } from './planner.svelte';
+import type { DisplayScene } from '$db/entities';
 
 const MIN_BLOCK_HEIGHT = 2;
 
@@ -17,7 +17,7 @@ type Block = {
 
 export class TimeDrag {
   blocks: Block[] = $state([]);
-  scenes: DB.DisplayScene.Select[] = $state([]);
+  scenes: DisplayScene[] = $state([]);
   timeEdges: TimeEdges = $state(defaultTimeEges);
   maxTimeSpan = $state(0);
   isDragging = false;
@@ -30,7 +30,7 @@ export class TimeDrag {
     timeEdges,
     baseDate
   }: {
-    scenes: DB.DisplayScene.Select[];
+    scenes: DisplayScene[];
     timeEdges: { start: Time; end: Time };
     baseDate: CalendarDate;
   }) {
@@ -59,7 +59,7 @@ export class TimeDrag {
     this.timeEdges = timeEdges;
   }
 
-  updateScenes(scenes: DB.DisplayScene.Select[]) {
+  updateScenes(scenes: DisplayScene[]) {
     this.scenes = [...scenes].sort((a, b) =>
       Math.sign(a.startsAt.getTime() - b.startsAt.getTime())
     );
