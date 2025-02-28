@@ -5,8 +5,20 @@
   import { getPlannerState } from './planner.svelte';
   import { invalidateAll } from '$app/navigation';
   import { Button } from '$components/button';
+  import { useMutation } from '$lib/api.svelte';
+  import { displaySceneRepo } from '$db/lib';
+  import type { DisplayScene } from '$db/entities';
 
   const planner = getPlannerState();
+
+  const saveMutation = useMutation({
+    fn: (items: DisplayScene[]) => {
+      return Promise.all(
+        items.map((item) => displaySceneRepo.update(item.id, item))
+      );
+    },
+    onSuccess: () => invalidateAll()
+  });
 
   let timeSpan = $derived(
     planner.timeEdges.end.compare(planner.timeEdges.start)
@@ -123,14 +135,12 @@
         <div class="relative flex h-full min-w-[200px]">
           {#each planner.selectedDisplays as display}
             {@const list = getItemsInDay(display.displayScenes, date)}
-            {#if list.length % colors.length}
-              <DayList
-                scenes={list}
-                color={colors[display.id % colors.length]}
-                baseDate={date}
-                displayId={display.id}
-              />
-            {/if}
+            <DayList
+              scenes={list}
+              color={colors[display.id % colors.length]}
+              baseDate={date}
+              displayId={display.id}
+            />
           {/each}
         </div>
       </div>
@@ -147,26 +157,13 @@
   </div>
 </div>
 <div class="fixed bottom-[7%] right-[10%]">
-  <!-- <button
-    type="button"
-    onclick={handleAddDay}
-    disabled={!planner.dates.length}
-  >
-    Add day
-  </button> -->
   <Button
     type="button"
     variant="accent"
-    onclick={async () => {
-      const data = planner.getAllTimeDragScenes();
-
-      await fetch(`?/batchUpdateDisplayScenes`, {
-        method: 'post',
-        body: JSON.stringify(data)
-      });
-
-      invalidateAll();
+    onclick={() => {
+      saveMutation.mutate(planner.getAllTimeDragScenes());
     }}
+    disabled={saveMutation.isPending}
   >
     Save changes
   </Button>

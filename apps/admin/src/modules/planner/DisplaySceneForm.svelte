@@ -9,6 +9,7 @@
   import { displaySceneRepo } from '$db/lib';
   import { useMutation } from '$lib/api.svelte';
   import { invalidateAll } from '$app/navigation';
+  import { useDialog } from '$components/dialog/index.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -18,10 +19,20 @@
     scene: DisplayScene;
   } = $props();
 
+  const dialog = useDialog();
+
   let mutation = useMutation({
     fn: (id: number, scene: DisplayScene) => displaySceneRepo.update(id, scene),
-    onSuccess: () => {
-      invalidateAll();
+    onSuccess: async () => {
+      await invalidateAll();
+      dialog.close();
+    }
+  });
+  let deleteMutation = useMutation({
+    fn: (id: number) => displaySceneRepo.delete(id),
+    onSuccess: async () => {
+      await invalidateAll();
+      dialog.close();
     }
   });
 
@@ -47,11 +58,6 @@
     payload = event.data.value;
   }
 
-  let templateOptions = page.data.templates.map((template: Template) => ({
-    label: template.name || '',
-    value: template.id.toString()
-  }));
-
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
@@ -63,14 +69,15 @@
     });
   }
 
+  let templateOptions = page.data.templates.map((template: Template) => ({
+    label: template.name || '',
+    value: template.id.toString()
+  }));
+
   let displays = page.data.project.displays.map((display: Display) => ({
     label: display.name || '',
     value: display.id
   }));
-
-  async function handleDelete() {
-    await displaySceneRepo.delete(scene.id);
-  }
 </script>
 
 <svelte:window onmessage={handleMessage} />
@@ -124,7 +131,7 @@
       fullWidth
       size="default"
       variant="destructive"
-      onclick={handleDelete}
+      onclick={() => deleteMutation.mutate(scene.id)}
     >
       Delete
     </Button>
