@@ -1,7 +1,10 @@
 <script>
   import Dialog from './dialog/Dialog.svelte';
+  import { initDialog } from './dialog/index.svelte';
 
   let { children } = $props();
+
+  initDialog();
 </script>
 
 <div class="container">

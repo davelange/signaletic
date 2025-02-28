@@ -39,6 +39,7 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
+    "@auth/sveltekit": "^1.8.0",
     "pg": "^8.13.3",
     "remult": "^2.7.29"
   }
