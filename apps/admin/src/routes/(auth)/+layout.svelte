@@ -16,7 +16,7 @@
   <Tooltip content="All projects" asLink>
     {#snippet trigger({ props })}
       <Button variant="ghost" {...props} href="/">
-        <ListIcon class="size-4" />
+        <ListIcon class="text-muted-foreground size-4" />
       </Button>
     {/snippet}
   </Tooltip>

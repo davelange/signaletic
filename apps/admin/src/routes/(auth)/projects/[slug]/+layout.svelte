@@ -4,6 +4,7 @@
   import DaysWrapper from '$modules/planner/DaysWrapper.svelte';
   import DisplaysList from '$modules/planner/DisplaysList.svelte';
   import { setPlannerState } from '$modules/planner/planner.svelte';
+  import ProjectHeader from '$modules/project/ProjectHeader.svelte';
 
   let { data, children }: { data: PageData; children: Snippet } = $props();
 
@@ -15,7 +16,7 @@
 </script>
 
 <div class="col-span-3 flex flex-col gap-4">
-  <p class="text-lg font-semibold">{data.project.name}</p>
+  <ProjectHeader />
   <DisplaysList />
   <DaysWrapper />
   {@render children()}

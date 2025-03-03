@@ -125,3 +125,13 @@ export function formatTime(time: Time) {
 export function toHsl(vals: string, alpha = 1) {
   return `hsl(${vals} / ${alpha})`;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function omit<T extends Record<string, any>, K extends keyof T>(
+  obj: T,
+  key: K
+): Omit<T, K> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { [key]: _omitted, ...rest } = obj;
+  return rest;
+}
