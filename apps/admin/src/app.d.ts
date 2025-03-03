@@ -15,4 +15,4 @@ declare global {
   }
 }
 
-export {};
+export type Snippet = () => ReturnType<import('svelte').Snippet>;

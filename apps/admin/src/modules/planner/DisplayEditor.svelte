@@ -6,10 +6,10 @@
   import { displayRepo } from '$db/lib';
   import { useMutation } from '$lib/api.svelte';
   import { getPlannerState } from './planner.svelte';
-  import SaveIcon from 'lucide-svelte/icons/save';
   import DeleteIcon from 'lucide-svelte/icons/trash';
 
   const planner = getPlannerState();
+  console.log(planner);
   let formData = $state({ name: '', projectId: planner.project.id });
 
   const updateMutation = useMutation({
@@ -34,30 +34,28 @@
   });
 </script>
 
-<div class="mb-10 flex w-full flex-col gap-4">
+<div class="mb-10 flex w-full flex-col gap-6">
   {#each planner.allDisplays as display}
-    <div class="flex items-end justify-between">
-      <Input bind:value={display.name} type="text" label="Name" />
+    <div class="flex items-end justify-between gap-4">
+      <Input bind:value={display.name} type="text" name={display.name} />
 
-      <div class="mb-2 ml-auto flex justify-end gap-4">
-        <Button
-          onclick={() => updateMutation.mutate(display)}
-          disabled={updateMutation.isPending}
-          variant="ghost"
-          size="sm"
-          class="text-zinc-600"
-        >
-          <SaveIcon />
-        </Button>
+      <Button
+        onclick={() => updateMutation.mutate(display)}
+        disabled={updateMutation.isPending}
+        variant="secondary"
+        class="text-zinc-600"
+      >
+        Save
+      </Button>
+      <div class="shrink-0">
         <Button
           onclick={() => deleteMutation.mutate(display)}
           disabled={deleteMutation.isPending ||
             display.displayScenes.length > 0}
           variant="ghost"
-          size="sm"
-          class="text-red-400"
+          size="icon"
         >
-          <DeleteIcon />
+          <DeleteIcon class="text-destructive h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -71,10 +69,10 @@
   }}
 >
   <Input
-    name="name"
     bind:value={formData.name}
+    name="name"
     type="text"
-    label="Name"
+    label="Add new display"
     placeholder="New display"
   />
   <Button disabled={addMutation.isPending}>Save</Button>

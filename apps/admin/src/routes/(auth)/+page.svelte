@@ -1,28 +1,39 @@
 <script lang="ts">
-	let { data } = $props();
+  import Button from '$components/button/Button.svelte';
+  import { useDialog } from '$components/dialog/index.svelte.js';
+  import Header from '$components/layout/Header.svelte';
+  import AddProject from '$modules/project/AddProject.svelte';
+
+  let { data } = $props();
+
+  const dialog = useDialog();
 </script>
 
-<h2 class="title">Projects</h2>
+<Header breadcrumbs={[{ label: 'All projects', href: '/' }]} />
 
-<div class="project-list">
-	{#each data.projects as project (project.id)}
-		<a class="card" href="/projects/{project.slug}">
-			<p>{project.name}</p>
-		</a>
-	{/each}
+<ul class="flex flex-col">
+  {#each data.projects as project (project.id)}
+    <li>
+      <a class="w-fit underline" href="/projects/{project.slug}">
+        <p class="text-lg font-semibold">{project.name}</p>
+      </a>
+    </li>
+  {/each}
+</ul>
+
+<div class="col-span-3">
+  <Button
+    type="button"
+    onclick={() => {
+      console.log(dialog);
+      dialog.open({
+        title: 'Create new project',
+        description: '',
+        content: AddProject,
+        contentProps: {}
+      });
+    }}
+  >
+    Add new project
+  </Button>
 </div>
-
-<a href="/projects/new" class="add-new">Add new project</a>
-
-<style>
-	.title {
-		font-size: 2rem;
-		margin-bottom: var(--spacing-4);
-	}
-	.project-list {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-1);
-		margin-bottom: var(--spacing-4);
-	}
-</style>

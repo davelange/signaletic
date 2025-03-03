@@ -21,14 +21,15 @@ export const authHandle: Handle = async ({ event, resolve }) => {
   const session = await event.locals.auth();
 
   if (!event.url.pathname.startsWith('/signin') && !session) {
-    throw redirect(303, '/signin');
+    throw redirect(303, '/auth/signin');
   }
 
-  if (event.url.pathname.startsWith('/signin') && session) {
+  if (event.url.pathname.startsWith('/auth/signin') && session) {
     throw redirect(303, '/');
   }
 
-  event.locals.session = session;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (event.locals as any).session = session;
 
   return resolve(event);
 };

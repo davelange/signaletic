@@ -86,11 +86,9 @@
           {formatTime(timeDrag.getTimeFromPos(invert(block.bottom)))}
         </p>
 
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="sm"
-          class="pointer-events-auto absolute right-2 top-2"
+          class="pointer-events-auto absolute right-3 top-3"
           onclick={() => {
             dialog.open({
               title: `Edit scene (${scene.name})`,
@@ -103,7 +101,7 @@
           }}
         >
           <SettingsIcon opacity={0.7} size={16} />
-        </Button>
+        </button>
       </div>
 
       {@render dragHandle(() => timeDrag.handleDragStart(idx, 'bottom'))}

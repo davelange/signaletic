@@ -1,6 +1,6 @@
 //import type { DB } from '$db/lib';
 import { getContext, setContext } from 'svelte';
-import type { PageData } from '../../routes/projects/[slug]/$types';
+import type { PageData } from '../../routes/(auth)/projects/[slug]/$types';
 import { dateToCalendarDate, getEventDays } from '$lib/utils';
 import { CalendarDate, Time } from '@internationalized/date';
 import { TimeDrag } from './timedrag.svelte';

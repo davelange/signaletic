@@ -7,19 +7,23 @@
     value = $bindable(),
     ...props
   }: HTMLInputAttributes & {
-    label: string;
+    label?: string;
   } = $props();
 </script>
 
-<Label.Root
-  class="flex flex-col space-y-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
->
-  <p>
-    {label}
-  </p>
+<div class="flex w-full max-w-sm flex-col gap-1.5">
+  {#if label}
+    <Label.Root
+      class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      for={`id_${props.name}`}
+    >
+      {label}
+    </Label.Root>
+  {/if}
   <input
-    class="h-input rounded-9px border-border-input bg-background placeholder:text-foreground-alt/50 focus:ring-foreground focus:ring-offset-background inline-flex w-full truncate border px-4 text-base transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm"
+    class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
     {...props}
+    id={props.id || `id_${props.name}`}
     bind:value
   />
-</Label.Root>
+</div>

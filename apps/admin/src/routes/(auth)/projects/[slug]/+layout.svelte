@@ -14,7 +14,7 @@
   });
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="col-span-3 flex flex-col gap-4">
   <p class="text-lg font-semibold">{data.project.name}</p>
   <DisplaysList />
   <DaysWrapper />

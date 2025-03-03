@@ -2,7 +2,6 @@
   import { page } from '$app/state';
   import { Input } from '$components/input/index';
   import { Select } from '$components/select';
-  import { TimePicker } from '$components/time-picker';
   import { Button } from '$components/button';
   import { timeFromInput, timeToDate, toTimeInput } from '$lib/utils';
   import { DisplayScene, type Display, type Template } from '$db/entities';
@@ -76,7 +75,7 @@
 
   let displays = page.data.project.displays.map((display: Display) => ({
     label: display.name || '',
-    value: display.id
+    value: display.id.toString()
   }));
 </script>
 
@@ -87,11 +86,6 @@
       <Input label="Name" type="text" name="name" bind:value={scene.name} />
     </div>
 
-    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
-    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
-  </div>
-
-  <div class="flex items-center gap-4">
     <Select
       label="Display"
       options={displays}
@@ -104,6 +98,8 @@
       name="templateId"
       bind:value={scene.templateId}
     />
+  </div>
+  <div class="flex items-center gap-4">
     <a
       href={`${VISUALIZER_URL}/1/displays/2`}
       class="text-blue-600 underline"

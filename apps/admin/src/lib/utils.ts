@@ -7,6 +7,11 @@ export const colors = [
   { light: '189 91% 88%', default: '189 92% 80%' }
 ];
 
+export function generateSlug(name: string) {
+  const rand = Math.random().toString(36).substring(2, 15);
+  return `${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${rand}`;
+}
+
 export function getEventDays<T extends { startsAt: Date }>(events: T[]) {
   return events
     .map((item) => {

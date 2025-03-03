@@ -97,7 +97,7 @@
   }
 </script>
 
-<div class="relative mt-4 flex h-[80vh]">
+<div class="relative mt-4 flex h-[80vh] overflow-hidden">
   <div onwheel={handleScroll}>
     <div class="h-full w-[70px]">
       {#each timeRange as item}
@@ -132,7 +132,7 @@
         >
           {date.toString()}
         </div>
-        <div class="relative flex h-full min-w-[200px]">
+        <div class="relative flex h-full min-w-[220px]">
           {#each planner.selectedDisplays as display}
             {@const list = getItemsInDay(display.displayScenes, date)}
             <DayList
@@ -151,15 +151,15 @@
         class="absolute top-4 -translate-y-12 p-1 text-sm font-medium hover:underline"
         onclick={handleAddDay}
       >
-        Add day
+        Add day +
       </button>
     </div>
   </div>
 </div>
-<div class="fixed bottom-[7%] right-[10%]">
+<div class="fixed bottom-[3%] right-[5%] shadow-lg">
   <Button
     type="button"
-    variant="accent"
+    variant="default"
     onclick={() => {
       saveMutation.mutate(planner.getAllTimeDragScenes());
     }}

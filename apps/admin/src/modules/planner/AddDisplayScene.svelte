@@ -6,7 +6,6 @@
     timeToDate,
     timeToInput
   } from '$lib/utils';
-  import { TimePicker } from '$components/time-picker';
   import type { CalendarDate, Time } from '@internationalized/date';
   import { Select } from '$components/select';
   import { page } from '$app/state';
@@ -46,12 +45,12 @@
 
   let templateOptions = page.data.templates.map((template: Template) => ({
     label: template.name || '',
-    value: template.id
+    value: template.id.toString()
   }));
 
   let displays = page.data.project.displays.map((display: Display) => ({
     label: display.name || '',
-    value: display.id
+    value: display.id.toString()
   }));
 
   async function handleSubmit(e: SubmitEvent) {
@@ -77,11 +76,6 @@
         bind:value={formState.name}
       />
     </div>
-
-    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
-    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
-  </div>
-  <div class="flex gap-4">
     <Select
       label="Display"
       options={displays}
@@ -95,7 +89,6 @@
       bind:value={formState.templateId}
     />
   </div>
-
   <div
     class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
   >
