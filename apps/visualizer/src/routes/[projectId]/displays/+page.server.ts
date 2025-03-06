@@ -1,13 +1,13 @@
-import { getDisplays } from '$db/lib';
+import { getProjectById } from '$db/lib';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const displays = await getDisplays(params.projectId);
+	const project = await getProjectById(Number(params.projectId));
 
-	if (!displays) {
+	if (!project) {
 		error(404);
 	}
 
-	return { displays, projectId: params.projectId };
+	return { project };
 };

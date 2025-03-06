@@ -1,9 +1,9 @@
-import { getAllProjects } from '$db/lib';
+import { getProjects } from '$db/lib';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const projects = await getAllProjects();
+	const projects = await getProjects();
 
 	if (!projects) {
 		return error(404);
