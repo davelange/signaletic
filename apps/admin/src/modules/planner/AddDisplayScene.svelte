@@ -15,6 +15,7 @@
   import { useMutation } from '$lib/api.svelte';
   import { invalidateAll } from '$app/navigation';
   import { TimePicker } from '$components/time-picker';
+  import { routes } from '$lib/routes';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -99,7 +100,7 @@
   >
     {#if formState.templateId}
       <iframe
-        src={`${VISUALIZER_URL}/edit/template/${formState.templateId}`}
+        src={routes.TEMPLATE(formState.templateId)}
         frameborder="0"
         title="Preview"
         onmessage={(e) => {

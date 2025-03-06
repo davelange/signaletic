@@ -135,3 +135,7 @@ export function omit<T extends Record<string, any>, K extends keyof T>(
   const { [key]: _omitted, ...rest } = obj;
   return rest;
 }
+
+export function formatCalendarDate(date: CalendarDate) {
+  return calendarDateToDate(date).toLocaleDateString();
+}

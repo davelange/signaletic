@@ -167,6 +167,7 @@
       saveMutation.mutate(planner.getAllTimeDragScenes());
     }}
     disabled={saveMutation.isPending}
+    isLoading={saveMutation.isPending}
   >
     Save changes
   </Button>

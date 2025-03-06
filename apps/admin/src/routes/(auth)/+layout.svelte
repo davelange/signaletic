@@ -6,6 +6,7 @@
   import ListIcon from 'lucide-svelte/icons/list';
   import { signOut } from '@auth/sveltekit/client';
   import { Tooltip, TooltipProvider } from '$components/tooltip';
+  import { routes } from '$lib/routes';
 
   let { children } = $props();
 </script>
@@ -15,7 +16,7 @@
 
   <Tooltip content="All projects" asLink>
     {#snippet trigger({ props })}
-      <Button variant="ghost" {...props} href="/">
+      <Button variant="ghost" {...props} href={routes.HOME}>
         <ListIcon class="text-muted-foreground size-4" />
       </Button>
     {/snippet}

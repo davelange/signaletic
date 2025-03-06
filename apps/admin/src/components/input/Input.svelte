@@ -11,7 +11,7 @@
   } = $props();
 </script>
 
-<div class="flex w-full max-w-sm flex-col gap-1.5">
+<div class="flex w-full max-w-full flex-col gap-1.5">
   {#if label}
     <Label.Root
       class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

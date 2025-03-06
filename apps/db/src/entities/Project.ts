@@ -34,7 +34,7 @@ export class Project {
   name?: string;
 
   @Fields.string({ validate: [Validators.unique], allowNull: true })
-  slug?: string;
+  slug!: string;
 
   // Relations toMany
   @Relations.toMany(() => Display)

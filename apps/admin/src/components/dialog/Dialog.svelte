@@ -16,7 +16,7 @@
     <Dialog.Overlay class="bg-background/80 fixed inset-0 backdrop-blur-sm" />
 
     <Dialog.Content
-      class="bg-background fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-fit min-w-[600px] max-w-[94%] translate-x-[-50%] translate-y-[-50%] gap-4 overflow-scroll border p-6 shadow-lg sm:rounded-lg"
+      class="bg-background fixed left-[50%] top-[50%] z-50 grid w-fit min-w-[600px] max-w-[94%] translate-x-[-50%] translate-y-[-50%] gap-4 border p-6 shadow-lg sm:rounded-lg"
     >
       {#if dialog.options}
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">

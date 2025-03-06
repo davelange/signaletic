@@ -10,6 +10,7 @@
   import { invalidateAll } from '$app/navigation';
   import { useDialog } from '$components/dialog/index.svelte';
   import { TimePicker } from '$components/time-picker';
+  import { routes } from '$lib/routes';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -110,21 +111,11 @@
     <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
 
-  <div class="flex items-center gap-4">
-    <a
-      href={`${VISUALIZER_URL}/1/displays/2`}
-      class="text-blue-600 underline"
-      target="_blank"
-    >
-      Preview
-    </a>
-  </div>
-
   <div
     class="flex aspect-video w-[90vw] max-w-full items-center justify-center"
   >
     <iframe
-      src={`${VISUALIZER_URL}/edit/template/${scene.templateId}?displaySceneId=${scene.id}`}
+      src={routes.SCENE_TEMPLATE(scene.templateId, scene.id)}
       frameborder="0"
       title="Preview"
       onmessage={(e) => {

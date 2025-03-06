@@ -15,7 +15,10 @@ export async function getProjectBySlug(slug: string) {
       scheduleEvents: {
         orderBy: { startsAt: "asc" },
       },
-      displays: { include: { displayScenes: true } },
+      displays: {
+        orderBy: { name: "asc" },
+        include: { displayScenes: true },
+      },
     },
   });
 }
