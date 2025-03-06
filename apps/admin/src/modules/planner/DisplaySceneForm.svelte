@@ -9,6 +9,7 @@
   import { useMutation } from '$lib/api.svelte';
   import { invalidateAll } from '$app/navigation';
   import { useDialog } from '$components/dialog/index.svelte';
+  import { TimePicker } from '$components/time-picker';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -24,14 +25,12 @@
     fn: (id: number, scene: DisplayScene) => displaySceneRepo.update(id, scene),
     onSuccess: async () => {
       await invalidateAll();
-      dialog.close();
     }
   });
   let deleteMutation = useMutation({
     fn: (id: number) => displaySceneRepo.delete(id),
     onSuccess: async () => {
       await invalidateAll();
-      dialog.close();
     }
   });
 
@@ -60,12 +59,18 @@
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
-    mutation.mutate(scene.id, {
+    await mutation.mutate(scene.id, {
       ...scene,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),
       templateConfig: JSON.stringify(payload)
     });
+    dialog.close();
+  }
+
+  async function handleDelete() {
+    await deleteMutation.mutate(scene.id);
+    dialog.close();
   }
 
   let templateOptions = page.data.templates.map((template: Template) => ({
@@ -99,6 +104,12 @@
       bind:value={scene.templateId}
     />
   </div>
+
+  <div class="flex flex-1 gap-4">
+    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
+    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+  </div>
+
   <div class="flex items-center gap-4">
     <a
       href={`${VISUALIZER_URL}/1/displays/2`}
@@ -109,7 +120,9 @@
     </a>
   </div>
 
-  <div class="flex aspect-video w-[1000px] items-center justify-center">
+  <div
+    class="flex aspect-video w-[90vw] max-w-full items-center justify-center"
+  >
     <iframe
       src={`${VISUALIZER_URL}/edit/${scene.id}`}
       frameborder="0"
@@ -127,10 +140,20 @@
       fullWidth
       size="default"
       variant="destructive"
-      onclick={() => deleteMutation.mutate(scene.id)}
+      onclick={handleDelete}
+      disabled={deleteMutation.isPending || mutation.isPending}
+      isLoading={deleteMutation.isPending}
     >
       Delete
     </Button>
-    <Button type="submit" fullWidth size="default">Save</Button>
+    <Button
+      type="submit"
+      fullWidth
+      size="default"
+      disabled={deleteMutation.isPending || mutation.isPending}
+      isLoading={mutation.isPending}
+    >
+      Save
+    </Button>
   </div>
 </form>

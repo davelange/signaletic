@@ -14,6 +14,7 @@
   import { type Display, type Template } from '$db/entities';
   import { useMutation } from '$lib/api.svelte';
   import { invalidateAll } from '$app/navigation';
+  import { TimePicker } from '$components/time-picker';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -89,6 +90,10 @@
       bind:value={formState.templateId}
     />
   </div>
+  <div class="flex flex-1 gap-4">
+    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
+    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+  </div>
   <div
     class="flex aspect-video w-[1000px] items-center justify-center bg-slate-100"
   >
@@ -104,7 +109,13 @@
       ></iframe>
     {/if}
   </div>
-  <Button type="submit" fullWidth size="default" disabled={mutation.isPending}>
+  <Button
+    type="submit"
+    fullWidth
+    size="default"
+    disabled={mutation.isPending}
+    isLoading={mutation.isPending}
+  >
     Save
   </Button>
 </form>

@@ -38,8 +38,10 @@
       }}
       fullWidth
     >
-      <CalendarIcon class="mr-2 h-4 w-4" />
-      {value ? value : 'Select a time'}
+      <CalendarIcon class="mr-2 h-4 w-4  justify-self-start" />
+      <div class="flex-1 px-2">
+        {value ? value : 'Select a time'}
+      </div>
     </Button>
   </Label.Root>
 </div>

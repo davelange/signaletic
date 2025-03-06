@@ -73,7 +73,9 @@
       style:top="{block.top}%"
       style:bottom="{block.bottom}%"
     >
-      {@render dragHandle(() => timeDrag.handleDragStart(idx, 'top'))}
+      {@render dragHandle(() => {
+        timeDrag.handleDragStart(idx, 'top');
+      })}
 
       <div
         class="pointer-events-none absolute flex w-full flex-1 flex-col justify-between p-2"
@@ -104,7 +106,9 @@
         </button>
       </div>
 
-      {@render dragHandle(() => timeDrag.handleDragStart(idx, 'bottom'))}
+      {@render dragHandle(() => {
+        timeDrag.handleDragStart(idx, 'bottom');
+      })}
     </div>
   {/each}
 

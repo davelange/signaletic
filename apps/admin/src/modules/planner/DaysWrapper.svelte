@@ -2,6 +2,7 @@
   import { colors, formatTime, getItemsInDay, msToHours } from '$lib/utils';
   import { Time } from '@internationalized/date';
   import DayList from './DayList.svelte';
+  import PlusIcon from 'lucide-svelte/icons/plus';
   import { getPlannerState } from './planner.svelte';
   import { invalidateAll } from '$app/navigation';
   import { Button } from '$components/button';
@@ -97,8 +98,8 @@
   }
 </script>
 
-<div class="relative mt-4 flex h-[80vh] overflow-hidden">
-  <div onwheel={handleScroll}>
+<div class="relative mt-4 flex h-[80vh]">
+  <div onwheel={handleScroll} class="relative overflow-hidden">
     <div class="h-full w-[70px]">
       {#each timeRange as item}
         <p
@@ -145,14 +146,16 @@
         </div>
       </div>
     {/each}
-    <div class="relative w-[100px] px-6">
-      <button
-        type="button"
-        class="absolute top-4 -translate-y-12 p-1 text-sm font-medium hover:underline"
+    <div class="relative flex w-[200px] justify-center">
+      <Button
+        size="sm"
+        variant="ghost"
+        class="absolute -translate-y-[100%]"
         onclick={handleAddDay}
       >
-        Add day +
-      </button>
+        Add day
+        <PlusIcon class="ml-2 size-3" />
+      </Button>
     </div>
   </div>
 </div>

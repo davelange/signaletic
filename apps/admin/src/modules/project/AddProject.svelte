@@ -13,6 +13,7 @@
     fn: () => repo(Project).insert(project),
     onSuccess: () => invalidateAll()
   });
+  const dialog = useDialog();
 
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
@@ -20,7 +21,7 @@
     project.slug = generateSlug(project.name!);
     await mutation.mutate();
 
-    useDialog().close();
+    dialog.close();
   };
 </script>
 
