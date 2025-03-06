@@ -36,13 +36,30 @@ export async function getDisplayById(id: number) {
     include: {
       displayScenes: {
         orderBy: { startsAt: "asc" },
+        include: {
+          template: true,
+          templateConfig: true,
+        },
       },
+    },
+  });
+}
+
+export async function getDisplaySceneById(id: number) {
+  return repo(DisplayScene).findId(id, {
+    include: {
+      templateConfig: true,
+      template: true,
     },
   });
 }
 
 export function getTemplates() {
   return repo(Template).find();
+}
+
+export function getTemplateById(id: number) {
+  return repo(Template).findId(id);
 }
 
 export const displaySceneRepo = repo(DisplayScene);

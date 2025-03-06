@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint ."
 	},
 	"dependencies": {
-		"drizzle-orm": "^0.38.0",
+		"pg": "^8.13.3",
+		"remult": "^2.7.29",
 		"lil-gui": "*"
 	},
 	"devDependencies": {

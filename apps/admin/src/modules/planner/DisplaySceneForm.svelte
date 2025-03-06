@@ -124,7 +124,7 @@
     class="flex aspect-video w-[90vw] max-w-full items-center justify-center"
   >
     <iframe
-      src={`${VISUALIZER_URL}/edit/${scene.id}`}
+      src={`${VISUALIZER_URL}/edit/template/${scene.templateId}?displaySceneId=${scene.id}`}
       frameborder="0"
       title="Preview"
       onmessage={(e) => {
