@@ -49,12 +49,22 @@
     const down = event.deltaY < 0;
     const op = down ? 'add' : 'subtract';
 
-    planner.timeEdges.start = planner.timeEdges.start[op]({
+    const nextStart = planner.timeEdges.start[op]({
       minutes: 10
     });
-    planner.timeEdges.end = planner.timeEdges.end[op]({
+    const nextEnd = planner.timeEdges.end[op]({
       minutes: 10
     });
+
+    if (
+      (nextStart.hour === 0 && nextStart.minute === 0) ||
+      (nextEnd.hour === 23 && nextEnd.minute == 50)
+    ) {
+      return;
+    }
+
+    planner.timeEdges.start = nextStart;
+    planner.timeEdges.end = nextEnd;
   };
 
   const handleScroll = (
@@ -119,7 +129,7 @@
       <div class="h-full w-full">
         {#each timeRange as item}
           <div
-            class="border-dark-10 absolute z-10 h-px w-full border-b border-dashed"
+            class="border-dark-10 absolute h-px w-full border-b border-dashed"
             style:top="{timeToPos(item)}%"
           ></div>
         {/each}

@@ -66,6 +66,7 @@
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),
       templateConfig: JSON.stringify(payload)
     });
+
     dialog.close();
   }
 
@@ -83,6 +84,9 @@
     label: display.name || '',
     value: display.id.toString()
   }));
+
+  $inspect(payload);
+  $inspect(scene);
 </script>
 
 <svelte:window onmessage={handleMessage} />
@@ -119,6 +123,7 @@
       frameborder="0"
       title="Preview"
       onmessage={(e) => {
+        console.log('Message received');
         console.log(e);
       }}
       class="h-full w-full"

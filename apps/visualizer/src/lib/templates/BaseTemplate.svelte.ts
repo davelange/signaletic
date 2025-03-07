@@ -1,19 +1,26 @@
 import GUI from 'lil-gui';
 import type { Component } from 'svelte';
 
-export type TemplateParameters = Record<string, string | number>;
+export type TemplateParameters = Record<string, string | number | boolean>;
 export type TemplateConfig = {
 	name: string;
 	parameters: TemplateParameters;
 };
 
-export class BaseTemplate {
+type GUISub = Parameters<GUI['onFinishChange']>[0];
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const defaultParams = {};
+export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 	component: Component | undefined;
 	gui = new GUI();
-	parameters = $state<TemplateParameters>();
+	parameters = $state<T>() as T;
 	config: TemplateConfig;
 	targetOrigin = import.meta.env.VITE_ADMIN_URL as string;
 	debug = $state(true);
+	guiSubs: GUISub[] = [];
+
+	onStop?: () => void | undefined;
 
 	constructor({
 		config,
@@ -21,7 +28,7 @@ export class BaseTemplate {
 		parameters
 	}: {
 		config: TemplateConfig;
-		defaultParameters: TemplateParameters;
+		defaultParameters: T;
 		parameters: TemplateParameters;
 	}) {
 		this.config = config;
@@ -29,6 +36,10 @@ export class BaseTemplate {
 			...defaultParameters,
 			...parameters
 		};
+	}
+
+	onGuiFinishChange(sub: GUISub) {
+		this.guiSubs.push(sub);
 	}
 
 	loadGUI(options?: { onFinishChange?: () => void }) {
@@ -43,7 +54,11 @@ export class BaseTemplate {
 			}
 		}
 
-		this.gui.onFinishChange(() => {
+		this.gui.onFinishChange((data) => {
+			this.guiSubs.map((fn) => {
+				fn(data);
+			});
+
 			window?.parent.postMessage(
 				{
 					type: 'templateConfigUpdate',

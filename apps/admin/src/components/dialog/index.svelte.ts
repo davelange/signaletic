@@ -23,7 +23,6 @@ export class Dialog {
 
   close() {
     this.isOpen = false;
-    this.options = undefined;
   }
 }
 

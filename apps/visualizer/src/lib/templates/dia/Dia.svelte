@@ -1,224 +1,144 @@
 <script lang="ts">
-	import type { BaseTemplate } from '$templates/BaseTemplate.svelte';
+	//import GUI from 'lil-gui';
+	import p5, { Font, Shader, type Graphics } from 'p5';
 
-	let { template }: { template: BaseTemplate } = $props();
+	import { onDestroy, onMount } from 'svelte';
+	import type { DiaTemplate } from './index.svelte';
 
-	function handleMessage(event: MessageEvent) {
-		if (event.data.type !== 'templateStatus' || !event.data.isReady) return;
+	let { template }: { template: DiaTemplate } = $props();
 
-		template.loadGUI({
-			onFinishChange: () =>
-				window.postMessage(
-					{ type: 'templateParameterUpdate', value: $state.snapshot(template.parameters) },
-					window.location.href
-				)
-		});
+	let sketch: p5 | undefined = $state();
+	let basePath = '/assets/dia';
 
-		window.postMessage(
-			{ type: 'templateParameterUpdate', value: $state.snapshot(template.parameters) },
-			window.location.href
-		);
-	}
-</script>
+	template.onStop = () => {
+		sketch?.remove();
+	};
 
-<svelte:window onmessage={handleMessage} />
-
-<svelte:head>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.min.js"></script>
-	<script>
-		// Adapted from https://tools.dia.tv/scan/
-		let basePath = '/assets/dia';
+	onMount(async () => {
+		template.loadGUI();
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;
-		let font;
 
-		let gui;
+		let font: Font;
+		let wordTexture: Graphics;
+		let displacement: Graphics;
 
-		const params = {
-			word: 'DIA',
-			animationDirection: 0,
-			animationSpeed: 0.1,
-			rotation: 0,
-			slices: 255,
-			timeOffset: 1,
-			ease: 3,
+		let shaderProgram: Shader;
 
-			repeatX: 1,
-			repeatY: 1,
-			randomDirection: false,
-			randomTime: false,
-			seed: 0
-		};
+		sketch = new p5(async (p: p5) => {
+			console.log('init');
 
-		let animationDirection = params.animationDirection;
-		let animationSpeed = params.animationSpeed;
-		let rotation = params.rotation;
-		let slices = params.slices;
-		let timeOffset = params.timeOffset;
-		let ease = params.ease;
+			p.preload = () => {
+				font = p.loadFont(fontFile);
+				shaderProgram = p.loadShader(`${basePath}/vertex.vert`, `${basePath}/fragment.frag`);
+			};
 
-		let wordTexture;
-		let displacement;
+			p.setup = async () => {
+				let canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 
-		let buffer;
-		let shaderProgram;
+				let w = window.innerHeight * 0.6;
+				let h = window.innerHeight * 0.6;
 
-		function preload() {
-			font = loadFont(fontFile);
-			shaderProgram = loadShader(`${basePath}/vertex.vert`, `${basePath}/fragment.frag`);
-		}
+				p.createCanvas(w, h, p.WEBGL, canvas);
 
-		function setup() {
-			let canvas = document.querySelector('#canvas');
-
-			let w = window.innerHeight * 0.6;
-			let h = window.innerHeight * 0.6;
-
-			createCanvas(w, h, WEBGL, canvas);
-			// buffer = createGraphics(1000, 1000, WEBGL);
-
-			textSize(h / 2);
-			wordTexture = createGraphics(width, height);
-			cacheInput();
-			displacement = createGraphics(width, height);
-			cacheDisplacement();
-
-			window.postMessage({ type: 'templateStatus', isReady: true });
-		}
-
-		function handleMessage(event) {
-			if (event.data.type !== 'templateParameterUpdate') return;
-
-			for (const key in event.data.value) {
-				params[key] = event.data.value[key];
-				paramUpdaters[key]?.(event.data.value[key]);
-			}
-		}
-
-		function draw() {
-			background(0);
-
-			shaderProgram.setUniform('uTexture', wordTexture);
-			shaderProgram.setUniform('uDisplacement', displacement);
-			shaderProgram.setUniform('time', millis() * 0.001);
-			shaderProgram.setUniform('sliceAmount', slices);
-			shaderProgram.setUniform('animationDirection', animationDirection); //
-			shaderProgram.setUniform('animationSpeed', animationSpeed);
-			shaderProgram.setUniform('timeOffset', timeOffset);
-			shaderProgram.setUniform('ease', ease);
-			shaderProgram.setUniform('repeatX', params.repeatX);
-			shaderProgram.setUniform('repeatY', params.repeatY);
-			shaderProgram.setUniform('randomSeed', params.seed);
-
-			shaderProgram.setUniform('randomDirection', params.randomDirection ? 1 : 0);
-			shaderProgram.setUniform('randomTime', params.randomTime ? 1 : 0);
-
-			shader(shaderProgram);
-			rect(-width / 2, -height / 2, width, height);
-		}
-
-		function cacheInput() {
-			wordTexture.textAlign(CENTER, CENTER);
-			wordTexture.textFont(font);
-			wordTexture.textSize(height / 2);
-			wordTexture.fill(255);
-			wordTexture.noStroke();
-			wordTexture.background(0);
-
-			// Calculate the bounding box of the text using the wordTexture context
-			let bboxWidth = wordTexture.textWidth(params.word);
-			let bboxHeight = (wordTexture.textAscent() + wordTexture.textDescent()) * 0.76;
-
-			// Calculate scale factors for width and height
-			let scaleX = width / bboxWidth;
-			let scaleY = height / bboxHeight + 2;
-
-			wordTexture.push();
-			wordTexture.translate(width * 0.5, 0.2);
-			wordTexture.applyMatrix(scaleX, 0, 0, scaleY, 0, 0);
-			wordTexture.text(params.word, 0, 0);
-			wordTexture.pop();
-		}
-
-		function cacheDisplacement() {
-			let w = width;
-			let h = height;
-			let d = sqrt(w * w + h * h); // diagonal
-			let effectiveLength = h + abs(sin(radians(rotation))) * (d - h);
-
-			displacement.push();
-			displacement.translate(width / 2, height / 2);
-			displacement.scale(1.5, 1.5);
-			displacement.rotate(radians(rotation));
-
-			for (let y = -effectiveLength / 2; y < effectiveLength / 2; y++) {
-				let lerpValue = (y + effectiveLength / 2) / effectiveLength;
-				let col = lerpColor(color(0), color(255), lerpValue);
-				displacement.stroke(col);
-				displacement.line(-width / 2, y, width / 2, y);
-			}
-			displacement.pop();
-		}
-
-		function easeInOut(x) {
-			return x < 0.5 ? Math.pow(2, ease - 1) * Math.pow(x, ease) : 1 - pow(-2 * x + 2, ease) / 2;
-		}
-
-		const paramUpdaters = {
-			word: (val) => {
+				p.textSize(h / 2);
+				wordTexture = p.createGraphics(p.width, p.height);
 				cacheInput();
-			},
-			animationSpeed: (value) => {
-				animationSpeed = value;
-			},
-			timeOffset: (value) => {
-				timeOffset = value;
+				displacement = p.createGraphics(p.width, p.height);
+				cacheDisplacement();
+
+				p.noLoop();
+
+				// Weird workaround
+				cacheDisplacement();
+				cacheDisplacement();
+
+				setTimeout(() => {
+					p.loop();
+				}, 100);
+			};
+
+			template.onGuiFinishChange(() => {
+				cacheInput();
+				cacheDisplacement();
+			});
+
+			p.draw = () => {
+				p.background(0);
+
+				shaderProgram.setUniform('uTexture', wordTexture);
+				shaderProgram.setUniform('uDisplacement', displacement);
+				shaderProgram.setUniform('time', p.millis() * 0.001);
+				shaderProgram.setUniform('sliceAmount', template.parameters.slices);
+				shaderProgram.setUniform('animationDirection', template.parameters.animationDirection); //
+				shaderProgram.setUniform('animationSpeed', template.parameters.animationSpeed);
+				shaderProgram.setUniform('timeOffset', template.parameters.timeOffset);
+				shaderProgram.setUniform('ease', template.parameters.ease);
+				shaderProgram.setUniform('repeatX', template.parameters.repeatX);
+				shaderProgram.setUniform('repeatY', template.parameters.repeatY);
+				shaderProgram.setUniform('randomSeed', template.parameters.seed);
+
+				p.shader(shaderProgram);
+				p.rect(-p.width / 2, -p.height / 2, p.width, p.height);
+			};
+
+			function cacheInput() {
+				wordTexture.textAlign(p.CENTER, p.CENTER);
+				wordTexture.textFont(font);
+				wordTexture.textSize(p.height / 2);
+				wordTexture.fill(255);
+				wordTexture.noStroke();
+				wordTexture.background(0);
+
+				// Calculate the bounding box of the text using the wordTexture context
+				let bboxWidth = wordTexture.textWidth(template.parameters.word);
+				let bboxHeight = (wordTexture.textAscent() + wordTexture.textDescent()) * 0.76;
+
+				// Calculate scale factors for width and height
+				let scaleX = p.width / bboxWidth;
+				let scaleY = p.height / bboxHeight + 2;
+
+				wordTexture.push();
+				wordTexture.translate(p.width * 0.5, p.height * 0.05);
+				wordTexture.applyMatrix(scaleX, 0, 0, scaleY, 0, 0);
+				wordTexture.text(template.parameters.word, 0, 0);
+				wordTexture.pop();
 			}
-		};
 
-		/* function updateWord(_value) {
-			cacheInput();
-		}
+			function cacheDisplacement() {
+				let w = p.width;
+				let h = p.height;
+				let d = p.sqrt(w * w + h * h); // diagonal
+				let effectiveLength = h + p.abs(p.sin(p.radians(template.parameters.rotation))) * (d - h);
 
-		function updateSlices(value) {
-			slices = value;
-		}
+				displacement.push();
+				displacement.translate(p.width / 2, p.height / 2);
+				displacement.scale(1.5, 1.5);
+				displacement.rotate(p.radians(template.parameters.rotation));
 
-		function updateAnimationDirection(value) {
-			animationDirection = value;
-		}
+				for (let y = -effectiveLength / 2; y < effectiveLength / 2; y++) {
+					let lerpValue = (y + effectiveLength / 2) / effectiveLength;
+					let col = p.lerpColor(p.color(0), p.color(255), lerpValue);
+					displacement.stroke(col);
+					displacement.line(-p.width / 2, y, p.width / 2, y);
+				}
+				displacement.pop();
+			}
+		});
+	});
 
-		function updateSpeed(value) {
-			animationSpeed = value;
-		}
+	onDestroy(() => {
+		sketch?.remove();
+	});
+</script>
 
-		function updateTimeOffset(value) {
-			timeOffset = value;
-		}
-
-		function updateEase(value) {
-			ease = value;
-		}
-
-		function updateRotation(value) {
-			rotation = value;
-			cacheDisplacement();
-		} */
-
-		window.addEventListener('message', handleMessage);
-	</script>
-</svelte:head>
-
-<div class="wrapper">
-	<canvas id="canvas" width="1000" height="1000" style="width: 1000px; height: 1000px;"></canvas>
+<div class="wrapper" id="wrapper">
+	<canvas id="canvas" width="1000px" height="1000px"></canvas>
 </div>
 
 <style>
 	.wrapper {
 		background-color: #000;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		height: 100vh;
 		width: 100vw;
 	}

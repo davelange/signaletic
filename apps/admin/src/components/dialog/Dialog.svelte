@@ -18,7 +18,7 @@
     <Dialog.Content
       class="bg-background fixed left-[50%] top-[50%] z-50 grid w-fit min-w-[600px] max-w-[94%] translate-x-[-50%] translate-y-[-50%] gap-4 border p-6 shadow-lg sm:rounded-lg"
     >
-      {#if dialog.options}
+      {#if dialog.options && dialog.isOpen}
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">
           <Dialog.Title
             class="text-lg font-semibold leading-none tracking-tight"
@@ -32,7 +32,7 @@
           {/if}
         </div>
         <div class="flex flex-col items-start gap-1 pb-11 pt-7">
-          <dialog.options.content {...dialog.options.contentProps} />
+          <dialog.options.content {...dialog.options?.contentProps} />
         </div>
       {/if}
 

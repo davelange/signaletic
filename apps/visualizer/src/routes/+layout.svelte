@@ -7,4 +7,14 @@
 	initRemult();
 </script>
 
-{@render children()}
+<div class="vis-wrapper">
+	{@render children()}
+</div>
+
+<style>
+	.vis-wrapper {
+		background-color: #000;
+		height: 100vh;
+		width: 100vw;
+	}
+</style>
