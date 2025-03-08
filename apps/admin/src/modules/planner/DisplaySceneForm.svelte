@@ -127,6 +127,7 @@
         console.log(e);
       }}
       class="h-full w-full"
+      allow="camera"
     ></iframe>
   </div>
 

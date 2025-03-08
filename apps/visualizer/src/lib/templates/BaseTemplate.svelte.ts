@@ -1,7 +1,7 @@
 import GUI from 'lil-gui';
 import type { Component } from 'svelte';
 
-export type TemplateParameters = Record<string, string | number | boolean>;
+export type TemplateParameters = Record<string, unknown>;
 export type TemplateConfig = {
 	name: string;
 	parameters: TemplateParameters;
@@ -62,7 +62,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 			window?.parent.postMessage(
 				{
 					type: 'templateConfigUpdate',
-					value: $state.snapshot(this.parameters)
+					value: $state.snapshot(data.object)
 				},
 				this.targetOrigin
 			);
