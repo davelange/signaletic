@@ -2,7 +2,7 @@
   import { colors, formatTime, getItemsInDay, msToHours } from '$lib/utils';
   import { Time } from '@internationalized/date';
   import DayList from './DayList.svelte';
-  import PlusIcon from 'lucide-svelte/icons/plus';
+  import PlusIcon from '@lucide/svelte/icons/plus';
   import { getPlannerState } from './planner.svelte';
   import { invalidateAll } from '$app/navigation';
   import { Button } from '$components/button';

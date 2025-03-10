@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useDialog } from './index.svelte';
   import { Dialog } from 'bits-ui';
-  import XIcon from 'lucide-svelte/icons/x';
+  import XIcon from '@lucide/svelte/icons/x';
 
   let dialog = useDialog();
 </script>

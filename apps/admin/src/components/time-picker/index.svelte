@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Label } from 'bits-ui';
-  import CalendarIcon from 'lucide-svelte/icons/clock';
+  import CalendarIcon from '@lucide/svelte/icons/clock';
   import { Button } from '$components/button';
   import clsx from 'clsx';
 

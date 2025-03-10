@@ -3,7 +3,7 @@
   import { Button } from '$components/button';
   import { useDialog } from '$components/dialog/index.svelte';
   import type { PageData } from '../../routes/(auth)/projects/[slug]/$types';
-  import EditIcon from 'lucide-svelte/icons/settings';
+  import EditIcon from '@lucide/svelte/icons/settings';
   import EditProject from './EditProject.svelte';
 
   let state = $derived(page.data) as PageData;

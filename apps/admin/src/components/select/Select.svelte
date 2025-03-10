@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Label, Select } from 'bits-ui';
-  import CheckIcon from 'lucide-svelte/icons/check';
-  import ChevronsDown from 'lucide-svelte/icons/chevron-down';
+  import CheckIcon from '@lucide/svelte/icons/check';
+  import ChevronsDown from '@lucide/svelte/icons/chevron-down';
   import type { HTMLSelectAttributes } from 'svelte/elements';
 
   type Option = {

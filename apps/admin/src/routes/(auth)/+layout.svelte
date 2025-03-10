@@ -1,9 +1,9 @@
 <script>
   import { Button } from '$components/button';
   import { LayoutBase } from '$components/layout';
-  import SignOutIcon from 'lucide-svelte/icons/log-out';
-  import SignpostIcon from 'lucide-svelte/icons/signpost';
-  import ListIcon from 'lucide-svelte/icons/list';
+  import SignOutIcon from '@lucide/svelte/icons/log-out';
+  import SignpostIcon from '@lucide/svelte/icons/signpost';
+  import ListIcon from '@lucide/svelte/icons/list';
   import { signOut } from '@auth/sveltekit/client';
   import { Tooltip, TooltipProvider } from '$components/tooltip';
   import { routes } from '$lib/routes';

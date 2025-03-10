@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SettingsIcon from 'lucide-svelte/icons/settings';
+  import SettingsIcon from '@lucide/svelte/icons/settings';
   import { CalendarDate } from '@internationalized/date';
   import { invert } from './timedrag.svelte';
   import { Button } from '$components/button';

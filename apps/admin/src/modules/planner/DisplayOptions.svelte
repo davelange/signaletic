@@ -10,8 +10,8 @@
   import { routes } from '$lib/routes';
   import { formatCalendarDate } from '$lib/utils';
   import { getPlannerState } from './planner.svelte';
-  import LinkIcon from 'lucide-svelte/icons/square-arrow-out-up-right';
-  import DeleteIcon from 'lucide-svelte/icons/trash';
+  import LinkIcon from '@lucide/svelte/icons/square-arrow-out-up-right';
+  import DeleteIcon from '@lucide/svelte/icons/trash';
 
   let { display }: { display: Display } = $props();
 
