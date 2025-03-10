@@ -877,6 +877,7 @@
 </script>
 
 <div id="file">
+	<!-- svelte-ignore a11y_label_has_associated_control -->
 	<label>
 		<div id="filename">Select File</div>
 		<div id="fileupload" style="display: none"></div>
@@ -893,5 +894,12 @@
 	}
 	#file {
 		display: none;
+	}
+
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
 	}
 </style>
