@@ -15,6 +15,7 @@
   "description": "",
   "workspaces": [
     "apps/visualizer",
+    "apps/admin",
     "apps/db"
   ],
   "devDependencies": {
