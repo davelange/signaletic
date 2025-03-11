@@ -55,9 +55,8 @@
 	async function loadTemplate(isDiff = false) {
 		if (isDiff && currentScene) {
 			template?.onStop?.();
-
 			const module = await import(`$templates/${currentScene.template.name}/index.svelte.ts`);
-			template = module.load(currentScene.templateConfig || null);
+			template = module.load(currentScene.templateConfig || null, currentScene.elements);
 
 			if (template) {
 				template.debug = false;

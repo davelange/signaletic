@@ -2,6 +2,7 @@
 	//@ts-nocheck
 	/* eslint-disable */
 	import p5 from 'p5';
+	import Elements from '$templates/Elements.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import type { AccordionTemplate } from './index.svelte';
 	import GUI from 'lil-gui';
@@ -885,6 +886,7 @@
 </div>
 <div id="preview"></div>
 <div id="container_canvas" class="container"></div>
+<Elements elements={template.elements} />
 
 <style>
 	#preview {

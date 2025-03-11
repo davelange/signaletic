@@ -16,3 +16,11 @@ declare global {
 }
 
 export type Snippet = () => ReturnType<import('svelte').Snippet>;
+
+export type DisplaySceneElement = {
+  src: string
+  width: number
+  height: number
+  x: number
+  y: number
+}

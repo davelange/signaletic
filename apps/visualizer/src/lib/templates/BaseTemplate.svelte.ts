@@ -1,5 +1,6 @@
 import GUI from 'lil-gui';
 import type { Component } from 'svelte';
+import type { DisplaySceneElement } from '../../app';
 
 export type TemplateParameters = Record<string, unknown>;
 export type TemplateConfig = {
@@ -19,18 +20,22 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 	targetOrigin = import.meta.env.VITE_ADMIN_URL as string;
 	debug = $state(true);
 	guiSubs: GUISub[] = [];
+	elements: DisplaySceneElement[] = $state([]);
 
 	onStop?: () => void | undefined;
 
 	constructor({
 		config,
 		defaultParameters,
-		parameters
+		parameters,
+		elements
 	}: {
 		config: TemplateConfig;
 		defaultParameters: T;
 		parameters: TemplateParameters;
+		elements: DisplaySceneElement[];
 	}) {
+		this.elements = elements;
 		this.config = config;
 		this.parameters = {
 			...defaultParameters,

@@ -1,8 +1,8 @@
-import { Entity, Field, Fields } from "remult"
-import { Relations } from "remult"
-import { Display } from "./Display.js"
-import { Template } from "./Template.js"
-import { ScheduleEvent } from "./ScheduleEvent.js"
+import { Entity, Field, Fields } from "remult";
+import { Relations } from "remult";
+import { Display } from "./Display.js";
+import { Template } from "./Template.js";
+import { ScheduleEvent } from "./ScheduleEvent.js";
 
 @Entity<DisplayScene>("displayScenes", {
   allowApiCrud: true,
@@ -10,35 +10,38 @@ import { ScheduleEvent } from "./ScheduleEvent.js"
 })
 export class DisplayScene {
   @Fields.integer()
-  id!: number
+  id!: number;
 
   @Fields.string({ allowNull: true })
-  name?: string
+  name?: string;
 
   @Fields.integer()
-  displayId!: number
+  displayId!: number;
 
   @Relations.toOne(() => Display, { field: "displayId" })
-  display!: Display
+  display!: Display;
 
   @Fields.integer()
-  templateId!: number
+  templateId!: number;
 
   @Relations.toOne(() => Template, { field: "templateId" })
-  template!: Template
+  template!: Template;
 
   @Fields.integer({ allowNull: true })
-  scheduleEventId?: number
+  scheduleEventId?: number;
 
   @Relations.toOne(() => ScheduleEvent, { field: "scheduleEventId" })
-  scheduleEvent?: ScheduleEvent
+  scheduleEvent?: ScheduleEvent;
 
   @Fields.date()
-  startsAt!: Date
+  startsAt!: Date;
 
   @Fields.date()
-  endsAt!: Date
+  endsAt!: Date;
 
   @Fields.json({ allowNull: true })
-  templateConfig? = {}
+  templateConfig? = {};
+
+  @Fields.json({ allowNull: true })
+  elements? = {};
 }

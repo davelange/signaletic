@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { BaseTemplate } from '$templates/BaseTemplate.svelte';
+	import Elements from '$templates/Elements.svelte';
 	import { onMount } from 'svelte';
 
 	let { template }: { template: BaseTemplate } = $props();
@@ -11,6 +12,7 @@
 
 <div class="wrapper">
 	<p>{template.parameters?.textInput}</p>
+	<Elements elements={template.elements} />
 </div>
 
 <style>

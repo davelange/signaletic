@@ -6,6 +6,7 @@
   import { setPlannerState } from '$modules/planner/planner.svelte';
   import ProjectHeader from '$modules/project/ProjectHeader.svelte';
   import EventDatePicker from '$modules/project/EventDatePicker.svelte';
+  import AddElement from '$modules/planner/AddElement.svelte';
 
   let { data, children }: { data: PageData; children: Snippet } = $props();
 
@@ -19,6 +20,7 @@
 <div class="col-span-3 flex flex-col gap-4">
   <ProjectHeader />
   <DisplaysList />
+  <AddElement />
   {#if !planner.dates.length}
     <EventDatePicker />
   {:else}

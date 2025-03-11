@@ -1,4 +1,5 @@
 import { BaseTemplate, type TemplateParameters } from '$templates/BaseTemplate.svelte';
+import type { DisplaySceneElement } from '../../../app';
 
 export const config = {
 	name: 'Dia',
@@ -35,15 +36,16 @@ const defaultParameters = {
 export type Options = { textInput: string }; // TODO: use zod?
 
 export class DiaTemplate extends BaseTemplate<typeof defaultParameters> {
-	constructor(parameters: TemplateParameters) {
+	constructor(parameters: TemplateParameters, elements: DisplaySceneElement[] = []) {
 		super({
 			config,
 			parameters,
-			defaultParameters
+			defaultParameters,
+			elements
 		});
 	}
 }
 
-export function load(config: Options) {
-	return new DiaTemplate(config);
+export function load(config: Options, elements: DisplaySceneElement[]) {
+	return new DiaTemplate(config, elements);
 }

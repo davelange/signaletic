@@ -139,3 +139,9 @@ export function omit<T extends Record<string, any>, K extends keyof T>(
 export function formatCalendarDate(date: CalendarDate) {
   return calendarDateToDate(date).toLocaleDateString();
 }
+
+export const elementImages = [
+  'https://alchemyconf.com/_next/static/media/remote_logo.6ce1ae6b.png',
+  'https://alchemyconf.com/_next/static/media/erlang_logo.8e1d568c.svg',
+  'https://alchemyconf.com/_next/static/media/maersk_logo.5b290f1a.png'
+]

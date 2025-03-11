@@ -4,6 +4,7 @@
 
 	import { onDestroy, onMount } from 'svelte';
 	import type { DiaTemplate } from './index.svelte';
+	import Elements from '$templates/Elements.svelte';
 
 	let { template }: { template: DiaTemplate } = $props();
 
@@ -26,8 +27,6 @@
 		let shaderProgram: Shader;
 
 		sketch = new p5(async (p: p5) => {
-			console.log('init');
-
 			p.preload = () => {
 				font = p.loadFont(fontFile);
 				shaderProgram = p.loadShader(`${basePath}/vertex.vert`, `${basePath}/fragment.frag`);
@@ -135,6 +134,7 @@
 <div class="wrapper" id="wrapper">
 	<canvas id="canvas" width="1000px" height="1000px"></canvas>
 </div>
+<Elements elements={template.elements} />
 
 <style>
 	.wrapper {

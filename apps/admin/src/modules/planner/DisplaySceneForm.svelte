@@ -11,6 +11,9 @@
   import { useDialog } from '$components/dialog/index.svelte';
   import { TimePicker } from '$components/time-picker';
   import { routes } from '$lib/routes';
+  import AddElement from './AddElement.svelte';
+  import type { DisplaySceneElement } from '../../app';
+  import ElementsPreview from './ElementsPreview.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -39,6 +42,8 @@
   let startsAtInput = $state(toTimeInput(scene.startsAt));
   let endsAtInput = $state(toTimeInput(scene.endsAt));
 
+  let elements: DisplaySceneElement[] = $state(scene.elements || []);
+
   let payload = $state(scene.templateConfig);
 
   $effect(() => {
@@ -64,7 +69,8 @@
       ...scene,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),
-      templateConfig: JSON.stringify(payload)
+      templateConfig: JSON.stringify(payload),
+      elements: JSON.stringify(elements)
     });
 
     dialog.close();
@@ -115,8 +121,12 @@
     <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
   </div>
 
+  <div class="flex">
+    <AddElement bind:elements />
+  </div>
+
   <div
-    class="flex aspect-video w-[90vw] max-w-full items-center justify-center"
+    class="relative flex aspect-video w-[90vw] max-w-full items-center justify-center overflow-hidden rounded-md"
   >
     <iframe
       src={routes.SCENE_TEMPLATE(scene.templateId, scene.id)}
@@ -129,6 +139,7 @@
       class="h-full w-full"
       allow="camera"
     ></iframe>
+    <ElementsPreview bind:elements />
   </div>
 
   <div class="flex gap-4">
