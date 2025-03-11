@@ -27,4 +27,12 @@ export class Display {
   // Relations toMany
   @Relations.toMany(() => DisplayScene)
   displayScenes: DisplayScene[];
+
+  standaloneScenes() {
+    return this.displayScenes.filter((item) => item.standalone);
+  }
+
+  scheduledScenes() {
+    return this.displayScenes.filter((item) => !item.standalone);
+  }
 }

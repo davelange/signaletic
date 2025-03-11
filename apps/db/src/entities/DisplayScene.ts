@@ -21,6 +21,9 @@ export class DisplayScene {
   @Relations.toOne(() => Display, { field: "displayId" })
   display!: Display;
 
+  @Fields.boolean()
+  standalone? = false;
+
   @Fields.integer()
   templateId!: number;
 

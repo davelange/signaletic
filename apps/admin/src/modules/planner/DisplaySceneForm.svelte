@@ -90,9 +90,6 @@
     label: display.name || '',
     value: display.id.toString()
   }));
-
-  $inspect(payload);
-  $inspect(scene);
 </script>
 
 <svelte:window onmessage={handleMessage} />

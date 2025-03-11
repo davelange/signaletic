@@ -145,7 +145,7 @@
         </div>
         <div class="relative flex h-full min-w-[220px]">
           {#each planner.selectedDisplays as display}
-            {@const list = getItemsInDay(display.displayScenes, date)}
+            {@const list = getItemsInDay(display.scheduledScenes(), date)}
             <DayList
               scenes={list}
               color={colors[display.id % colors.length]}

@@ -38,7 +38,7 @@ class Planner {
   }
 
   allDisplays = $derived(this.project.displays);
-  scenes = $derived(this.project.displays.flatMap((d) => d.displayScenes));
+  scenes = $derived(this.project.displays.flatMap((d) => d.scheduledScenes()));
   selectedDisplays = $derived(
     this.allDisplays.filter((item) => this.selectedDisplayIds.includes(item.id))
   );

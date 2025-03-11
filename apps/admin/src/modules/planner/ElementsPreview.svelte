@@ -117,7 +117,7 @@
 <div
   onmousemove={handleMouseMove}
   onmouseup={handleMouseUp}
-  class="absolute h-full w-full"
+  class="pointer-events-none absolute h-full w-full"
   bind:this={wrapper}
 >
   {#each elements as element, idx}
@@ -128,7 +128,7 @@
       style:height="{element.height}%"
       style:top="{element.y}%"
       style:left="{element.x}%"
-      class="absolute flex items-center justify-center border-2 border-dashed border-slate-400"
+      class="pointer-events-auto absolute flex items-center justify-center border-2 border-dashed border-slate-400"
       data-idx={idx}
       onmousedown={handleMouseDown}
     >
@@ -142,7 +142,7 @@
         type="button"
         data-idx={idx}
         onmousedown={handleRemove}
-        class="z-60 absolute right-5 top-0 flex size-4 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white"
+        class="z-60 pointer-events-auto absolute right-5 top-0 flex size-4 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white"
         aria-label="remove element"
       >
         <DeleteIcon class="text-destructive size-3" />
@@ -154,7 +154,7 @@
         data-idx={idx}
         data-handle="nw"
         onmousedown={handleResizeDown}
-        class="z-60 absolute left-0 top-0 size-3 -translate-x-[6px] -translate-y-[6px] cursor-nw-resize rounded-full bg-slate-400"
+        class="z-60 pointer-events-auto absolute left-0 top-0 size-3 -translate-x-[6px] -translate-y-[6px] cursor-nw-resize rounded-full bg-slate-400"
         aria-label="resize"
       >
       </button>
@@ -165,7 +165,7 @@
         data-idx={idx}
         data-handle="ne"
         onmousedown={handleResizeDown}
-        class="z-60 absolute right-0 top-0 size-3 -translate-y-[6px] translate-x-[6px] cursor-ne-resize rounded-full bg-slate-400"
+        class="z-60 pointer-events-auto absolute right-0 top-0 size-3 -translate-y-[6px] translate-x-[6px] cursor-ne-resize rounded-full bg-slate-400"
         aria-label="resize"
       >
       </button>
@@ -176,7 +176,7 @@
         data-idx={idx}
         data-handle="se"
         onmousedown={handleResizeDown}
-        class="z-60 absolute bottom-0 right-0 size-3 translate-x-[6px] translate-y-[6px] cursor-se-resize rounded-full bg-slate-400"
+        class="z-60 pointer-events-auto absolute bottom-0 right-0 size-3 translate-x-[6px] translate-y-[6px] cursor-se-resize rounded-full bg-slate-400"
         aria-label="resize"
       >
       </button>

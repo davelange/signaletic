@@ -6,7 +6,8 @@
   import { setPlannerState } from '$modules/planner/planner.svelte';
   import ProjectHeader from '$modules/project/ProjectHeader.svelte';
   import EventDatePicker from '$modules/project/EventDatePicker.svelte';
-  import AddElement from '$modules/planner/AddElement.svelte';
+  import * as Tabs from '$components/tabs';
+  import LiveSceneWrapper from '$modules/live/LiveSceneWrapper.svelte';
 
   let { data, children }: { data: PageData; children: Snippet } = $props();
 
@@ -18,13 +19,28 @@
 </script>
 
 <div class="col-span-3 flex flex-col gap-4">
-  <ProjectHeader />
-  <DisplaysList />
-  <AddElement />
-  {#if !planner.dates.length}
-    <EventDatePicker />
-  {:else}
-    <DaysWrapper />
-  {/if}
+  <Tabs.Root value="schedule" class="w-[400px]">
+    <div class="mb-6 flex gap-5">
+      <ProjectHeader />
+      <Tabs.List>
+        <Tabs.Trigger value="schedule">Schedule</Tabs.Trigger>
+        <Tabs.Trigger value="live-scenes">Live scenes</Tabs.Trigger>
+      </Tabs.List>
+    </div>
+    <Tabs.Content value="schedule">
+      <div class="col-span-3 flex flex-col gap-4">
+        <DisplaysList />
+        {#if !planner.dates.length}
+          <EventDatePicker />
+        {:else}
+          <DaysWrapper />
+        {/if}
+      </div>
+    </Tabs.Content>
+    <Tabs.Content value="live-scenes">
+      <LiveSceneWrapper project={data.project} />
+    </Tabs.Content>
+  </Tabs.Root>
+
   {@render children()}
 </div>

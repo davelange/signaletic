@@ -2,6 +2,8 @@
 	import { page } from '$app/state';
 	import { Display } from '$db/entities/Display.js';
 	import type { DisplayScene } from '$db/entities/DisplayScene.js';
+	import { subscribe } from '$lib/live';
+	import { getCurrentScene, isDifferentScene } from '$lib/utils';
 	import type { BaseTemplate } from '$templates/BaseTemplate.svelte.js';
 	import { repo } from 'remult';
 	import { onMount, type Component } from 'svelte';
@@ -28,61 +30,47 @@
 		sceneList = data?.displayScenes || [];
 	}
 
-	function getCurrentScene() {
-		const date = baseDate ? new Date(baseDate) : null;
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		if (!date || isNaN(date as any)) {
-			return sceneList.find(
-				(scene) => scene.startsAt.getTime() <= Date.now() && scene.endsAt.getTime() > Date.now()
-			);
-		}
-
-		const now = new Date();
-		date.setHours(now.getHours());
-		date.setMinutes(now.getMinutes());
-		date.setSeconds(now.getSeconds());
-
-		return sceneList.find(
-			(scene) =>
-				scene.startsAt.getTime() <= date.getTime() && scene.endsAt.getTime() > date.getTime()
-		);
-	}
-
 	let template = $state<BaseTemplate>();
 	let RenderedComponent = $state<Component>();
 
-	async function loadTemplate(isDiff = false) {
-		if (isDiff && currentScene) {
-			template?.onStop?.();
-			const module = await import(`$templates/${currentScene.template.name}/index.svelte.ts`);
-			template = module.load(currentScene.templateConfig || null, currentScene.elements);
+	async function loadTemplate(sceneToLoad?: DisplayScene) {
+		console.log(sceneToLoad);
+		if (!sceneToLoad || currentScene?.standalone) return;
 
-			if (template) {
-				template.debug = false;
-			}
+		template?.onStop?.();
+		const module = await import(`$templates/${sceneToLoad.template.name}/index.svelte.ts`);
+		template = module.load(sceneToLoad.templateConfig || null, sceneToLoad.elements);
 
-			RenderedComponent = await template?.loadComponent();
+		if (template) {
+			template.debug = false;
 		}
 
-		scheduleRefetch();
+		RenderedComponent = await template?.loadComponent();
 	}
 
 	function scheduleRefetch() {
 		setTimeout(async () => {
 			await getSceneList();
-			const newScene = getCurrentScene();
-			const isDiff = newScene?.id !== currentScene?.id;
+			const newScene = getCurrentScene(sceneList, baseDate);
+			const isDiff = isDifferentScene(newScene, currentScene);
 			currentScene = newScene;
 
-			loadTemplate(isDiff);
+			if (isDiff) {
+				loadTemplate(currentScene);
+			}
+
+			scheduleRefetch();
 		}, 1000 * 60);
 	}
 
 	onMount(async () => {
 		await getSceneList();
-		currentScene = getCurrentScene();
-		loadTemplate(true);
+		currentScene = getCurrentScene(sceneList, baseDate);
+		loadTemplate(currentScene);
+		scheduleRefetch();
+		subscribe({
+			onNewScene: loadTemplate
+		});
 	});
 </script>
 

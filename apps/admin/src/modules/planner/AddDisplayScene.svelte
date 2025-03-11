@@ -17,8 +17,6 @@
   import { TimePicker } from '$components/time-picker';
   import { routes } from '$lib/routes';
 
-  const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
-
   let {
     displayId,
     baseDate,

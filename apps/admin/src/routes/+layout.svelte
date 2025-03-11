@@ -13,4 +13,7 @@
 </script>
 
 {@render children()}
+<svelte:head>
+  <title>Signaletic</title>
+</svelte:head>
 <Dialog />
