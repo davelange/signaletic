@@ -31,8 +31,6 @@
       displayId: project.displays.at(0)!.id
     });
 
-  console.log(inputScene ? 'Update' : 'Innsert');
-
   let elements: DisplaySceneElement[] = $state([]);
   let templateConfig = $state({});
 
@@ -111,7 +109,7 @@
   >
     {#if scene.templateId}
       <iframe
-        src={routes.TEMPLATE(scene.templateId)}
+        src={routes.SCENE_TEMPLATE(scene.templateId, scene.id)}
         frameborder="0"
         title="Preview"
         onmessage={(e) => {
