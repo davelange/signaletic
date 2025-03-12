@@ -109,17 +109,18 @@
 </script>
 
 <div class="relative mt-4 flex h-[80vh]">
-  <div onwheel={handleScroll} class="relative overflow-hidden">
-    <div class="h-full w-[70px]">
-      {#each timeRange as item}
-        <p
-          class="absolute -translate-y-[10px] text-sm font-medium"
-          style:top="{timeToPos(item)}%"
-        >
-          {formatTime(item)}
-        </p>
-      {/each}
-    </div>
+  <div
+    onwheel={handleScroll}
+    class="relative flex-shrink-0 basis-[70px] overflow-hidden"
+  >
+    {#each timeRange as item}
+      <p
+        class="absolute -translate-y-[10px] text-sm font-medium"
+        style:top="{timeToPos(item)}%"
+      >
+        {formatTime(item)}
+      </p>
+    {/each}
   </div>
   <div
     class="relative flex flex-1 border border-dashed"
