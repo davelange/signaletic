@@ -75,7 +75,9 @@ class Planner {
   }
 
   getAllTimeDragScenes() {
-    return Object.values(this.timeDrags).flatMap((item) => item.scenes);
+    return Object.values(this.timeDrags).flatMap((item) =>
+      $state.snapshot(item.scenes)
+    );
   }
 }
 

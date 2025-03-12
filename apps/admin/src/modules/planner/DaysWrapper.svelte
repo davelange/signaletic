@@ -15,10 +15,10 @@
   const saveMutation = useMutation({
     fn: (items: DisplayScene[]) => {
       return Promise.all(
-        items.map((item) => displaySceneRepo.update(item.id, item))
+        items.map(async (item) => await displaySceneRepo.update(item.id, item))
       );
     },
-    onSuccess: () => invalidateAll()
+    onSuccess: async () => await invalidateAll()
   });
 
   let timeSpan = $derived(
@@ -174,8 +174,10 @@
   <Button
     type="button"
     variant="default"
-    onclick={() => {
-      saveMutation.mutate(planner.getAllTimeDragScenes());
+    onclick={async () => {
+      await saveMutation.mutate(
+        planner.getAllTimeDragScenes() as DisplayScene[]
+      );
     }}
     disabled={saveMutation.isPending}
     isLoading={saveMutation.isPending}
