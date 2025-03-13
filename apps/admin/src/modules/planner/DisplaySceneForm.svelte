@@ -12,10 +12,11 @@
   import { TimePicker } from '$components/time-picker';
   import { routes } from '$lib/routes';
   import AddElement from './AddElement.svelte';
-  import type { DisplaySceneElement } from '../../app';
   import ElementsPreview from './ElementsPreview.svelte';
+  import PresetOptions from './PresetOptions.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
+  let iframeEl = $state() as HTMLIFrameElement;
 
   let {
     scene
@@ -31,6 +32,7 @@
       await invalidateAll();
     }
   });
+
   let deleteMutation = useMutation({
     fn: (id: number) => displaySceneRepo.delete(id),
     onSuccess: async () => {
@@ -42,8 +44,7 @@
   let startsAtInput = $state(toTimeInput(scene.startsAt));
   let endsAtInput = $state(toTimeInput(scene.endsAt));
 
-  let elements: DisplaySceneElement[] = $state(scene.elements || []);
-
+  let elements = $state(scene.elements || []);
   let payload = $state(scene.templateConfig);
 
   $effect(() => {
@@ -59,7 +60,8 @@
       return;
     }
 
-    payload = event.data.value;
+    payload = event.data.value.templateConfig || {};
+    elements = event.data.value.elements || [];
   }
 
   async function handleSubmit(e: SubmitEvent) {
@@ -69,8 +71,8 @@
       ...scene,
       startsAt: timeToDate(timeFromInput(startsAtInput), baseDate),
       endsAt: timeToDate(timeFromInput(endsAtInput), baseDate),
-      templateConfig: JSON.stringify(payload),
-      elements: JSON.stringify(elements)
+      templateConfig: payload,
+      elements: elements
     });
 
     dialog.close();
@@ -93,29 +95,39 @@
 </script>
 
 <svelte:window onmessage={handleMessage} />
-<form class="flex w-full flex-col gap-4" onsubmit={handleSubmit}>
-  <div class="flex flex-1 gap-4">
-    <div class="w-full flex-1">
-      <Input label="Name" type="text" name="name" bind:value={scene.name} />
-    </div>
-
+<form
+  class="grid w-[90vw] grid-cols-4 items-start gap-4"
+  onsubmit={handleSubmit}
+>
+  <div class="col-span-2">
+    <Input label="Name" type="text" name="name" bind:value={scene.name} />
+  </div>
+  <div class="col-span-2">
     <Select
       label="Display"
       options={displays}
       name="displayId"
       bind:value={scene.displayId}
     />
+  </div>
+
+  <div class="col-span-2 flex gap-4">
+    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
+    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+  </div>
+  <div class="col-span-2 flex items-end gap-4">
     <Select
       label="Template"
       options={templateOptions}
       name="templateId"
       bind:value={scene.templateId}
     />
-  </div>
-
-  <div class="flex flex-1 gap-4">
-    <TimePicker label="From" name="startsAtInput" bind:value={startsAtInput} />
-    <TimePicker label="To" name="endsAtInput" bind:value={endsAtInput} />
+    <PresetOptions
+      bind:scene
+      {iframeEl}
+      currentConfig={payload}
+      currentElements={elements}
+    />
   </div>
 
   <div class="flex">
@@ -123,9 +135,10 @@
   </div>
 
   <div
-    class="relative flex aspect-video w-[90vw] max-w-full items-center justify-center overflow-hidden rounded-md"
+    class="relative col-span-4 flex aspect-video w-[90vw] max-w-full items-center justify-center overflow-hidden rounded-md"
   >
     <iframe
+      bind:this={iframeEl}
       src={routes.SCENE_TEMPLATE(scene.templateId, scene.id)}
       frameborder="0"
       title="Preview"
@@ -139,7 +152,7 @@
     <ElementsPreview bind:elements />
   </div>
 
-  <div class="flex gap-4">
+  <div class="col-span-4 flex gap-4">
     <Button
       type="button"
       fullWidth

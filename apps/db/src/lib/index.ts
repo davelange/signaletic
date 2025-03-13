@@ -2,7 +2,7 @@ import { repo } from "remult";
 import { Project } from "../entities/Project";
 import { Template } from "../entities/Template";
 import { DisplayScene } from "../entities/DisplayScene";
-import { Display } from "../entities";
+import { Display, Preset } from "../entities";
 
 export async function getProjects() {
   return repo(Project).find();
@@ -63,6 +63,10 @@ export function getTemplates() {
 
 export function getTemplateById(id: number) {
   return repo(Template).findId(id);
+}
+
+export function getPresets() {
+  return repo(Preset).find();
 }
 
 export const displaySceneRepo = repo(DisplayScene);

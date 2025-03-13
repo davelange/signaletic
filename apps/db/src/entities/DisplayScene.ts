@@ -1,4 +1,4 @@
-import { Entity, Field, Fields } from "remult";
+import { Entity, Fields } from "remult";
 import { Relations } from "remult";
 import { Display } from "./Display.js";
 import { Template } from "./Template.js";
@@ -42,9 +42,15 @@ export class DisplayScene {
   @Fields.date()
   endsAt!: Date;
 
-  @Fields.json({ allowNull: true })
-  templateConfig? = {};
+  @Fields.json()
+  templateConfig = {};
 
-  @Fields.json({ allowNull: true })
-  elements? = {};
+  @Fields.json()
+  elements: {
+    src: string;
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  }[] = [];
 }

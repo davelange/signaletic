@@ -13,7 +13,7 @@
 	let basePath = '/assets/dia';
 	//let gui = template.gui;
 
-	template.onStop = () => {
+	template.stop = () => {
 		sketch?.remove();
 	};
 
@@ -51,7 +51,11 @@
 		return '#' + invertedHexColor.toUpperCase();
 	}
 
-	onMount(async () => {
+	template.stop = () => {
+		sketch?.remove();
+	};
+
+	template.load = () => {
 		template.loadGUI();
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;
@@ -870,6 +874,10 @@
 				applyPreset(params_preset_random);
 			}
 		});
+	};
+
+	onMount(async () => {
+		template.load();
 	});
 
 	onDestroy(() => {

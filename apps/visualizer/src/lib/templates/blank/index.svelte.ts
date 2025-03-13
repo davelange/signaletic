@@ -14,7 +14,7 @@ const defaultParameters = {
 
 export type Options = { textInput: string }; // TODO: use zod?
 
-export class BlankTemplate extends BaseTemplate {
+export class BlankTemplate extends BaseTemplate<typeof defaultParameters> {
 	constructor(parameters: TemplateParameters, elements: DisplaySceneElement[]) {
 		super({
 			config,

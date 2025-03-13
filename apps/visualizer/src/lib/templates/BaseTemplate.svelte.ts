@@ -9,6 +9,7 @@ export type TemplateConfig = {
 };
 
 type GUISub = Parameters<GUI['onFinishChange']>[0];
+type GUISubArgs = Parameters<GUISub>[0];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const defaultParams = {};
@@ -22,7 +23,8 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 	guiSubs: GUISub[] = [];
 	elements: DisplaySceneElement[] = $state([]);
 
-	onStop?: () => void | undefined;
+	stop?: () => void | undefined;
+	load?: () => void | undefined;
 
 	constructor({
 		config,
@@ -41,13 +43,35 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 			...defaultParameters,
 			...parameters
 		};
+
+		this.listenToMessages();
 	}
 
 	onGuiFinishChange(sub: GUISub) {
 		this.guiSubs.push(sub);
 	}
 
-	loadGUI(options?: { onFinishChange?: () => void }) {
+	listenToMessages() {
+		window.addEventListener('message', (e) => {
+			if (e.data.type === 'templatePresetUpdate') {
+				const { templateConfig, elements } = e.data;
+
+				this.parameters = templateConfig;
+				this.elements = elements;
+
+				this.gui.destroy();
+				this.stop?.();
+				this.load?.();
+				this.handleUpdate({
+					object: this.parameters
+				} as unknown as GUISubArgs);
+			}
+		});
+	}
+
+	loadGUI() {
+		this.gui = new GUI();
+
 		if (!this.debug) {
 			this.gui.hide();
 			return;
@@ -60,20 +84,25 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 		}
 
 		this.gui.onFinishChange((data) => {
-			this.guiSubs.map((fn) => {
-				fn(data);
-			});
-
-			window?.parent.postMessage(
-				{
-					type: 'templateConfigUpdate',
-					value: $state.snapshot(data.object)
-				},
-				this.targetOrigin
-			);
-
-			options?.onFinishChange?.();
+			this.handleUpdate(data);
 		});
+	}
+
+	handleUpdate(data: GUISubArgs) {
+		this.guiSubs.map((fn) => {
+			fn(data);
+		});
+
+		window?.parent.postMessage(
+			{
+				type: 'templateConfigUpdate',
+				value: {
+					templateConfig: $state.snapshot(data.object),
+					elements: $state.snapshot(this.elements)
+				}
+			},
+			this.targetOrigin
+		);
 	}
 
 	async loadComponent() {

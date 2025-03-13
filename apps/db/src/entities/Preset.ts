@@ -1,6 +1,6 @@
-import { Entity, Field, Fields } from "remult"
-import { Relations } from "remult"
-import { Template } from "./Template.js"
+import { Entity, Fields } from "remult";
+import { Relations } from "remult";
+import { Template } from "./Template.js";
 
 @Entity<Preset>("presets", {
   allowApiCrud: true,
@@ -8,17 +8,20 @@ import { Template } from "./Template.js"
 })
 export class Preset {
   @Fields.integer()
-  id!: number
+  id!: number;
 
   @Fields.integer()
-  templateId!: number
+  templateId!: number;
 
   @Relations.toOne(() => Template, { field: "templateId" })
-  template!: Template
+  template!: Template;
 
   @Fields.json({ allowNull: true })
-  templateConfig? = {}
+  templateConfig? = {};
+
+  @Fields.json({ allowNull: true })
+  elements? = {};
 
   @Fields.string({ allowNull: true })
-  name?: string
+  name?: string;
 }

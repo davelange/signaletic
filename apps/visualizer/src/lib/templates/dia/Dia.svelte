@@ -11,11 +11,11 @@
 	let sketch: p5 | undefined = $state();
 	let basePath = '/assets/dia';
 
-	template.onStop = () => {
+	template.stop = () => {
 		sketch?.remove();
 	};
 
-	onMount(async () => {
+	template.load = () => {
 		template.loadGUI();
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;
@@ -33,12 +33,12 @@
 			};
 
 			p.setup = async () => {
-				let canvas = document.querySelector('#canvas') as HTMLCanvasElement;
+				//let canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 
 				let w = window.innerHeight * 0.6;
 				let h = window.innerHeight * 0.6;
 
-				p.createCanvas(w, h, p.WEBGL, canvas);
+				p.createCanvas(w, h, p.WEBGL);
 
 				p.textSize(h / 2);
 				wordTexture = p.createGraphics(p.width, p.height);
@@ -124,6 +124,10 @@
 				displacement.pop();
 			}
 		});
+	};
+
+	onMount(async () => {
+		template.load?.();
 	});
 
 	onDestroy(() => {
@@ -131,18 +135,18 @@
 	});
 </script>
 
-<div class="wrapper" id="wrapper">
+<!-- <div class="wrapper" id="wrapper">
 	<canvas id="canvas" width="1000px" height="1000px"></canvas>
-</div>
+</div> -->
 <Elements elements={template.elements} />
 
 <style>
-	.wrapper {
+	/* .wrapper {
 		background-color: #000;
 		height: 100vh;
 		width: 100vw;
-	}
-	canvas {
+	} */
+	:global(.p5Canvas) {
 		display: block;
 		position: fixed;
 		left: 50%;

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { MouseEventHandler } from 'svelte/elements';
   import DeleteIcon from '@lucide/svelte/icons/trash';
-  import type { DisplaySceneElement } from '../../app';
+  import type { DisplayScene } from '$db/entities';
 
-  let { elements = $bindable() }: { elements: DisplaySceneElement[] } =
+  let { elements = $bindable() }: { elements: DisplayScene['elements'] } =
     $props();
 
   let dragging: number = $state(-1);
@@ -19,9 +19,7 @@
   let wrapper = $state() as HTMLDivElement;
 
   function toRelativePosition(
-    evt: MouseEvent & {
-      currentTarget: HTMLElement;
-    },
+    evt: MouseEvent,
     offset?: { x: number; y: number }
   ) {
     const y =
@@ -42,11 +40,13 @@
     evt.stopImmediatePropagation();
   };
 
-  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (evt) => {
+  const handleMouseMove = (evt: MouseEvent) => {
     if (dragging !== -1) {
       const { x, y } = toRelativePosition(evt, localDragOffset);
       elements[dragging].x = x;
       elements[dragging].y = y;
+
+      evt.stopImmediatePropagation();
     } else if (resizing.index !== -1) {
       const { x, y } = toRelativePosition(evt);
       const diffX = x - resizing.initialX;
@@ -79,12 +79,12 @@
           element.height = resizing.initialHeight - diffY;
           break;
       }
-    }
 
-    evt.stopImmediatePropagation();
+      evt.stopImmediatePropagation();
+    }
   };
 
-  const handleMouseUp: MouseEventHandler<HTMLDivElement> = () => {
+  const handleMouseUp = () => {
     dragging = -1;
     resizing.index = -1;
   };
@@ -113,15 +113,16 @@
   };
 </script>
 
+<!-- <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} /> -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
+  class="absolute h-full w-full"
+  bind:this={wrapper}
+  style:pointer-events={resizing.index !== -1 ? 'all' : 'none'}
   onmousemove={handleMouseMove}
   onmouseup={handleMouseUp}
-  class="pointer-events-none absolute h-full w-full"
-  bind:this={wrapper}
 >
   {#each elements as element, idx}
-    <!-- {@const isDragged = dragging === idx} -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       style:width="{element.width}%"

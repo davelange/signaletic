@@ -14,24 +14,31 @@
     options,
     value = $bindable(),
     label,
-    name = ''
-  }: { options: Option[]; label?: string } & HTMLSelectAttributes = $props();
+    name = '',
+    onValueChange
+  }: {
+    options: Option[];
+    label?: string;
+    onValueChange?: (val: string) => void;
+  } & HTMLSelectAttributes = $props();
 
   const selectedLabel = $derived(
     options.find((option) => option.value?.toString() === value?.toString())
       ?.label || 'Select an option'
   );
-
-  $inspect({
-    selectedLabel,
-    options,
-    value
-  });
 </script>
 
 <div class="flex flex-col gap-1.5">
   <input type="hidden" {name} bind:value />
-  <Select.Root type="single" bind:value name={name || ''}>
+  <Select.Root
+    type="single"
+    bind:value
+    name={name || ''}
+    onValueChange={(val) => {
+      value = val;
+      onValueChange?.(val);
+    }}
+  >
     {#if label}
       <Label.Root
         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

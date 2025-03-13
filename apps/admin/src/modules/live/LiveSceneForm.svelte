@@ -11,7 +11,6 @@
   import { routes } from '$lib/routes';
   import AddElement from '$modules/planner/AddElement.svelte';
   import ElementsPreview from '$modules/planner/ElementsPreview.svelte';
-  import type { DisplaySceneElement } from '../../app';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
 
@@ -31,8 +30,8 @@
       displayId: project.displays.at(0)!.id
     });
 
-  let elements: DisplaySceneElement[] = $state([]);
-  let templateConfig = $state({});
+  let elements: DisplayScene['elements'] = $state([]);
+  let templateConfig: DisplayScene['templateConfig'] = $state({});
 
   let mutation = useMutation({
     fn: () =>
@@ -64,13 +63,14 @@
       return;
     }
 
-    templateConfig = event.data.value;
+    templateConfig = event.data.value.templateConfig || {};
+    elements = event.data.value.elements || [];
   }
 
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
-    scene.elements = JSON.stringify(elements);
-    scene.templateConfig = JSON.stringify(templateConfig);
+    scene.elements = elements;
+    scene.templateConfig = templateConfig;
     await mutation.mutate();
   }
 </script>

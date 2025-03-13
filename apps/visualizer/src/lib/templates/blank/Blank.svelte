@@ -1,12 +1,16 @@
 <script lang="ts">
-	import type { BaseTemplate } from '$templates/BaseTemplate.svelte';
 	import Elements from '$templates/Elements.svelte';
 	import { onMount } from 'svelte';
+	import type { BlankTemplate } from './index.svelte';
 
-	let { template }: { template: BaseTemplate } = $props();
+	let { template }: { template: BlankTemplate } = $props();
+
+	template.load = () => {
+		template.loadGUI();
+	};
 
 	onMount(() => {
-		template.loadGUI();
+		template.load?.();
 	});
 </script>
 

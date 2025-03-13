@@ -34,10 +34,9 @@
 	let RenderedComponent = $state<Component>();
 
 	async function loadTemplate(sceneToLoad?: DisplayScene) {
-		console.log(sceneToLoad);
 		if (!sceneToLoad || currentScene?.standalone) return;
 
-		template?.onStop?.();
+		template?.stop?.();
 		const module = await import(`$templates/${sceneToLoad.template.name}/index.svelte.ts`);
 		template = module.load(sceneToLoad.templateConfig || null, sceneToLoad.elements);
 
