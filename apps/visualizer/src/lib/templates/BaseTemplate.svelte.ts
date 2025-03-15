@@ -17,6 +17,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 	component: Component | undefined;
 	gui = new GUI();
 	parameters = $state<T>() as T;
+	defaultParameters = $state<T>() as T;
 	config: TemplateConfig;
 	targetOrigin = import.meta.env.VITE_ADMIN_URL as string;
 	debug = $state(true);
@@ -39,6 +40,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 	}) {
 		this.elements = elements;
 		this.config = config;
+		this.defaultParameters = defaultParameters;
 		this.parameters = {
 			...defaultParameters,
 			...parameters
@@ -56,7 +58,10 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 			if (e.data.type === 'templatePresetUpdate') {
 				const { templateConfig, elements } = e.data;
 
-				this.parameters = templateConfig;
+				this.parameters = {
+					...this.defaultParameters,
+					...templateConfig
+				};
 				this.elements = elements;
 
 				this.gui.destroy();

@@ -71,8 +71,8 @@
 		var clrs = [...clrs_default];
 
 		let params = template.parameters;
-		params.aspectX = window.innerWidth;
-		params.aspectY = window.innerHeight;
+		/* params.aspectX = window.innerWidth;
+		params.aspectY = window.innerHeight; */
 
 		function easeInOut(x) {
 			return x < 0.5
@@ -133,8 +133,20 @@
 					.name('Input Type')
 					.onChange(start);
 
-				inputFolder.add(params, 'srcImg').name('Image URL').onChange(start);
-				inputFolder.add(params, 'srcVideo').name('Video URL').onChange(start);
+				inputFolder
+					.add(params, 'srcImg')
+					.name('Image URL')
+					.onChange((file) => {
+						file_img = p.loadImage(file);
+						start('image');
+					});
+				inputFolder
+					.add(params, 'srcVideo')
+					.name('Video URL')
+					.onChange((file) => {
+						file_video = p.createVideo([file]);
+						start('video');
+					});
 
 				/* const fileController = inputFolder
 					.add({ triggerFileInput: () => fileUploadInput.click() }, 'triggerFileInput')
