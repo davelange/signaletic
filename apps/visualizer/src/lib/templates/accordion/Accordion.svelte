@@ -11,7 +11,6 @@
 
 	let sketch: p5 | undefined = $state();
 	let basePath = '/assets/dia';
-	//let gui = template.gui;
 
 	template.stop = () => {
 		sketch?.remove();
@@ -134,10 +133,13 @@
 					.name('Input Type')
 					.onChange(start);
 
-				const fileController = inputFolder
+				inputFolder.add(params, 'srcImg').name('Image URL').onChange(start);
+				inputFolder.add(params, 'srcVideo').name('Video URL').onChange(start);
+
+				/* const fileController = inputFolder
 					.add({ triggerFileInput: () => fileUploadInput.click() }, 'triggerFileInput')
 					.name('Upload File');
-				fileController.domElement.parentElement.parentElement.classList.add('pixel_only');
+				fileController.domElement.parentElement.parentElement.classList.add('pixel_only'); */
 
 				const minLevelController = inputFolder
 					.add(params, 'minLevel', 0, 254, 1.0)
@@ -299,7 +301,7 @@
 				//$("input[name='aspect_y']").val(cwidth * aspect_current);
 
 				if (val == 'image') {
-					input_pre = p.loadImage(`${basePath}/logo.png`);
+					input_pre = p.loadImage(template.parameters.srcImg);
 					input = input_pre.get();
 
 					file_input = p.createFileInput(handleFile);
@@ -311,7 +313,7 @@
 
 					input = input_pre.get();
 				} else if (val == 'video') {
-					input_pre = p.createVideo([`${basePath}/homer.mp4`]);
+					input_pre = p.createVideo([template.parameters.srcVideo]);
 					input_pre.parent('#preview');
 
 					input = input_pre.get();

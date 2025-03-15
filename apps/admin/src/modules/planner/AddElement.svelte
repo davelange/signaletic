@@ -3,9 +3,13 @@
   import { elementImages } from '$lib/utils';
   import { Popover } from 'bits-ui';
   import type { DisplaySceneElement } from '../../app';
+  import { Input } from '$components/input';
 
   let { elements = $bindable() }: { elements: DisplaySceneElement[] } =
     $props();
+
+  let popoverOpen = $state(false);
+  let newURL = $state('');
 
   function handleAdd(src: string) {
     elements.push({
@@ -15,15 +19,13 @@
       x: elements.length * 5,
       y: elements.length * 5
     });
+    popoverOpen = false;
   }
 </script>
 
-<Popover.Root>
-  <Popover.Trigger
-    class="rounded-input bg-dark
-      text-background shadow-mini hover:bg-dark/95 active:scale-98 inline-flex h-10 select-none items-center justify-center whitespace-nowrap px-[21px] text-[15px] font-medium transition-all hover:cursor-pointer"
-  >
-    <Button variant="secondary" type="button">Add element</Button>
+<Popover.Root open={popoverOpen} onOpenChange={(val) => (popoverOpen = val)}>
+  <Popover.Trigger>
+    <Button variant="secondary" type="button">Add image element</Button>
   </Popover.Trigger>
 
   <Popover.Portal>
@@ -41,6 +43,24 @@
             />
           </button>
         {/each}
+        <form
+          class="flex gap-2"
+          onsubmit={(e) => {
+            e.preventDefault();
+            handleAdd(newURL);
+          }}
+        >
+          <Input placeholder="URL" bind:value={newURL} />
+          <Button type="submit">Add</Button>
+        </form>
+        {#if newURL}
+          <img
+            onsubmit={() => handleAdd(newURL)}
+            src={newURL}
+            alt="New"
+            class="w-[100px] border border-slate-300 p-4"
+          />
+        {/if}
       </div>
     </Popover.Content>
   </Popover.Portal>

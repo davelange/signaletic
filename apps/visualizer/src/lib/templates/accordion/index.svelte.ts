@@ -30,7 +30,9 @@ const defaultParameters = {
 
 	type: ['S', 'M', 'L', 'XL'],
 
-	timePerc: 0.0
+	timePerc: 0.0,
+	srcImg: '/assets/dia/logo.png',
+	srcVideo: '/assets/dia/homer.mp4'
 };
 
 export type Options = { textInput: string }; // TODO: use zod?
