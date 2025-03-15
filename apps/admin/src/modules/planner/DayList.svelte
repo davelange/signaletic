@@ -78,7 +78,7 @@
       })}
 
       <div
-        class="pointer-events-none absolute flex w-full flex-1 flex-col justify-between p-2"
+        class="pointer-events-none absolute flex h-full w-full flex-1 flex-col justify-between p-2"
       >
         <p class="text-sm">
           {formatTime(timeDrag.getTimeFromPos(block.top))}

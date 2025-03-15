@@ -14,17 +14,17 @@
 	let template = $state<BaseTemplate>();
 	let RenderedComponent = $state<Component>();
 
-	async function loadTemplate(config: DisplayScene['templateConfig'] | null) {
+	async function loadTemplate(sceneToLoad?: DisplayScene) {
 		if (!templateData) return;
 
 		const module = await import(`$templates/${templateData.name}/index.svelte.ts`);
-		template = module.load(config);
+		template = module.load(sceneToLoad?.templateConfig || null, []);
 		RenderedComponent = await template?.loadComponent();
 	}
 
 	onMount(async () => {
 		let sceneData = await displaySceneRepo.findId(Number(displaySceneId));
-		await loadTemplate(sceneData?.templateConfig || null);
+		if (sceneData) await loadTemplate(sceneData);
 	});
 </script>
 

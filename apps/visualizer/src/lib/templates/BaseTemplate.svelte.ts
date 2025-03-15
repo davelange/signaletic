@@ -62,9 +62,11 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 				this.gui.destroy();
 				this.stop?.();
 				this.load?.();
-				this.handleUpdate({
-					object: this.parameters
-				} as unknown as GUISubArgs);
+				setTimeout(() => {
+					this.handleUpdate({
+						object: this.parameters
+					} as unknown as GUISubArgs);
+				}, 200);
 			}
 		});
 	}

@@ -13,7 +13,7 @@
 		if (!scene) return;
 
 		const module = await import(`$templates/${scene.template.name}/index.svelte.ts`);
-		template = module.load(scene.templateConfig || null);
+		template = module.load(scene.templateConfig || null, []);
 		RenderedComponent = await template?.loadComponent();
 	}
 

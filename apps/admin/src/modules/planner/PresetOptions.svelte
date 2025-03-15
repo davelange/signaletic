@@ -12,7 +12,7 @@
   let {
     scene = $bindable(),
     currentConfig,
-    currentElements,
+    currentElements = $bindable(),
     iframeEl
   }: {
     scene: Partial<MembersOnly<DisplayScene>>;
@@ -48,11 +48,13 @@
     const preset = page.data.presets.find((item: Preset) => item.id === id);
 
     if (preset) {
+      currentElements = preset.elements || [];
+
       iframeEl.contentWindow?.postMessage(
         {
           type: 'templatePresetUpdate',
           templateConfig: preset.templateConfig,
-          elements: preset.elements
+          elements: []
         },
         import.meta.env.VITE_VISUALIZER_URL
       );
@@ -69,7 +71,6 @@
   />
 {/if}
 
-<!-- <Button variant="secondary" type="button">Save config as preset</Button> -->
 <Popover.Root>
   <Popover.Trigger
     class="rounded-input bg-dark

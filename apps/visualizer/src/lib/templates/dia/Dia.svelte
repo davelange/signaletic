@@ -57,11 +57,6 @@
 				}, 100);
 			};
 
-			template.onGuiFinishChange(() => {
-				cacheInput();
-				cacheDisplacement();
-			});
-
 			p.draw = () => {
 				p.background(0);
 
@@ -123,6 +118,11 @@
 				}
 				displacement.pop();
 			}
+
+			template.onGuiFinishChange(() => {
+				cacheInput();
+				cacheDisplacement();
+			});
 		});
 	};
 

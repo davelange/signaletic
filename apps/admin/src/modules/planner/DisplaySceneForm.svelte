@@ -59,9 +59,7 @@
     ) {
       return;
     }
-
     payload = event.data.value.templateConfig || {};
-    elements = event.data.value.elements || [];
   }
 
   async function handleSubmit(e: SubmitEvent) {
@@ -126,7 +124,7 @@
       bind:scene
       {iframeEl}
       currentConfig={payload}
-      currentElements={elements}
+      bind:currentElements={elements}
     />
   </div>
 
