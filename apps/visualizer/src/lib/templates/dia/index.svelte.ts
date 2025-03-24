@@ -28,6 +28,12 @@ const defaultParameters = {
 	slices: 255,
 	ease: 3,
 
+	width: 0.6,
+	height: 1,
+
+	x: 50,
+	y: 50,
+
 	repeatX: 1,
 	repeatY: 1,
 	seed: 0

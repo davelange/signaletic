@@ -55,7 +55,7 @@
 	};
 
 	template.load = () => {
-		template.loadGUI();
+		template.loadGUI({ skipSetup: true });
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;
 
@@ -286,11 +286,11 @@
 				let bboxHeight = wordTexture.textAscent() + wordTexture.textDescent();
 
 				let scaleX = wordTexture.width / bboxWidth;
-				let scaleY = 3.2;
+				let scaleY = 3.3;
 
 				wordTexture.push();
 
-				wordTexture.translate(wordTexture.width * 0.5, wordTexture.height * 0.5 - 13);
+				wordTexture.translate(wordTexture.width * 0.5, wordTexture.height * 0.15);
 				wordTexture.applyMatrix(scaleX, 0, 0, scaleY, 0, 0);
 				wordTexture.text(wordText, 0, 0);
 

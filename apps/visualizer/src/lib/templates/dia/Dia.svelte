@@ -16,7 +16,7 @@
 	};
 
 	template.load = () => {
-		template.loadGUI();
+		template.loadGUI({ skipSetup: true });
 
 		let fontFile = `${basePath}/Koulen-Regular.ttf`;
 
@@ -33,18 +33,36 @@
 			};
 
 			p.setup = async () => {
-				//let canvas = document.querySelector('#canvas') as HTMLCanvasElement;
+				let w = window.innerWidth * template.parameters.width;
+				let h = window.innerHeight * template.parameters.height;
 
-				let w = window.innerHeight * 0.6;
-				let h = window.innerHeight * 0.6;
-
-				p.createCanvas(w, h, p.WEBGL);
+				p.createCanvas(w, h, p.WEBGL, document.querySelector('#dia-canvas') as HTMLCanvasElement);
 
 				p.textSize(h / 2);
 				wordTexture = p.createGraphics(p.width, p.height);
 				cacheInput();
 				displacement = p.createGraphics(p.width, p.height);
 				cacheDisplacement();
+
+				template.gui.add(template.parameters, 'width', 0, 1).step(0.01).name('Width');
+				template.gui.add(template.parameters, 'height', 0, 1.5).step(0.01).name('Height');
+				template.gui.add(template.parameters, 'x', 0, 100).step(1).name('Position X');
+				template.gui.add(template.parameters, 'y', 0, 100).step(1).name('Position Y');
+				template.gui.add(template.parameters, 'word').name('Text');
+				template.gui
+					.add(template.parameters, 'animationDirection', { '→': 0, '↓': 1 })
+					.name('Direction');
+				template.gui.add(template.parameters, 'animationSpeed', -1, 1).step(0.01).name('Speed');
+				template.gui.add(template.parameters, 'rotation', -180, 180).step(1).name('Rotation');
+				template.gui.add(template.parameters, 'slices', 2, 255).step(1).name('Slices');
+				template.gui.add(template.parameters, 'timeOffset', 0, 3).step(0.1).name('Intensity');
+				template.gui.add(template.parameters, 'ease', 1, 10).step(1).name('Ease');
+
+				// Repeater Controls
+				const repeaterFolder = template.gui.addFolder('Repeater');
+				repeaterFolder.add(template.parameters, 'repeatX', 1, 8).step(1).name('Repeat X');
+				repeaterFolder.add(template.parameters, 'repeatY', 1, 8).step(1).name('Repeat Y');
+				repeaterFolder.add(template.parameters, 'seed', 0, 100).name('Seed');
 
 				p.noLoop();
 
@@ -77,23 +95,26 @@
 			};
 
 			function cacheInput() {
-				wordTexture.textAlign(p.CENTER, p.CENTER);
+				wordTexture = p.createGraphics(p.width, p.height);
+
+				wordTexture.textAlign(p.CENTER, p.BASELINE);
 				wordTexture.textFont(font);
-				wordTexture.textSize(p.height / 2);
+				wordTexture.textSize(p.height);
 				wordTexture.fill(255);
 				wordTexture.noStroke();
 				wordTexture.background(0);
 
 				// Calculate the bounding box of the text using the wordTexture context
 				let bboxWidth = wordTexture.textWidth(template.parameters.word);
-				let bboxHeight = (wordTexture.textAscent() + wordTexture.textDescent()) * 0.76;
+				let bboxHeight = wordTexture.textAscent() + wordTexture.textDescent();
 
 				// Calculate scale factors for width and height
 				let scaleX = p.width / bboxWidth;
-				let scaleY = p.height / bboxHeight + 2;
+				let scaleY = p.height / bboxHeight;
 
 				wordTexture.push();
-				wordTexture.translate(p.width * 0.5, p.height * 0.05);
+
+				wordTexture.translate(p.width * 0.5, p.height * 1);
 				wordTexture.applyMatrix(scaleX, 0, 0, scaleY, 0, 0);
 				wordTexture.text(template.parameters.word, 0, 0);
 				wordTexture.pop();
@@ -120,6 +141,10 @@
 			}
 
 			template.onGuiFinishChange(() => {
+				let w = window.innerWidth * template.parameters.width;
+				let h = window.innerHeight * template.parameters.height;
+				p.resizeCanvas(w, h);
+
 				cacheInput();
 				cacheDisplacement();
 			});
@@ -135,18 +160,12 @@
 	});
 </script>
 
-<!-- <div class="wrapper" id="wrapper">
-	<canvas id="canvas" width="1000px" height="1000px"></canvas>
-</div> -->
 <Elements elements={template.elements} />
+<canvas id="dia-canvas" style:left="{template.parameters.x}%" style:top="{template.parameters.y}%"
+></canvas>
 
 <style>
-	/* .wrapper {
-		background-color: #000;
-		height: 100vh;
-		width: 100vw;
-	} */
-	:global(.p5Canvas) {
+	#dia-canvas {
 		display: block;
 		position: fixed;
 		left: 50%;

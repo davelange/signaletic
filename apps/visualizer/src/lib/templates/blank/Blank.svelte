@@ -6,7 +6,7 @@
 	let { template }: { template: BlankTemplate } = $props();
 
 	template.load = () => {
-		template.loadGUI();
+		template.loadGUI({ skipSetup: false });
 	};
 
 	onMount(() => {

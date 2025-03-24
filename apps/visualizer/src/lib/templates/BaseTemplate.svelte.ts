@@ -76,7 +76,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 		});
 	}
 
-	loadGUI() {
+	loadGUI({ skipSetup }: { skipSetup?: boolean }) {
 		this.gui = new GUI();
 
 		if (!this.debug) {
@@ -84,7 +84,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 			return;
 		}
 
-		if (this.parameters) {
+		if (this.parameters && !skipSetup) {
 			for (const key in this.config.parameters) {
 				this.gui.add(this.parameters, key);
 			}
