@@ -1,4 +1,4 @@
-import { CalendarDate, Time } from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone, Time } from '@internationalized/date';
 
 export const colors = [
   { light: '0 87% 90%', default: '0 98% 85%' },
@@ -59,7 +59,12 @@ export function getItemsInDay<T extends { startsAt: Date }>(
   items: T[],
   day: CalendarDate
 ) {
-  return items.filter((event) => event.startsAt.getDate() === day.day);
+  const asDate = day.toDate(getLocalTimeZone());
+  return items.filter(
+    (event) =>
+      event.startsAt.getDate() === asDate.getDate() &&
+      event.startsAt.getMonth() === asDate.getMonth()
+  );
 }
 
 export function toTimeInput(date?: Date) {
