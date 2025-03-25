@@ -27,7 +27,8 @@
   const planner = getPlannerState();
   const dialog = useDialog();
 
-  let timeDrag = planner.addTimeDrag(scenes, baseDate, displayId);
+  let timeDragKey = planner.addTimeDrag(scenes, baseDate, displayId);
+  let timeDrag = $derived(planner.timeDrags[timeDragKey]);
 
   $effect(() => {
     timeDrag.updateScenes(scenes);

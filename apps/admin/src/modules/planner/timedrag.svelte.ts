@@ -1,5 +1,5 @@
 import { dateToTime, timeToDate } from '$lib/utils';
-import { CalendarDate, Time } from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone, Time } from '@internationalized/date';
 import type { MouseEventHandler } from 'svelte/elements';
 import { defaultTimeEges, type TimeEdges } from './planner.svelte';
 import type { DisplayScene } from '$db/entities';
@@ -22,7 +22,7 @@ export class TimeDrag {
   maxTimeSpan = $state(0);
   isDragging = false;
   activeBlockIdx = $state(-1);
-  baseDate: CalendarDate;
+  baseDate: CalendarDate = $state()!;
   displayId?: number;
 
   constructor({
@@ -108,6 +108,20 @@ export class TimeDrag {
         scene.endsAt
       )
     }));
+  }
+
+  updateSceneBaseDate(newCalDate: CalendarDate) {
+    const newDate = newCalDate.toDate(getLocalTimeZone());
+    this.baseDate = newCalDate;
+    this.scenes = this.scenes.map((scene) => {
+      scene.startsAt.setMonth(newDate.getMonth());
+      scene.startsAt.setDate(newDate.getDate());
+      scene.endsAt.setMonth(newDate.getMonth());
+      scene.endsAt.setDate(newDate.getDate());
+
+      return scene;
+    });
+    this.createBlocks();
   }
 
   handleDragEnd() {

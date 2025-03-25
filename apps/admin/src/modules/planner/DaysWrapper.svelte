@@ -9,6 +9,7 @@
   import { useMutation } from '$lib/api.svelte';
   import { displaySceneRepo } from '$db/lib';
   import type { DisplayScene } from '$db/entities';
+  import DayDateEdit from './DayDateEdit.svelte';
 
   const planner = getPlannerState();
 
@@ -142,7 +143,7 @@
         <div
           class="absolute top-4 w-full -translate-y-12 p-1 text-center text-sm font-medium"
         >
-          {date.toString()}
+          <DayDateEdit {date} />
         </div>
         <div class="relative flex h-full min-w-[220px]">
           {#each planner.selectedDisplays as display}

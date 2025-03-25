@@ -11,16 +11,18 @@
   import { Calendar } from '$components/calendar';
 
   let {
-    onValueChange
+    onValueChange,
+    defaultValue
   }: {
     onValueChange: (date: DateValue) => void;
+    defaultValue?: DateValue;
   } = $props();
 
-  const df = new DateFormatter('en-US', {
-    dateStyle: 'long'
+  const df = new DateFormatter('en-GB', {
+    dateStyle: 'short'
   });
 
-  let value = $state<DateValue | undefined>();
+  let value = $state<DateValue | undefined>(defaultValue);
   let contentRef = $state<HTMLElement | null>(null);
 </script>
 
@@ -39,7 +41,7 @@
   </Popover.Trigger>
   <Popover.Content
     bind:ref={contentRef}
-    class="mt-2 w-auto rounded-md border p-0"
+    class="bg-muted z-50 mt-2 w-auto rounded-md border p-0"
   >
     <Calendar type="single" bind:value onValueChange={onValueChange as never} />
   </Popover.Content>

@@ -37,6 +37,12 @@ class Planner {
     );
   }
 
+  updateDay(oldDate: CalendarDate, newDate: CalendarDate) {
+    this.dates = this.dates.map((item) =>
+      !item.compare(oldDate) ? newDate : item
+    );
+  }
+
   allDisplays = $derived(this.project.displays);
   scenes = $derived(this.project.displays.flatMap((d) => d.scheduledScenes()));
   selectedDisplays = $derived(
@@ -58,20 +64,23 @@ class Planner {
     }
   }
 
+  registryKey = 0;
+
   addTimeDrag(
     scenes: DisplayScene[],
     baseDate: CalendarDate,
     displayId: number
   ) {
-    const key = `${baseDate.toString()}_${displayId}`;
+    const key = `${this.registryKey}_${displayId}`;
     const timeDrag = new TimeDrag({
       scenes,
       timeEdges: this.timeEdges,
       baseDate
     });
     this.timeDrags[key] = timeDrag;
+    this.registryKey++;
 
-    return this.timeDrags[key];
+    return key;
   }
 
   getAllTimeDragScenes() {
