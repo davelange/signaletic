@@ -24,7 +24,7 @@
 
 	onMount(async () => {
 		let sceneData = await displaySceneRepo.findId(Number(displaySceneId));
-		if (sceneData) await loadTemplate(sceneData);
+		await loadTemplate(sceneData || undefined);
 	});
 </script>
 

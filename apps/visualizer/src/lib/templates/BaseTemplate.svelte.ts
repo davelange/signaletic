@@ -104,7 +104,7 @@ export class BaseTemplate<T extends TemplateParameters = typeof defaultParams> {
 			{
 				type: 'templateConfigUpdate',
 				value: {
-					templateConfig: $state.snapshot(data.object),
+					templateConfig: $state.snapshot(this.parameters),
 					elements: $state.snapshot(this.elements)
 				}
 			},
