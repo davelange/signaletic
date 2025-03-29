@@ -5,7 +5,6 @@
 	import Elements from '$templates/Elements.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import type { AccordionTemplate } from './index.svelte';
-	import GUI from 'lil-gui';
 
 	let { template }: { template: AccordionTemplate } = $props();
 
@@ -71,8 +70,6 @@
 		var clrs = [...clrs_default];
 
 		let params = template.parameters;
-		/* params.aspectX = window.innerWidth;
-		params.aspectY = window.innerHeight; */
 
 		function easeInOut(x) {
 			return x < 0.5

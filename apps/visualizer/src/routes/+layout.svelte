@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { initRemult } from '$lib/remult';
+	import { onMount } from 'svelte';
 	import '../app.css';
 
 	let { children } = $props();
@@ -16,6 +17,21 @@
 			document.exitFullscreen();
 		}
 	}
+
+	async function requestWebcam() {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+			// Stop the stream since we just needed to request permission
+			stream.getTracks().forEach((track) => track.stop());
+		} catch (error) {
+			console.error('Error accessing webcam:', error);
+		}
+	}
+
+	onMount(() => {
+		requestWebcam();
+	});
 </script>
 
 <div class="vis-wrapper">

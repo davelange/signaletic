@@ -5,7 +5,7 @@ export function isDifferentScene(
 	current: DisplayScene | undefined
 ) {
 	if (!newScene && !current) return false;
-	if (!newScene && current) return false;
+	if (!newScene && current) return true;
 	if (newScene && !current) return true;
 
 	if (newScene!.id !== current!.id) return true;
