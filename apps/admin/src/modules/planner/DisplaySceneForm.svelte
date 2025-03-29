@@ -133,7 +133,7 @@
   </div>
 
   <div
-    class="relative col-span-4 flex aspect-video w-[90vw] max-w-full items-center justify-center overflow-hidden rounded-md"
+    class="relative col-span-4 flex aspect-video w-[90vw] max-w-full items-center justify-center rounded-md"
   >
     <iframe
       bind:this={iframeEl}
