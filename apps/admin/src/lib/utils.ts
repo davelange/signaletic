@@ -1,7 +1,6 @@
 import { CalendarDate, getLocalTimeZone, Time } from '@internationalized/date';
 
 export const colors = [
-  { light: '0 87% 90%', default: '0 98% 85%' },
   { light: '45 96% 85%', default: '50 97% 76%' },
   { light: '90 80% 88%', default: '90 83% 78%' },
   { light: '189 91% 88%', default: '189 92% 80%' }

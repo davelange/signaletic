@@ -26,6 +26,14 @@
   const ably = new Ably.Realtime(import.meta.env.VITE_ABLY_KEY);
   ably.connection.once('connected', () => {
     console.log('Connected to Ably!');
+
+    setInterval(
+      () => {
+        const channel = ably.channels.get(`heartbeat`);
+        channel.publish('pulse', {});
+      },
+      1_000 * 60 * 2
+    );
   });
 
   async function publish(scene: DisplayScene) {
