@@ -131,7 +131,19 @@
 					.onChange(start);
 
 				inputFolder
-					.add(params, 'srcImg')
+					.add(params, 'srcImg', [
+						'/assets/dia/logo.png',
+						'/assets/speakers/Aaron Cruz.png',
+						'/assets/speakers/André Albuquerque.png',
+						'/assets/speakers/Andrea Leopardi.jpg',
+						'/assets/speakers/Bruce Tate.png',
+						'/assets/speakers/Christoph Beck.jpeg',
+						'/assets/speakers/Hugo Baraúna.jpg',
+						'/assets/speakers/Saša Juric.png',
+						'/speakers/Shannon C. Ryan.jpg',
+						'/assets/speakers/Wojtek Mach.jpg',
+						'/assets/speakers/Zach Daniel.jpg'
+					])
 					.name('Image URL')
 					.onChange((file) => {
 						file_img = p.loadImage(file);
