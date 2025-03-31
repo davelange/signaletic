@@ -6,6 +6,8 @@ import alembic from '$lib/assets/alembic.svg';
 import yari from '$lib/assets/yari_labs.png';
 import marmela from '$lib/assets/marmela.svg';
 import startupBraga from '$lib/assets/startup-braga.png';
+import marmela2 from '$lib/assets/marmela2.svg';
+import yari2 from '$lib/assets/yarilabs2.svg';
 import logos from '$lib/assets/Logos.svg';
 import logosWSubvisual from '$lib/assets/Logos_wSubvisual.svg';
 
@@ -29,6 +31,8 @@ export const elementImages = [
   alembic,
   marmela,
   startupBraga,
+  marmela2,
+  yari2,
   logos,
   logosWSubvisual
 ];
