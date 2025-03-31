@@ -24,6 +24,10 @@
 		width: 100%;
 		height: 100%;
 	}
+
+	.element-wrapper img {
+		width: 100%;
+	}
 	.element {
 		position: absolute;
 		display: flex;

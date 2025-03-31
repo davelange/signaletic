@@ -136,7 +136,7 @@
       <img
         src={element.src}
         alt=""
-        class="pointer pointer-events-none select-none"
+        class="pointer pointer-events-none w-full select-none"
       />
 
       <button
