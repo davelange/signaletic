@@ -6,6 +6,8 @@ import alembic from '$lib/assets/alembic.svg';
 import yari from '$lib/assets/yari_labs.png';
 import marmela from '$lib/assets/marmela.svg';
 import startupBraga from '$lib/assets/startup-braga.png';
+import logos from '$lib/assets/Logos.svg';
+import logosWSubvisual from '$lib/assets/Logos_wSubvisual.svg';
 
 import aaronCruz from '$lib/assets/speakers/Aaron Cruz.png';
 import andreAlbuquerque from '$lib/assets/speakers/André Albuquerque.png';
@@ -26,7 +28,9 @@ export const elementImages = [
   yari,
   alembic,
   marmela,
-  startupBraga
+  startupBraga,
+  logos,
+  logosWSubvisual
 ];
 
 export const speakerImages = [
