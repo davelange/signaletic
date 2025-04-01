@@ -12,8 +12,8 @@ type PlannerProps = {
 
 export type TimeEdges = { start: Time; end: Time };
 export const defaultTimeEges = {
-  start: new Time(8, 0),
-  end: new Time(20, 0)
+  start: new Time(9, 0),
+  end: new Time(18, 0)
 };
 
 class Planner {

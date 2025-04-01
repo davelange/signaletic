@@ -145,7 +145,7 @@
         >
           <DayDateEdit {date} />
         </div>
-        <div class="relative flex h-full min-w-[220px]">
+        <div class="relative flex h-full min-w-[350px]">
           {#each planner.selectedDisplays as display}
             {@const list = getItemsInDay(display.scheduledScenes(), date)}
             <DayList

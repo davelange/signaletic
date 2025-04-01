@@ -19,7 +19,7 @@
 </script>
 
 <div class="col-span-3 flex flex-col gap-4">
-  <Tabs.Root value="schedule" class="w-[400px]">
+  <Tabs.Root value="schedule" class="w-[700px]">
     <div class="mb-6 flex gap-5">
       <Tabs.List>
         <p class="pl-2 pr-4 text-lg font-semibold">{data.project.name}</p>
