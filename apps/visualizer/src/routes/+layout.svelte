@@ -14,10 +14,9 @@
 			container.requestFullscreen().catch((err) => {
 				console.error(`Error attempting to enable fullscreen: ${err.message}`);
 			});
-			isFullscreen = true;
 		} else {
 			document.exitFullscreen();
-			isFullscreen = false;
+			//isFullscreen = false;
 		}
 	}
 
@@ -36,11 +35,17 @@
 		requestWebcam();
 		document.addEventListener('fullscreenchange', () => {
 			isFullscreen = !!document.fullscreenElement;
+
+			if (isFullscreen) {
+				document.body.classList.add('fullscreen');
+			} else {
+				document.body.classList.remove('fullscreen');
+			}
 		});
 	});
 </script>
 
-<div class="vis-wrapper" class:fullscreen={isFullscreen}>
+<div class="vis-wrapper fullscreen">
 	{@render children()}
 
 	<button class="fullscreen-btn" onclick={() => toggleFullscreen()}> ⛶ </button>
