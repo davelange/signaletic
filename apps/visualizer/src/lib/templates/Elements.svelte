@@ -23,6 +23,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+		z-index: 1000;
 	}
 
 	.element-wrapper img {
@@ -33,5 +34,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		z-index: 1000;
 	}
 </style>
