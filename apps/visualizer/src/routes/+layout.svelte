@@ -64,7 +64,7 @@
 		color: #fff;
 	}
 
-	.fullscreen :global(.lil-gui) {
+	:global(.fullscreen .lil-gui) {
 		display: none;
 	}
 </style>
