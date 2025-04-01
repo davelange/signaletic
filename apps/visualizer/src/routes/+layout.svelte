@@ -4,6 +4,7 @@
 	import '../app.css';
 
 	let { children } = $props();
+	let isFullscreen = $state(false);
 
 	initRemult();
 
@@ -13,8 +14,10 @@
 			container.requestFullscreen().catch((err) => {
 				console.error(`Error attempting to enable fullscreen: ${err.message}`);
 			});
+			isFullscreen = true;
 		} else {
 			document.exitFullscreen();
+			isFullscreen = false;
 		}
 	}
 
@@ -31,10 +34,13 @@
 
 	onMount(() => {
 		requestWebcam();
+		document.addEventListener('fullscreenchange', () => {
+			isFullscreen = !!document.fullscreenElement;
+		});
 	});
 </script>
 
-<div class="vis-wrapper">
+<div class="vis-wrapper" class:fullscreen={isFullscreen}>
 	{@render children()}
 
 	<button class="fullscreen-btn" onclick={() => toggleFullscreen()}> ⛶ </button>
@@ -56,5 +62,9 @@
 		background: none;
 		border: 0;
 		color: #fff;
+	}
+
+	.fullscreen :global(.lil-gui) {
+		display: none;
 	}
 </style>
