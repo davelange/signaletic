@@ -14,6 +14,7 @@
   import AddElement from './AddElement.svelte';
   import ElementsPreview from './ElementsPreview.svelte';
   import PresetOptions from './PresetOptions.svelte';
+  import Duplicate from './Duplicate.svelte';
 
   const VISUALIZER_URL = import.meta.env.VITE_VISUALIZER_URL;
   let iframeEl = $state() as HTMLIFrameElement;
@@ -100,13 +101,16 @@
   <div class="col-span-2">
     <Input label="Name" type="text" name="name" bind:value={scene.name} />
   </div>
-  <div class="col-span-2">
-    <Select
-      label="Display"
-      options={displays}
-      name="displayId"
-      bind:value={scene.displayId}
-    />
+  <div class="col-span-2 flex items-end gap-4">
+    <div class="flex-1">
+      <Select
+        label="Display"
+        options={displays}
+        name="displayId"
+        bind:value={scene.displayId}
+      />
+    </div>
+    <Duplicate baseScene={scene} />
   </div>
 
   <div class="col-span-2 flex gap-4">
